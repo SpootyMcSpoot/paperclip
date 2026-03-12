@@ -15,7 +15,7 @@ export type DevServerHealthStatus = {
 export type HealthStatus = {
   status: "ok";
   version?: string;
-  deploymentMode?: "local_trusted" | "authenticated";
+  deploymentMode?: "local_trusted" | "authenticated" | "proxy_auth";
   deploymentExposure?: "private" | "public";
   authReady?: boolean;
   bootstrapStatus?: "ready" | "bootstrap_pending";
