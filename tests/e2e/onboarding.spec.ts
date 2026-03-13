@@ -30,11 +30,14 @@ test.describe("Onboarding wizard", () => {
     const newCompanyBtn = page.getByRole("button", { name: "New Company" });
 
     // Wait for either the wizard or the start page
-    await expect(
-      wizardHeading.or(newCompanyBtn)
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(async () => {
+      const isWizardVisible = await wizardHeading.isVisible();
+      const isBtnVisible = await newCompanyBtn.isVisible();
+      expect(isWizardVisible || isBtnVisible).toBe(true);
+    }).toPass({ timeout: 15_000 });
 
-    if (await newCompanyBtn.isVisible()) {
+    const isWizardAlreadyOpen = await wizardHeading.isVisible();
+    if (!isWizardAlreadyOpen && (await newCompanyBtn.isVisible())) {
       await newCompanyBtn.click();
     }
 

@@ -11,11 +11,13 @@ export function healthRoutes(
     deploymentExposure: DeploymentExposure;
     authReady: boolean;
     companyDeletionEnabled: boolean;
+    localAuthBypass: boolean;
   } = {
     deploymentMode: "local_trusted",
     deploymentExposure: "private",
     authReady: true,
     companyDeletionEnabled: true,
+    localAuthBypass: false,
   },
 ) {
   const router = Router();
@@ -34,7 +36,7 @@ export function healthRoutes(
         .from(instanceUserRoles)
         .where(sql`${instanceUserRoles.role} = 'instance_admin'`)
         .then((rows) => Number(rows[0]?.count ?? 0));
-      bootstrapStatus = roleCount > 0 ? "ready" : "bootstrap_pending";
+      bootstrapStatus = roleCount > 0 || opts.localAuthBypass ? "ready" : "bootstrap_pending";
 
       if (bootstrapStatus === "bootstrap_pending" && opts.deploymentMode === "authenticated") {
         const now = new Date();

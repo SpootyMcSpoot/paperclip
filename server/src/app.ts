@@ -41,6 +41,7 @@ export async function createApp(
     bindHost: string;
     authReady: boolean;
     companyDeletionEnabled: boolean;
+    localAuthBypass: boolean;
     betterAuthHandler?: express.RequestHandler;
     resolveSession?: (req: ExpressRequest) => Promise<BetterAuthSessionResult | null>;
   },
@@ -65,6 +66,7 @@ export async function createApp(
   app.use(
     actorMiddleware(db, {
       deploymentMode: opts.deploymentMode,
+      localAuthBypass: opts.localAuthBypass,
       resolveSession: opts.resolveSession,
     }),
   );
@@ -100,6 +102,7 @@ export async function createApp(
       deploymentExposure: opts.deploymentExposure,
       authReady: opts.authReady,
       companyDeletionEnabled: opts.companyDeletionEnabled,
+      localAuthBypass: opts.localAuthBypass,
     }),
   );
   api.use("/companies", companyRoutes(db));

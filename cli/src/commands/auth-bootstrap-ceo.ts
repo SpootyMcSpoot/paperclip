@@ -132,6 +132,55 @@ export async function bootstrapCeoInvite(opts: {
   }
 }
 
+export async function provisionAdminUser(
+  db: Db,
+  opts: {
+    email: string;
+    name?: string;
+    id?: string;
+  },
+) {
+  const userId = opts.id || `sso:${opts.email}`;
+  const now = new Date();
+
+  // Check if user exists
+  const existingUser = await db
+    .select()
+    .from(authUsers)
+    .where(eq(authUsers.email, opts.email))
+    .then((rows) => rows[0] ?? null);
+
+  if (!existingUser) {
+    await db.insert(authUsers).values({
+      id: userId,
+      email: opts.email,
+      name: opts.name || opts.email.split("@")[0],
+      emailVerified: true,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+
+  const finalUserId = existingUser?.id || userId;
+
+  // Check if role exists
+  const existingRole = await db
+    .select()
+    .from(instanceUserRoles)
+    .where(and(eq(instanceUserRoles.userId, finalUserId), eq(instanceUserRoles.role, "instance_admin")))
+    .then((rows) => rows[0] ?? null);
+
+  if (!existingRole) {
+    await db.insert(instanceUserRoles).values({
+      userId: finalUserId,
+      role: "instance_admin",
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+  return { userId: finalUserId };
+}
+
 export async function provisionAdmin(opts: {
   email: string;
   name?: string;
@@ -141,7 +190,7 @@ export async function provisionAdmin(opts: {
 }) {
   const configPath = resolveConfigPath(opts.config);
   loadPaperclipEnvFile(configPath);
-  
+
   const dbUrl = resolveDbUrl(configPath, opts.dbUrl);
   if (!dbUrl) {
     p.log.error("Could not resolve database connection for admin provisioning.");
@@ -154,52 +203,14 @@ export async function provisionAdmin(opts: {
       end?: (options?: { timeout?: number }) => Promise<void>;
     };
   };
-  
+
   try {
-    const userId = opts.id || `sso:${opts.email}`;
-    const now = new Date();
-    
-    // Check if user exists
-    const existingUser = await db
-      .select()
-      .from(authUsers)
-      .where(eq(authUsers.email, opts.email))
-      .then((rows) => rows[0] ?? null);
-    
-    if (!existingUser) {
-      await db.insert(authUsers).values({
-        id: userId,
-        email: opts.email,
-        name: opts.name || opts.email.split("@")[0],
-        emailVerified: true,
-        createdAt: now,
-        updatedAt: now,
-      });
-      p.log.success(`Created user: ${opts.email} (${userId})`);
-    } else {
-      p.log.info(`User ${opts.email} already exists.`);
-    }
-
-    const finalUserId = existingUser?.id || userId;
-
-    // Check if role exists
-    const existingRole = await db
-      .select()
-      .from(instanceUserRoles)
-      .where(and(eq(instanceUserRoles.userId, finalUserId), eq(instanceUserRoles.role, "instance_admin")))
-      .then((rows) => rows[0] ?? null);
-    
-    if (!existingRole) {
-      await db.insert(instanceUserRoles).values({
-        userId: finalUserId,
-        role: "instance_admin",
-        createdAt: now,
-        updatedAt: now,
-      });
-      p.log.success(`Granted instance_admin role to ${opts.email}`);
-    } else {
-      p.log.info(`User ${opts.email} is already an instance admin.`);
-    }
+    const result = await provisionAdminUser(db as any, {
+      email: opts.email,
+      name: opts.name,
+      id: opts.id,
+    });
+    p.log.success(`Provisioned admin user: ${opts.email} (${result.userId})`);
   } catch (err) {
     p.log.error(`Could not provision admin: ${err instanceof Error ? err.message : String(err)}`);
   } finally {

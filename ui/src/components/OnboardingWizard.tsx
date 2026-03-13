@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/lib/router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AdapterEnvironmentTestResult } from "@paperclipai/shared";
 import { useDialog } from "../context/DialogContext";
@@ -124,6 +124,23 @@ export function OnboardingWizard() {
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   const [createdIssueRef, setCreatedIssueRef] = useState<string | null>(null);
 
+  // Use refs to ensure handleLaunch always sees the absolute latest values
+  const companyPrefixRef = useRef<string | null>(null);
+  const issueRefRef = useRef<string | null>(null);
+  const agentIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    companyPrefixRef.current = createdCompanyPrefix;
+  }, [createdCompanyPrefix]);
+
+  useEffect(() => {
+    issueRefRef.current = createdIssueRef;
+  }, [createdIssueRef]);
+
+  useEffect(() => {
+    agentIdRef.current = createdAgentId;
+  }, [createdAgentId]);
+
   // Sync step and company when onboarding opens with options.
   // Keep this independent from company-list refreshes so Step 1 completion
   // doesn't get reset after creating a company.
@@ -132,7 +149,6 @@ export function OnboardingWizard() {
     const cId = onboardingOptions.companyId ?? null;
     setStep(onboardingOptions.initialStep ?? 1);
     setCreatedCompanyId(cId);
-    setCreatedCompanyPrefix(null);
   }, [
     onboardingOpen,
     onboardingOptions.companyId,
@@ -143,7 +159,10 @@ export function OnboardingWizard() {
   useEffect(() => {
     if (!onboardingOpen || !createdCompanyId || createdCompanyPrefix) return;
     const company = companies.find((c) => c.id === createdCompanyId);
-    if (company) setCreatedCompanyPrefix(company.issuePrefix);
+    if (company) {
+      setCreatedCompanyPrefix(company.issuePrefix);
+      companyPrefixRef.current = company.issuePrefix;
+    }
   }, [onboardingOpen, createdCompanyId, createdCompanyPrefix, companies]);
 
   // Resize textarea when step 3 is shown or description changes
@@ -331,6 +350,7 @@ export function OnboardingWizard() {
       const company = await companiesApi.create({ name: companyName.trim() });
       setCreatedCompanyId(company.id);
       setCreatedCompanyPrefix(company.issuePrefix);
+      companyPrefixRef.current = company.issuePrefix;
       setSelectedCompanyId(company.id);
       queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
 
@@ -481,7 +501,9 @@ export function OnboardingWizard() {
         assigneeAgentId: createdAgentId,
         status: "todo"
       });
-      setCreatedIssueRef(issue.identifier ?? issue.id);
+      const ref = issue.identifier || issue.id;
+      setCreatedIssueRef(ref);
+      issueRefRef.current = ref;
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.list(createdCompanyId)
       });
@@ -494,17 +516,23 @@ export function OnboardingWizard() {
   }
 
   async function handleLaunch() {
-    if (!createdAgentId) return;
+    if (!agentIdRef.current) return;
     setLoading(true);
     setError(null);
-    setLoading(false);
-    reset();
-    closeOnboarding();
-    if (createdCompanyPrefix) {
-      navigate(`/${createdCompanyPrefix}/dashboard`);
-      return;
+
+    const prefix = companyPrefixRef.current;
+    const issueRef = issueRefRef.current;
+
+    if (prefix && issueRef) {
+      window.location.href = `/${prefix}/issues/${issueRef}`;
+    } else if (prefix) {
+      window.location.href = `/${prefix}/dashboard`;
+    } else {
+      window.location.href = "/dashboard";
     }
-    navigate("/dashboard");
+
+    setLoading(false);
+    closeOnboarding();
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -680,6 +708,18 @@ export function OnboardingWizard() {
                           label: "Cursor",
                           icon: MousePointer2,
                           desc: "Local Cursor agent"
+                        },
+                        {
+                          value: "process" as const,
+                          label: "Process",
+                          icon: Terminal,
+                          desc: "Generic local process"
+                        },
+                        {
+                          value: "http" as const,
+                          label: "HTTP",
+                          icon: Bot,
+                          desc: "Generic webhook agent"
                         }
                       ].map((opt) => (
                         <button

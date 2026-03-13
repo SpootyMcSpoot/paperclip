@@ -92,8 +92,15 @@ function CloudAccessGate() {
     );
   }
 
-  if (isProtectedMode && healthQuery.data?.bootstrapStatus === "bootstrap_pending") {
-    return <BootstrapPendingPage hasActiveInvite={healthQuery.data.bootstrapInviteActive} />;
+  if (
+    healthQuery.data?.deploymentMode === "authenticated" &&
+    healthQuery.data?.bootstrapStatus === "bootstrap_pending"
+  ) {
+    return (
+      <BootstrapPendingPage
+        hasActiveInvite={healthQuery.data.bootstrapInviteActive}
+      />
+    );
   }
 
   if (isProtectedMode && !sessionQuery.data) {

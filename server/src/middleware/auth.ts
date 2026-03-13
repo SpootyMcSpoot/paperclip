@@ -14,13 +14,28 @@ function hashToken(token: string) {
 
 interface ActorMiddlewareOptions {
   deploymentMode: DeploymentMode;
+  localAuthBypass?: boolean;
   resolveSession?: (req: Request) => Promise<BetterAuthSessionResult | null>;
+}
+
+function isLoopback(ip: string | undefined): boolean {
+  if (!ip) return false;
+  const normalized = ip.toLowerCase();
+  return (
+    normalized === "127.0.0.1" ||
+    normalized === "::1" ||
+    normalized === "::ffff:127.0.0.1" ||
+    normalized === "localhost"
+  );
 }
 
 export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHandler {
   return async (req, _res, next) => {
+    const isLoopbackRequest = isLoopback(req.ip);
+    const bypassActive = opts.localAuthBypass && isLoopbackRequest;
+
     req.actor =
-      opts.deploymentMode === "local_trusted"
+      opts.deploymentMode === "local_trusted" || bypassActive
         ? { type: "board", userId: "local-board", isInstanceAdmin: true, source: "local_implicit" }
         : { type: "none", source: "none" };
 

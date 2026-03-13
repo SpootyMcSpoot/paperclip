@@ -23,7 +23,7 @@ export default defineConfig({
   // The webServer directive starts `paperclipai run` before tests.
   // Expects `pnpm paperclipai` to be runnable from repo root.
   webServer: {
-    command: `pnpm paperclipai run --yes`,
+    command: `rm -rf /tmp/paperclip-e2e-home && PAPERCLIP_HOME=/tmp/paperclip-e2e-home pnpm paperclipai run --yes`,
     url: `${BASE_URL}/api/health`,
     reuseExistingServer: !!process.env.CI,
     timeout: 120_000,

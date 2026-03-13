@@ -29,6 +29,7 @@ import { heartbeatService, reconcilePersistedRuntimeServicesOnStartup } from "./
 import { createStorageServiceFromConfig } from "./storage/index.js";
 import { printStartupBanner } from "./startup-banner.js";
 import { getBoardClaimWarningUrl, initializeBoardClaimChallenge } from "./board-claim.js";
+import { provisionAdminUser } from "../../cli/src/commands/auth-bootstrap-ceo.js";
 
 type BetterAuthSessionUser = {
   id: string;
@@ -416,8 +417,12 @@ export async function startServer(): Promise<StartedServer> {
   let resolveSessionFromHeaders:
     | ((headers: Headers) => Promise<BetterAuthSessionResult | null>)
     | undefined;
-  if (config.deploymentMode === "local_trusted") {
+  if (config.deploymentMode === "local_trusted" || config.localAuthBypass) {
     await ensureLocalTrustedBoardPrincipal(db as any);
+  }
+  if (config.defaultAdminEmail) {
+    await provisionAdminUser(db as any, { email: config.defaultAdminEmail });
+    logger.info({ email: config.defaultAdminEmail }, "Auto-provisioned default admin user");
   }
   if (config.deploymentMode === "proxy_auth") {
     authReady = true;
@@ -476,6 +481,7 @@ export async function startServer(): Promise<StartedServer> {
     bindHost: config.host,
     authReady,
     companyDeletionEnabled: config.companyDeletionEnabled,
+    localAuthBypass: config.localAuthBypass,
     betterAuthHandler,
     resolveSession,
   });
