@@ -1,5 +1,6 @@
 export type HealthStatus = {
   status: "ok";
+  version?: string;
   deploymentMode?: "local_trusted" | "authenticated" | "proxy_auth";
   deploymentExposure?: "private" | "public";
   authReady?: boolean;
@@ -17,8 +18,12 @@ export const healthApi = {
       headers: { Accept: "application/json" },
     });
     if (!res.ok) {
-      const payload = await res.json().catch(() => null) as { error?: string } | null;
-      throw new Error(payload?.error ?? `Failed to load health (${res.status})`);
+      const payload = (await res.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      throw new Error(
+        payload?.error ?? `Failed to load health (${res.status})`,
+      );
     }
     return res.json();
   },
