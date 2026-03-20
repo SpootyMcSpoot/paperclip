@@ -34,11 +34,14 @@ jobs:
       - name: Run e2e tests
         run: pnpm run test:e2e
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Playwright report
         if: always()
+        continue-on-error: true
+        uses: Anomalous-Ventures/devops/.github/actions/upload-s3@main
         with:
           name: playwright-report
           path: |
             tests/e2e/playwright-report/
             tests/e2e/test-results/
-          retention-days: 14
+          access-key: ${{ secrets.MINIO_ACCESS_KEY }}
+          secret-key: ${{ secrets.MINIO_SECRET_KEY }}
