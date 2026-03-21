@@ -75,7 +75,6 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
           if (adminCount === 0) {
             const now = new Date();
             await db.insert(instanceUserRoles).values({
-              id: `role:${user.id}:admin`,
               userId: user.id,
               role: "instance_admin",
               createdAt: now,
