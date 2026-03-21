@@ -8,11 +8,12 @@
 - [x] Statistics endpoint
 - [x] Fail-open behavior (default)
 - [x] Environment configuration
+- [x] Adapter integration (heartbeat service)
 
 ## Remaining Work
 
-### 1. Adapter Integration
-**Priority: HIGH**
+### 1. Database Logging
+**Priority: MEDIUM** (moved from HIGH - core integration complete)
 
 Wrap adapters with firewall checks:
 
