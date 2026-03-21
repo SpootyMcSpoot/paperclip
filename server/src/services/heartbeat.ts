@@ -49,6 +49,7 @@ import {
   resolveExecutionWorkspaceMode,
 } from "./execution-workspace-policy.js";
 import { traceAdapterExecution } from "./observability/index.js";
+import { checkPrompt, checkResponse, isAIFirewallEnabled } from "./ai-firewall/index.js";
 import { instanceSettingsService } from "./instance-settings.js";
 import { redactCurrentUserText, redactCurrentUserValue } from "../log-redaction.js";
 import {
@@ -2138,6 +2139,60 @@ export function heartbeatService(db: Db) {
         );
       }
 
+      // Check prompt with AI Firewall if enabled
+      if (isAIFirewallEnabled()) {
+        const promptCheck = await checkPrompt({
+          prompt: context,
+          userId: agent.id,
+          sessionId: run.id,
+          metadata: {
+            companyId: agent.companyId,
+            agentId: agent.id,
+            agentName: agent.name,
+            agentRole: agent.role,
+            issueId: run.issueId ?? undefined,
+          },
+        });
+
+        if (promptCheck.blocked) {
+          logger.warn(
+            {
+              companyId: agent.companyId,
+              agentId: agent.id,
+              runId: run.id,
+              reason: promptCheck.reason,
+              detections: promptCheck.detections,
+            },
+            "AI Firewall blocked prompt",
+          );
+
+          await onLog(
+            "stderr",
+            `[AI Firewall] Prompt blocked: ${promptCheck.reason}\n`,
+          );
+
+          // Return early with firewall block error
+          const firewallBlockResult: AdapterExecutionResult = {
+            exitCode: 1,
+            signal: null,
+            timedOut: false,
+            errorMessage: `AI Firewall blocked prompt: ${promptCheck.reason}`,
+            errorCode: "ai_firewall_blocked_prompt",
+          };
+
+          return { ...firewallBlockResult, runEnded: true };
+        }
+
+        // Use sanitized prompt if provided
+        if (promptCheck.sanitizedPrompt) {
+          context = promptCheck.sanitizedPrompt;
+          await onLog(
+            "stdout",
+            "[AI Firewall] Prompt sanitized (PII redacted)\n",
+          );
+        }
+      }
+
       // Wrap adapter execution with Langfuse tracing
       const adapterResult = await traceAdapterExecution(
         adapter.execute.bind(adapter),
@@ -2152,6 +2207,51 @@ export function heartbeatService(db: Db) {
           authToken: authToken ?? undefined,
         }
       );
+
+      // Check response with AI Firewall if enabled
+      if (isAIFirewallEnabled() && adapterResult.summary) {
+        const responseCheck = await checkResponse(adapterResult.summary, {
+          companyId: agent.companyId,
+          agentId: agent.id,
+        });
+
+        if (responseCheck.blocked) {
+          logger.warn(
+            {
+              companyId: agent.companyId,
+              agentId: agent.id,
+              runId: run.id,
+              reason: responseCheck.reason,
+              detections: responseCheck.detections,
+            },
+            "AI Firewall blocked response",
+          );
+
+          await onLog(
+            "stderr",
+            `[AI Firewall] Response blocked: ${responseCheck.reason}\n`,
+          );
+
+          // Override result with firewall block
+          return {
+            exitCode: 1,
+            signal: null,
+            timedOut: false,
+            errorMessage: `AI Firewall blocked response: ${responseCheck.reason}`,
+            errorCode: "ai_firewall_blocked_response",
+            runEnded: true,
+          };
+        }
+
+        // Use sanitized response if provided
+        if (responseCheck.sanitizedContent && adapterResult.summary) {
+          adapterResult.summary = responseCheck.sanitizedContent;
+          await onLog(
+            "stdout",
+            "[AI Firewall] Response sanitized (PII redacted)\n",
+          );
+        }
+      }
       const adapterManagedRuntimeServices = adapterResult.runtimeServices
         ? await persistAdapterManagedRuntimeServices({
             db,
