@@ -31,16 +31,29 @@ LANGFUSE_SECRET_KEY=sk-...
 
 **Status:** Planned (see roadmap.example.yaml)
 
-## MCP Gateway
+## MCP (Model Context Protocol)
 
-Enable infrastructure tool access (GitHub, Kubernetes, Prometheus, etc.).
+Enable infrastructure tool access (GitHub, Kubernetes, Prometheus, databases).
 
 **Configuration:**
 ```bash
-MCP_GATEWAY_URL=http://localhost:8080
+# Simple format
+MCP_SERVERS=github:http://...,kubernetes:http://...
+
+# Or individual servers
+MCP_SERVER_GITHUB_URL=http://localhost:8080
+MCP_SERVER_KUBERNETES_URL=http://localhost:8081
+MCP_SERVER_POSTGRES_URL=http://localhost:8082
+MCP_SERVER_PROMETHEUS_URL=http://localhost:8083
 ```
 
-**Status:** Planned (see roadmap.example.yaml)
+**Features:**
+- Multi-server support
+- Role-based access control (SRE, DevOps, DBA, etc.)
+- Tool discovery and execution
+- Audit logging
+
+**Status:** Core implementation complete, HTTP transport needed (see server/src/services/mcp/INTEGRATION_TODO.md)
 
 ## AI Firewall
 
