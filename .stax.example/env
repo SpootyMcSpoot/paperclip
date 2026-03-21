@@ -17,6 +17,8 @@ MCP_SERVERS=github:http://mcp-github.mcp-services.svc.cluster.local,kubernetes:h
 
 # AI Firewall
 AI_FIREWALL_URL=http://ai-firewall.llm.svc.cluster.local:8000
+AI_FIREWALL_API_KEY_PATH=/var/run/secrets/ai-firewall/api-key
+AI_FIREWALL_ENABLED=true
 
 # Code Graph
 CODE_GRAPH_URL=http://code-graph.llm.svc.cluster.local:8097
