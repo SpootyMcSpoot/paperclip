@@ -14,7 +14,13 @@ QDRANT_API_KEY=your-api-key             # Optional: API key for authentication
 
 # Alternative: mount API key as secret
 QDRANT_API_KEY_PATH=/var/run/secrets/qdrant/api-key
+
+# Embedding service (automatically uses LiteLLM if LITELLM_BASE_URL is set)
+EMBEDDING_MODEL=text-embedding-3-small   # Default model
+EMBEDDING_DIMENSIONS=1536                # Default dimensions
 ```
+
+**See [EMBEDDING.md](./EMBEDDING.md) for detailed embedding service configuration.**
 
 ## Usage
 

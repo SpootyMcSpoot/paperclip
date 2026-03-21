@@ -4,6 +4,11 @@ import {
   getCompanyCollectionName,
   isQdrantConfigured,
 } from "./qdrant-client.js";
+import {
+  generateEmbedding,
+  getEmbeddingDimensions,
+  isProductionEmbeddingConfigured,
+} from "./embedding-service.js";
 import type { Database } from "@paperclipai/db";
 import { memories } from "@paperclipai/db";
 import { eq, and, desc } from "drizzle-orm";
@@ -49,37 +54,29 @@ export interface Memory {
  */
 async function ensureCollection(client: QdrantClient, companyId: string): Promise<void> {
   const collectionName = getCompanyCollectionName(companyId);
+  const dimensions = getEmbeddingDimensions();
 
   try {
     // Check if collection exists
-    await client.getCollection(collectionName);
+    const collection = await client.getCollection(collectionName);
+
+    // Verify dimensions match current config
+    if (collection.config?.params?.vectors?.size !== dimensions) {
+      console.warn(
+        `Collection ${collectionName} has different dimensions (${collection.config?.params?.vectors?.size}) ` +
+          `than current config (${dimensions}). Consider recreating collection.`
+      );
+    }
   } catch (err) {
     // Collection doesn't exist - create it
+    console.log(`Creating Qdrant collection ${collectionName} with ${dimensions} dimensions`);
     await client.createCollection(collectionName, {
       vectors: {
-        size: 1536, // OpenAI embedding size (can be configured)
+        size: dimensions,
         distance: "Cosine",
       },
     });
   }
-}
-
-/**
- * Generate embedding for text
- *
- * TODO: This is a placeholder. In production, you would:
- * 1. Call your embedding model (OpenAI, sentence-transformers, etc.)
- * 2. Cache embeddings for identical content
- * 3. Handle different embedding model sizes
- *
- * For now, returns a dummy vector for testing.
- */
-async function generateEmbedding(text: string): Promise<number[]> {
-  // Placeholder: in production, call your embedding service
-  // e.g., OpenAI embeddings, sentence-transformers via API, etc.
-
-  // Return dummy 1536-dimensional vector (OpenAI embedding size)
-  return Array(1536).fill(0).map(() => Math.random());
 }
 
 /**

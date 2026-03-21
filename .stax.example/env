@@ -25,3 +25,7 @@ CODE_GRAPH_URL=http://code-graph.llm.svc.cluster.local:8097
 
 # LiteLLM Gateway
 LITELLM_BASE_URL=http://litellm.llm.svc.cluster.local:4000
+
+# Embedding Service (uses LiteLLM automatically)
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536

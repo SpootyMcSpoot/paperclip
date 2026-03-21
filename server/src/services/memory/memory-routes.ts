@@ -8,6 +8,8 @@ import {
   getMemoryStats,
   checkQdrantHealth,
   isQdrantConfigured,
+  isProductionEmbeddingConfigured,
+  getEmbeddingDimensions,
 } from "./memory-service.js";
 
 /**
@@ -24,13 +26,26 @@ export function registerMemoryRoutes(app: Express, db: Database) {
           configured: false,
           healthy: false,
           message: "Qdrant is not configured",
+          embedding: {
+            configured: false,
+          },
         });
       }
 
       const healthy = await checkQdrantHealth();
+      const productionEmbedding = isProductionEmbeddingConfigured();
+
       res.json({
         configured: true,
         healthy,
+        embedding: {
+          configured: productionEmbedding,
+          dimensions: getEmbeddingDimensions(),
+          provider: productionEmbedding ? "production" : "fallback",
+          warning: productionEmbedding
+            ? undefined
+            : "Using local fallback embeddings (not suitable for production)",
+        },
       });
     } catch (err) {
       res.status(500).json({ error: "Health check failed" });
