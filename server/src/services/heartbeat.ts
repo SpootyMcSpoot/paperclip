@@ -50,6 +50,7 @@ import {
 } from "./execution-workspace-policy.js";
 import { traceAdapterExecution } from "./observability/index.js";
 import { checkPrompt, checkResponse, isAIFirewallEnabled } from "./ai-firewall/index.js";
+import { getMCPManager, getAllowedMCPServers, isMCPConfigured, type MCPTool } from "./mcp/index.js";
 import { instanceSettingsService } from "./instance-settings.js";
 import { redactCurrentUserText, redactCurrentUserValue } from "../log-redaction.js";
 import {
@@ -2190,6 +2191,81 @@ export function heartbeatService(db: Db) {
             "stdout",
             "[AI Firewall] Prompt sanitized (PII redacted)\n",
           );
+        }
+      }
+
+      // Discover and inject MCP tools if configured
+      if (isMCPConfigured()) {
+        try {
+          const manager = getMCPManager();
+          const allowedServers = getAllowedMCPServers(agent.role);
+
+          if (allowedServers.length > 0) {
+            const availableTools: Array<MCPTool & { server: string }> = [];
+
+            // Discover tools from each allowed server
+            for (const serverName of allowedServers) {
+              try {
+                const tools = await manager.listTools(serverName);
+                availableTools.push(
+                  ...tools.map((t) => ({
+                    ...t,
+                    server: serverName,
+                  }))
+                );
+              } catch (err) {
+                logger.warn(
+                  {
+                    serverName,
+                    agentId: agent.id,
+                    error: err instanceof Error ? err.message : String(err),
+                  },
+                  "Failed to list tools from MCP server"
+                );
+              }
+            }
+
+            // Inject tools into context if any were discovered
+            if (availableTools.length > 0) {
+              const toolDescriptions = availableTools
+                .map((t) => `${t.server}.${t.name}: ${t.description}`)
+                .join("\n");
+
+              const toolsContext = `
+Available MCP tools:
+${toolDescriptions}
+
+To call a tool, use: TOOL_CALL(server, tool_name, {args})
+`;
+
+              context = context + "\n\n" + toolsContext;
+
+              await onLog(
+                "stdout",
+                `[MCP] Loaded ${availableTools.length} tools from ${allowedServers.length} server(s)\n`
+              );
+
+              logger.info(
+                {
+                  agentId: agent.id,
+                  runId: run.id,
+                  toolCount: availableTools.length,
+                  servers: allowedServers,
+                },
+                "MCP tools injected into agent context"
+              );
+            }
+          }
+        } catch (err) {
+          logger.error(
+            {
+              agentId: agent.id,
+              runId: run.id,
+              error: err instanceof Error ? err.message : String(err),
+            },
+            "Failed to inject MCP tools into agent context"
+          );
+          // Continue execution even if MCP injection fails (fail-open)
         }
       }
 
