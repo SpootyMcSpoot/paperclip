@@ -7,31 +7,12 @@
 - [x] Tool execution (callTool)
 - [x] Agent permission system
 - [x] Environment configuration
+- [x] HTTP transport support (StreamableHTTPClientTransport)
+- [x] Stdio transport support (StdioClientTransport)
 
 ## Remaining Work
 
-### 1. HTTP/WebSocket Transport Support
-**Priority: CRITICAL**
-
-Current implementation only supports stdio (command-line) MCP servers. STAX deployment uses HTTP-based MCP servers.
-
-Need to implement:
-```typescript
-// HTTP transport for remote MCP servers
-import { HttpClientTransport } from "@modelcontextprotocol/sdk/client/http.js";
-
-if (config.url) {
-  const transport = new HttpClientTransport({
-    url: config.url,
-    headers: config.headers,
-  });
-  await client.connect(transport);
-}
-```
-
-Check MCP SDK documentation for correct HTTP transport implementation.
-
-### 2. Server Integration
+### 1. Server Integration
 **Priority: HIGH**
 
 Add to `server/src/index.ts`:
@@ -51,7 +32,7 @@ process.on("SIGTERM", async () => {
 });
 ```
 
-### 3. Agent Execution Integration
+### 2. Agent Execution Integration
 **Priority: HIGH**
 
 Provide MCP tools to agents during execution:
@@ -87,7 +68,7 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
 `;
 ```
 
-### 4. Tool Call Logging
+### 3. Tool Call Logging
 **Priority: MEDIUM**
 
 Log all MCP tool calls for audit:
@@ -122,7 +103,7 @@ await db.insert(mcpToolCalls).values({
 });
 ```
 
-### 5. UI for Tool Calls
+### 4. UI for Tool Calls
 **Priority: MEDIUM**
 
 Add UI to:
@@ -131,7 +112,7 @@ Add UI to:
 - Retry failed tool calls
 - Manage agent permissions
 
-### 6. Tool Call Retry Logic
+### 5. Tool Call Retry Logic
 **Priority: LOW**
 
 Implement automatic retry for transient failures:
@@ -153,7 +134,7 @@ async function callToolWithRetry(
 }
 ```
 
-### 7. Tool Result Validation
+### 6. Tool Result Validation
 **Priority: LOW**
 
 Validate tool results against schema:
@@ -177,7 +158,7 @@ function validateToolResult(tool: MCPTool, result: unknown): boolean {
 }
 ```
 
-### 8. Rate Limiting
+### 7. Rate Limiting
 **Priority: LOW**
 
 Prevent tool call abuse:
@@ -204,7 +185,7 @@ if (recent.length >= limit) {
 }
 ```
 
-### 9. Approval Workflow for Write Operations
+### 8. Approval Workflow for Write Operations
 **Priority: MEDIUM**
 
 Require human approval for destructive operations:
@@ -285,18 +266,18 @@ async function requireApproval(
 
 ## Known Limitations
 
-1. **No HTTP transport**: Only stdio-based servers supported
-   - Blocks STAX integration (HTTP-based MCP servers)
-   - Need to implement HTTP/WebSocket transport
-
-2. **Synchronous only**: No streaming tool calls
+1. **Synchronous only**: No streaming tool calls
    - Long-running tools block execution
    - Need async execution support
 
-3. **No connection pooling**: New connection per call
+2. **No connection pooling**: New connection per call
    - Inefficient for frequent tool calls
    - Need connection reuse
 
-4. **No result caching**: Same tool call executes twice
+3. **No result caching**: Same tool call executes twice
    - Wastes resources
    - Need caching layer
+
+4. **WebSocket not implemented**: Only HTTP (StreamableHTTP) and stdio supported
+   - WebSocket transport available in SDK but not yet integrated
+   - Most servers use HTTP, so low priority

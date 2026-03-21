@@ -1,5 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { spawn } from "child_process";
 
 /**
@@ -75,6 +76,21 @@ export class MCPClientManager {
         version: "1.0.0",
       });
 
+      // Connect via HTTP (remote MCP servers)
+      if (config.url) {
+        const url = new URL(config.url);
+        const transport = new StreamableHTTPClientTransport(url, {
+          requestInit: {
+            // Add any custom headers if needed
+            headers: config.env ? config.env : {},
+          },
+        });
+
+        await client.connect(transport);
+        this.clients.set(serverName, client);
+        return client;
+      }
+
       // Connect via stdio (command-based MCP servers)
       if (config.command) {
         const childProcess = spawn(config.command, config.args || [], {
@@ -92,7 +108,6 @@ export class MCPClientManager {
         return client;
       }
 
-      // TODO: Support HTTP/WebSocket transports for remote MCP servers
       console.error(`MCP server ${serverName} has no supported transport (command or url)`);
       return null;
     } catch (err) {

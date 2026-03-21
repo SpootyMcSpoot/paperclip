@@ -200,16 +200,48 @@ env:
     value: "github:http://mcp-github.mcp-services.svc.cluster.local,kubernetes:http://mcp-kubernetes.mcp-services.svc.cluster.local"
 ```
 
+## Transport Support
+
+### HTTP Transport (Streamable HTTP)
+
+For remote MCP servers using HTTP endpoints:
+
+```typescript
+manager.registerServer({
+  name: "github",
+  url: "http://mcp-github.mcp-services.svc.cluster.local",
+});
+```
+
+Uses MCP Streamable HTTP protocol:
+- HTTP POST for sending messages
+- HTTP GET with Server-Sent Events for receiving messages
+- Automatic reconnection with exponential backoff
+- Session management and resumption
+
+### Stdio Transport
+
+For local MCP servers running as processes:
+
+```typescript
+manager.registerServer({
+  name: "filesystem",
+  command: "/usr/bin/mcp-filesystem",
+  args: ["/data"],
+  env: { DEBUG: "true" },
+});
+```
+
 ## Limitations
 
-- Current implementation supports stdio-based MCP servers only
-- HTTP/WebSocket transports coming soon
 - Tool execution is synchronous (no streaming)
-- No built-in retry/fallback logic
+- No built-in retry/fallback logic for tool calls
+- WebSocket transport not yet implemented (use HTTP instead)
 
 ## Roadmap
 
-- [ ] HTTP/WebSocket transport support
+- [x] HTTP transport support (Streamable HTTP)
+- [ ] WebSocket transport support
 - [ ] Tool call caching
 - [ ] Async tool execution
 - [ ] Tool call retry logic
