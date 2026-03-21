@@ -9,6 +9,8 @@ QDRANT_API_KEY_PATH=/var/run/secrets/qdrant/api-key
 # LLM Observability (Langfuse)
 LANGFUSE_HOST=langfuse.llm.svc.cluster.local
 LANGFUSE_PORT=3000
+LANGFUSE_PUBLIC_KEY_PATH=/var/run/secrets/langfuse/public-key
+LANGFUSE_SECRET_KEY_PATH=/var/run/secrets/langfuse/secret-key
 
 # MCP Gateway
 MCP_GATEWAY_URL=http://mcp-gateway.llm.svc.cluster.local:8080
