@@ -6,57 +6,13 @@
 - [x] Memory service (store, search, get, delete, stats)
 - [x] API routes for memory operations
 - [x] Database migration
+- [x] Embedding service (LiteLLM, OpenAI, local fallback)
+- [x] Server integration (routes registered in app.ts)
 
 ## Remaining Work
 
-### 1. Embedding Service
-**Priority: HIGH**
-
-Current: Placeholder that returns random vectors
-Needed: Real embedding generation
-
-Options:
-- OpenAI embeddings API
-- Local sentence-transformers model
-- Hugging Face inference API
-- Ollama with embedding model
-
-Implementation:
-```typescript
-// server/src/services/memory/embeddings.ts
-export async function generateEmbedding(text: string): Promise<number[]> {
-  // Option 1: OpenAI
-  const response = await openai.embeddings.create({
-    model: "text-embedding-3-small",
-    input: text,
-  });
-  return response.data[0].embedding;
-
-  // Option 2: Local model via HTTP
-  const response = await fetch("http://embedding-service:8080/embed", {
-    method: "POST",
-    body: JSON.stringify({ text }),
-  });
-  return await response.json();
-}
-```
-
-### 2. Register Routes in Main Server
-**Priority: HIGH**
-
-Add to `server/src/index.ts`:
-```typescript
-import { registerMemoryRoutes } from "./services/memory/memory-routes.js";
-
-// After other route registrations
-if (isQdrantConfigured()) {
-  registerMemoryRoutes(app, db);
-  console.log("Memory service enabled (Qdrant configured)");
-}
-```
-
-### 3. Agent Integration
-**Priority: MEDIUM**
+### 1. Agent Integration
+**Priority: MEDIUM** (moved from HIGH - core integration complete)
 
 Enable agents to use memory during execution:
 
