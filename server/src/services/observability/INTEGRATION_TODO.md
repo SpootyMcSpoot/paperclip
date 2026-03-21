@@ -4,49 +4,13 @@
 - [x] Langfuse client with configurable endpoints
 - [x] Trace adapter wrapper for LLM calls
 - [x] Generic tracing utilities
+- [x] Adapter tracing integration (heartbeat service wraps adapter.execute)
+- [x] Server integration (shutdown handlers in index.ts)
 
 ## Remaining Work
 
-### 1. Wrap Adapters with Tracing
-**Priority: HIGH**
-
-The tracing wrapper is ready, but needs to be integrated into adapters.
-
-**Option A: Wrapper Pattern (Non-invasive)**
-```typescript
-// packages/adapters/litellm-gateway/src/server/index.ts
-import { createTracedExecute } from "@paperclipai/server/services/observability";
-import { execute as originalExecute } from "./execute.js";
-
-export const execute = createTracedExecute(originalExecute);
-```
-
-**Option B: Direct Integration**
-Modify `execute.ts` directly to call `traceAdapterExecution()`.
-
-**Recommendation**: Use Option A (wrapper) - keeps adapter code clean and tracing is optional.
-
-### 2. Server Integration
-**Priority: HIGH**
-
-Add to `server/src/index.ts`:
-```typescript
-import { shutdownLangfuse, isLangfuseConfigured } from "./services/observability/index.js";
-
-// On startup
-if (isLangfuseConfigured()) {
-  console.log("Langfuse observability enabled");
-}
-
-// On shutdown
-process.on("SIGTERM", async () => {
-  await shutdownLangfuse();
-  process.exit(0);
-});
-```
-
-### 3. Get Langfuse Keys from STAX Deployment
-**Priority: HIGH**
+### 1. Get Langfuse Keys from STAX Deployment
+**Priority: HIGH** (deployment/configuration task)
 
 Current state: Langfuse is deployed at langfuse.llm.svc.cluster.local:3000
 
