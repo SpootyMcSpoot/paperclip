@@ -1,0 +1,23 @@
+# STAX Cluster Endpoints
+# Copy to .stax/env and update with your values
+
+# Memory Service (Qdrant)
+QDRANT_HOST=qdrant.llm.svc.cluster.local
+QDRANT_PORT=6333
+QDRANT_API_KEY_PATH=/var/run/secrets/qdrant/api-key
+
+# LLM Observability (Langfuse)
+LANGFUSE_HOST=langfuse.llm.svc.cluster.local
+LANGFUSE_PORT=3000
+
+# MCP Gateway
+MCP_GATEWAY_URL=http://mcp-gateway.llm.svc.cluster.local:8080
+
+# AI Firewall
+AI_FIREWALL_URL=http://ai-firewall.llm.svc.cluster.local:8000
+
+# Code Graph
+CODE_GRAPH_URL=http://code-graph.llm.svc.cluster.local:8097
+
+# LiteLLM Gateway
+LITELLM_BASE_URL=http://litellm.llm.svc.cluster.local:4000
