@@ -26,7 +26,19 @@ import { createApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import { logger } from "./middleware/logger.js";
 import { setupLiveEventsWebSocketServer } from "./realtime/live-events-ws.js";
-import { heartbeatService, reconcilePersistedRuntimeServicesOnStartup } from "./services/index.js";
+import {
+  heartbeatService,
+  reconcilePersistedRuntimeServicesOnStartup,
+  initializeMCPServers,
+  shutdownMCP,
+  isMCPConfigured,
+  isLangfuseConfigured,
+  shutdownLangfuse,
+  isQdrantConfigured,
+  checkQdrantHealth,
+  isAIFirewallEnabled,
+  isCodeGraphConfigured,
+} from "./services/index.js";
 import { createStorageServiceFromConfig } from "./storage/index.js";
 import { printStartupBanner } from "./startup-banner.js";
 import { getBoardClaimWarningUrl, initializeBoardClaimChallenge } from "./board-claim.js";
@@ -514,6 +526,49 @@ export async function startServer(): Promise<StartedServer> {
     resolveSessionFromHeaders,
   });
 
+  // Initialize AI Stack services
+  const aiStackServices: string[] = [];
+
+  if (isMCPConfigured()) {
+    initializeMCPServers();
+    aiStackServices.push("MCP");
+    logger.info("MCP tool integration enabled");
+  }
+
+  if (isLangfuseConfigured()) {
+    aiStackServices.push("Langfuse");
+    logger.info("Langfuse observability enabled");
+  }
+
+  if (isQdrantConfigured()) {
+    void checkQdrantHealth()
+      .then((healthy) => {
+        if (healthy) {
+          logger.info("Qdrant vector memory ready");
+        } else {
+          logger.warn("Qdrant configured but health check failed");
+        }
+      })
+      .catch((err) => {
+        logger.error({ err }, "Qdrant health check error");
+      });
+    aiStackServices.push("Qdrant");
+  }
+
+  if (isAIFirewallEnabled()) {
+    aiStackServices.push("AI Firewall");
+    logger.info("AI Firewall security layer enabled");
+  }
+
+  if (isCodeGraphConfigured()) {
+    aiStackServices.push("Code Graph");
+    logger.info("Code Graph analysis enabled");
+  }
+
+  if (aiStackServices.length > 0) {
+    logger.info({ services: aiStackServices }, "AI stack services initialized");
+  }
+
   void reconcilePersistedRuntimeServicesOnStartup(db as any)
     .then((result) => {
       if (result.reconciled > 0) {
@@ -669,25 +724,48 @@ export async function startServer(): Promise<StartedServer> {
     });
   });
   
-  if (embeddedPostgres && embeddedPostgresStartedByThisProcess) {
-    const shutdown = async (signal: "SIGINT" | "SIGTERM") => {
-      logger.info({ signal }, "Stopping embedded PostgreSQL");
+  // Graceful shutdown for all services
+  const shutdown = async (signal: "SIGINT" | "SIGTERM") => {
+    logger.info({ signal }, "Shutting down Paperclip server");
+
+    // Shutdown AI stack services
+    if (isMCPConfigured()) {
       try {
-        await embeddedPostgres?.stop();
+        await shutdownMCP();
+        logger.info("MCP tools shut down");
+      } catch (err) {
+        logger.error({ err }, "Failed to shutdown MCP cleanly");
+      }
+    }
+
+    if (isLangfuseConfigured()) {
+      try {
+        await shutdownLangfuse();
+        logger.info("Langfuse shut down");
+      } catch (err) {
+        logger.error({ err }, "Failed to shutdown Langfuse cleanly");
+      }
+    }
+
+    // Shutdown embedded PostgreSQL if we started it
+    if (embeddedPostgres && embeddedPostgresStartedByThisProcess) {
+      try {
+        await embeddedPostgres.stop();
+        logger.info("Embedded PostgreSQL stopped");
       } catch (err) {
         logger.error({ err }, "Failed to stop embedded PostgreSQL cleanly");
-      } finally {
-        process.exit(0);
       }
-    };
-  
-    process.once("SIGINT", () => {
-      void shutdown("SIGINT");
-    });
-    process.once("SIGTERM", () => {
-      void shutdown("SIGTERM");
-    });
-  }
+    }
+
+    process.exit(0);
+  };
+
+  process.once("SIGINT", () => {
+    void shutdown("SIGINT");
+  });
+  process.once("SIGTERM", () => {
+    void shutdown("SIGTERM");
+  });
 
   return {
     server,

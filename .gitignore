@@ -48,3 +48,12 @@ tests/e2e/test-results/
 tests/e2e/playwright-report/
 .superset/
 .claude/worktrees/
+
+# STAX-specific configuration (not for public repo)
+roadmap.yaml
+roadmap.json
+.stax/
+stax-*.yaml
+stax-*.json
+*-stax.yaml
+*-stax.json

@@ -26,3 +26,45 @@ export { notifyHireApproved, type NotifyHireApprovedInput } from "./hire-hook.js
 export { publishLiveEvent, subscribeCompanyLiveEvents } from "./live-events.js";
 export { reconcilePersistedRuntimeServicesOnStartup } from "./workspace-runtime.js";
 export { createStorageServiceFromConfig, getStorageService } from "../storage/index.js";
+
+// AI Stack Integrations
+export {
+  initializeMCPServers,
+  shutdownMCP,
+  isMCPConfigured,
+  getMCPManager,
+} from "./mcp/index.js";
+export {
+  getLangfuseClient,
+  isLangfuseConfigured,
+  checkLangfuseHealth,
+  shutdownLangfuse,
+} from "./observability/index.js";
+export {
+  getQdrantClient,
+  isQdrantConfigured,
+  checkQdrantHealth,
+} from "./memory/qdrant-client.js";
+export {
+  storeMemory,
+  searchMemories,
+  getMemories,
+  deleteMemory,
+  getMemoryStats,
+} from "./memory/memory-service.js";
+export {
+  checkPrompt,
+  checkResponse,
+  isAIFirewallEnabled,
+  getFirewallStats,
+} from "./ai-firewall/index.js";
+export {
+  indexRepository,
+  findFunctions,
+  findCallers,
+  findCallees,
+  getDependencies,
+  findImpactedFiles,
+  isCodeGraphConfigured,
+  checkCodeGraphHealth,
+} from "./code-graph/index.js";

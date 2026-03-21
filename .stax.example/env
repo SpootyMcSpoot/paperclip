@@ -1,0 +1,31 @@
+# STAX Cluster Endpoints
+# Copy to .stax/env and update with your values
+
+# Memory Service (Qdrant)
+QDRANT_HOST=qdrant.llm.svc.cluster.local
+QDRANT_PORT=6333
+QDRANT_API_KEY_PATH=/var/run/secrets/qdrant/api-key
+
+# LLM Observability (Langfuse)
+LANGFUSE_HOST=langfuse.llm.svc.cluster.local
+LANGFUSE_PORT=3000
+LANGFUSE_PUBLIC_KEY_PATH=/var/run/secrets/langfuse/public-key
+LANGFUSE_SECRET_KEY_PATH=/var/run/secrets/langfuse/secret-key
+
+# MCP (Model Context Protocol)
+MCP_SERVERS=github:http://mcp-github.mcp-services.svc.cluster.local,kubernetes:http://mcp-kubernetes.mcp-services.svc.cluster.local,postgres:http://mcp-postgres-server.mcp-services.svc.cluster.local,prometheus:http://mcp-prometheus.mcp-services.svc.cluster.local
+
+# AI Firewall
+AI_FIREWALL_URL=http://ai-firewall.llm.svc.cluster.local:8000
+AI_FIREWALL_API_KEY_PATH=/var/run/secrets/ai-firewall/api-key
+AI_FIREWALL_ENABLED=true
+
+# Code Graph
+CODE_GRAPH_URL=http://code-graph.llm.svc.cluster.local:8097
+
+# LiteLLM Gateway
+LITELLM_BASE_URL=http://litellm.llm.svc.cluster.local:4000
+
+# Embedding Service (uses LiteLLM automatically)
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536
