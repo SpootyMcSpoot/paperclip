@@ -56,15 +56,24 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
             .from(authUsers)
             .where(eq(authUsers.id, userId))
             .then((rows) => rows[0]);
-          
-          // Auto-promote first user to instance admin
+        }
+
+        // Auto-promote first user to instance admin (whether new or existing)
+        const existingRole = await db
+          .select()
+          .from(instanceUserRoles)
+          .where(and(eq(instanceUserRoles.userId, user.id), eq(instanceUserRoles.role, "instance_admin")))
+          .then((rows) => rows[0] ?? null);
+
+        if (!existingRole) {
           const adminCount = await db
             .select()
             .from(instanceUserRoles)
             .where(eq(instanceUserRoles.role, "instance_admin"))
             .then((rows) => rows.length);
-          
+
           if (adminCount === 0) {
+            const now = new Date();
             await db.insert(instanceUserRoles).values({
               id: `role:${user.id}:admin`,
               userId: user.id,
