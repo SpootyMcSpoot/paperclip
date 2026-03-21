@@ -59,6 +59,7 @@
     "@paperclipai/shared": "workspace:*",
     "@qdrant/js-client-rest": "^1.17.0",
     "langfuse": "^3.38.6",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "better-auth": "1.4.18",

@@ -12,8 +12,8 @@ LANGFUSE_PORT=3000
 LANGFUSE_PUBLIC_KEY_PATH=/var/run/secrets/langfuse/public-key
 LANGFUSE_SECRET_KEY_PATH=/var/run/secrets/langfuse/secret-key
 
-# MCP Gateway
-MCP_GATEWAY_URL=http://mcp-gateway.llm.svc.cluster.local:8080
+# MCP (Model Context Protocol)
+MCP_SERVERS=github:http://mcp-github.mcp-services.svc.cluster.local,kubernetes:http://mcp-kubernetes.mcp-services.svc.cluster.local,postgres:http://mcp-postgres-server.mcp-services.svc.cluster.local,prometheus:http://mcp-prometheus.mcp-services.svc.cluster.local
 
 # AI Firewall
 AI_FIREWALL_URL=http://ai-firewall.llm.svc.cluster.local:8000
