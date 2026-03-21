@@ -9,31 +9,13 @@
 - [x] Environment configuration
 - [x] HTTP transport support (StreamableHTTPClientTransport)
 - [x] Stdio transport support (StdioClientTransport)
+- [x] Server integration (heartbeat service)
+- [x] Agent execution integration (tool discovery and context injection)
 
 ## Remaining Work
 
-### 1. Server Integration
-**Priority: HIGH**
-
-Add to `server/src/index.ts`:
-```typescript
-import { initializeMCPServers, shutdownMCP, isMCPConfigured } from "./services/mcp/index.js";
-
-// On startup
-if (isMCPConfigured()) {
-  initializeMCPServers();
-  console.log("MCP tools enabled");
-}
-
-// On shutdown
-process.on("SIGTERM", async () => {
-  await shutdownMCP();
-  process.exit(0);
-});
-```
-
-### 2. Agent Execution Integration
-**Priority: HIGH**
+### 1. Tool Call Logging
+**Priority: MEDIUM** (moved from HIGH - core integration complete)
 
 Provide MCP tools to agents during execution:
 
