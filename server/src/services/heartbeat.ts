@@ -48,6 +48,7 @@ import {
   parseProjectExecutionWorkspacePolicy,
   resolveExecutionWorkspaceMode,
 } from "./execution-workspace-policy.js";
+import { traceAdapterExecution } from "./observability/index.js";
 import { instanceSettingsService } from "./instance-settings.js";
 import { redactCurrentUserText, redactCurrentUserValue } from "../log-redaction.js";
 import {
@@ -2136,16 +2137,21 @@ export function heartbeatService(db: Db) {
           "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
         );
       }
-      const adapterResult = await adapter.execute({
-        runId: run.id,
-        agent,
-        runtime: runtimeForAdapter,
-        config: resolvedConfig,
-        context,
-        onLog,
-        onMeta: onAdapterMeta,
-        authToken: authToken ?? undefined,
-      });
+
+      // Wrap adapter execution with Langfuse tracing
+      const adapterResult = await traceAdapterExecution(
+        adapter.execute.bind(adapter),
+        {
+          runId: run.id,
+          agent,
+          runtime: runtimeForAdapter,
+          config: resolvedConfig,
+          context,
+          onLog,
+          onMeta: onAdapterMeta,
+          authToken: authToken ?? undefined,
+        }
+      );
       const adapterManagedRuntimeServices = adapterResult.runtimeServices
         ? await persistAdapterManagedRuntimeServices({
             db,
