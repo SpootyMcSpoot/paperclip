@@ -29,6 +29,12 @@ import { accessRoutes } from "./routes/access.js";
 import { pluginRoutes } from "./routes/plugins.js";
 import { pluginUiStaticRoutes } from "./routes/plugin-ui-static.js";
 import { registerMemoryRoutes } from "./services/memory/memory-routes.js";
+import {
+  registerCustomerRoutes,
+  registerSubscriptionRoutes,
+  registerMarketingRoutes,
+  registerSeoRoutes,
+} from "./services/monetization/index.js";
 import { applyUiBranding } from "./ui-branding.js";
 import { logger } from "./middleware/logger.js";
 import { DEFAULT_LOCAL_PLUGIN_DIR, pluginLoader } from "./services/plugin-loader.js";
@@ -225,6 +231,12 @@ export async function createApp(
 
   // Register memory routes (uses app directly)
   registerMemoryRoutes(app, db);
+
+  // Register monetization routes
+  registerCustomerRoutes(app, db);
+  registerSubscriptionRoutes(app, db);
+  registerMarketingRoutes(app, db);
+  registerSeoRoutes(app, db);
 
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "API route not found" });

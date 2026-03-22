@@ -21,13 +21,27 @@ import { logger } from "../middleware/logger.js";
 import { publishLiveEvent } from "./live-events.js";
 import { getRunLogStore, type RunLogHandle } from "./run-log-store.js";
 import { getServerAdapter, runningProcesses } from "../adapters/index.js";
-import type { AdapterExecutionResult, AdapterInvocationMeta, AdapterSessionCodec, UsageSummary } from "../adapters/index.js";
+import type {
+  AdapterExecutionResult,
+  AdapterInvocationMeta,
+  AdapterSessionCodec,
+  UsageSummary,
+} from "../adapters/index.js";
 import { createLocalAgentJwt } from "../agent-auth-jwt.js";
-import { parseObject, asBoolean, asNumber, appendWithCap, MAX_EXCERPT_BYTES } from "../adapters/utils.js";
+import {
+  parseObject,
+  asBoolean,
+  asNumber,
+  appendWithCap,
+  MAX_EXCERPT_BYTES,
+} from "../adapters/utils.js";
 import { costService } from "./costs.js";
 import { budgetService, type BudgetEnforcementScope } from "./budgets.js";
 import { secretService } from "./secrets.js";
-import { resolveDefaultAgentWorkspaceDir, resolveManagedProjectWorkspaceDir } from "../home-paths.js";
+import {
+  resolveDefaultAgentWorkspaceDir,
+  resolveManagedProjectWorkspaceDir,
+} from "../home-paths.js";
 import { summarizeHeartbeatRunResultJson } from "./heartbeat-run-summary.js";
 import {
   buildWorkspaceReadyComment,
@@ -49,10 +63,22 @@ import {
   resolveExecutionWorkspaceMode,
 } from "./execution-workspace-policy.js";
 import { traceAdapterExecution } from "./observability/index.js";
-import { checkPrompt, checkResponse, isAIFirewallEnabled } from "./ai-firewall/index.js";
-import { getMCPManager, getAllowedMCPServers, isMCPConfigured, type MCPTool } from "./mcp/index.js";
+import {
+  checkPrompt,
+  checkResponse,
+  isAIFirewallEnabled,
+} from "./ai-firewall/index.js";
+import {
+  getMCPManager,
+  getAllowedMCPServers,
+  isMCPConfigured,
+  type MCPTool,
+} from "./mcp/index.js";
 import { instanceSettingsService } from "./instance-settings.js";
-import { redactCurrentUserText, redactCurrentUserValue } from "../log-redaction.js";
+import {
+  redactCurrentUserText,
+  redactCurrentUserValue,
+} from "../log-redaction.js";
 import {
   hasSessionCompactionThresholds,
   resolveSessionCompactionPolicy,
@@ -82,7 +108,12 @@ function deriveRepoNameFromRepoUrl(repoUrl: string | null): string | null {
   try {
     const parsed = new URL(trimmed);
     const cleanedPath = parsed.pathname.replace(/\/+$/, "");
-    const repoName = cleanedPath.split("/").filter(Boolean).pop()?.replace(/\.git$/i, "") ?? "";
+    const repoName =
+      cleanedPath
+        .split("/")
+        .filter(Boolean)
+        .pop()
+        ?.replace(/\.git$/i, "") ?? "";
     return repoName || null;
   } catch {
     return null;
@@ -136,7 +167,9 @@ async function ensureManagedProjectWorkspace(input: {
     return { cwd, warning: null };
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to prepare managed checkout for "${input.repoUrl}" at "${cwd}": ${reason}`);
+    throw new Error(
+      `Failed to prepare managed checkout for "${input.repoUrl}" at "${cwd}": ${reason}`,
+    );
   }
 }
 
@@ -176,9 +209,14 @@ function appendExcerpt(prev: string, chunk: string) {
 }
 
 function normalizeMaxConcurrentRuns(value: unknown) {
-  const parsed = Math.floor(asNumber(value, HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT));
+  const parsed = Math.floor(
+    asNumber(value, HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT),
+  );
   if (!Number.isFinite(parsed)) return HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT;
-  return Math.max(HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT, Math.min(HEARTBEAT_MAX_CONCURRENT_RUNS_MAX, parsed));
+  return Math.max(
+    HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT,
+    Math.min(HEARTBEAT_MAX_CONCURRENT_RUNS_MAX, parsed),
+  );
 }
 
 async function withAgentStartLock<T>(agentId: string, fn: () => Promise<T>) {
@@ -247,14 +285,19 @@ type ProjectWorkspaceCandidate = {
   id: string;
 };
 
-export function prioritizeProjectWorkspaceCandidatesForRun<T extends ProjectWorkspaceCandidate>(
-  rows: T[],
-  preferredWorkspaceId: string | null | undefined,
-): T[] {
+export function prioritizeProjectWorkspaceCandidatesForRun<
+  T extends ProjectWorkspaceCandidate,
+>(rows: T[], preferredWorkspaceId: string | null | undefined): T[] {
   if (!preferredWorkspaceId) return rows;
-  const preferredIndex = rows.findIndex((row) => row.id === preferredWorkspaceId);
+  const preferredIndex = rows.findIndex(
+    (row) => row.id === preferredWorkspaceId,
+  );
   if (preferredIndex <= 0) return rows;
-  return [rows[preferredIndex]!, ...rows.slice(0, preferredIndex), ...rows.slice(preferredIndex + 1)];
+  return [
+    rows[preferredIndex]!,
+    ...rows.slice(0, preferredIndex),
+    ...rows.slice(preferredIndex + 1),
+  ];
 }
 
 function readNonEmptyString(value: unknown): string | null {
@@ -282,10 +325,17 @@ function normalizeLedgerBillingType(value: unknown): BillingType {
 }
 
 function resolveLedgerBiller(result: AdapterExecutionResult): string {
-  return readNonEmptyString(result.biller) ?? readNonEmptyString(result.provider) ?? "unknown";
+  return (
+    readNonEmptyString(result.biller) ??
+    readNonEmptyString(result.provider) ??
+    "unknown"
+  );
 }
 
-function normalizeBilledCostCents(costUsd: number | null | undefined, billingType: BillingType): number {
+function normalizeBilledCostCents(
+  costUsd: number | null | undefined,
+  billingType: BillingType,
+): number {
   if (billingType === "subscription_included") return 0;
   if (typeof costUsd !== "number" || !Number.isFinite(costUsd)) return 0;
   return Math.max(0, Math.round(costUsd * 100));
@@ -322,11 +372,16 @@ async function resolveLedgerScopeForRun(
   };
 }
 
-function normalizeUsageTotals(usage: UsageSummary | null | undefined): UsageTotals | null {
+function normalizeUsageTotals(
+  usage: UsageSummary | null | undefined,
+): UsageTotals | null {
   if (!usage) return null;
   return {
     inputTokens: Math.max(0, Math.floor(asNumber(usage.inputTokens, 0))),
-    cachedInputTokens: Math.max(0, Math.floor(asNumber(usage.cachedInputTokens, 0))),
+    cachedInputTokens: Math.max(
+      0,
+      Math.floor(asNumber(usage.cachedInputTokens, 0)),
+    ),
     outputTokens: Math.max(0, Math.floor(asNumber(usage.outputTokens, 0))),
   };
 }
@@ -337,15 +392,24 @@ function readRawUsageTotals(usageJson: unknown): UsageTotals | null {
 
   const inputTokens = Math.max(
     0,
-    Math.floor(asNumber(parsed.rawInputTokens, asNumber(parsed.inputTokens, 0))),
+    Math.floor(
+      asNumber(parsed.rawInputTokens, asNumber(parsed.inputTokens, 0)),
+    ),
   );
   const cachedInputTokens = Math.max(
     0,
-    Math.floor(asNumber(parsed.rawCachedInputTokens, asNumber(parsed.cachedInputTokens, 0))),
+    Math.floor(
+      asNumber(
+        parsed.rawCachedInputTokens,
+        asNumber(parsed.cachedInputTokens, 0),
+      ),
+    ),
   );
   const outputTokens = Math.max(
     0,
-    Math.floor(asNumber(parsed.rawOutputTokens, asNumber(parsed.outputTokens, 0))),
+    Math.floor(
+      asNumber(parsed.rawOutputTokens, asNumber(parsed.outputTokens, 0)),
+    ),
   );
 
   if (inputTokens <= 0 && cachedInputTokens <= 0 && outputTokens <= 0) {
@@ -359,19 +423,25 @@ function readRawUsageTotals(usageJson: unknown): UsageTotals | null {
   };
 }
 
-function deriveNormalizedUsageDelta(current: UsageTotals | null, previous: UsageTotals | null): UsageTotals | null {
+function deriveNormalizedUsageDelta(
+  current: UsageTotals | null,
+  previous: UsageTotals | null,
+): UsageTotals | null {
   if (!current) return null;
   if (!previous) return { ...current };
 
-  const inputTokens = current.inputTokens >= previous.inputTokens
-    ? current.inputTokens - previous.inputTokens
-    : current.inputTokens;
-  const cachedInputTokens = current.cachedInputTokens >= previous.cachedInputTokens
-    ? current.cachedInputTokens - previous.cachedInputTokens
-    : current.cachedInputTokens;
-  const outputTokens = current.outputTokens >= previous.outputTokens
-    ? current.outputTokens - previous.outputTokens
-    : current.outputTokens;
+  const inputTokens =
+    current.inputTokens >= previous.inputTokens
+      ? current.inputTokens - previous.inputTokens
+      : current.inputTokens;
+  const cachedInputTokens =
+    current.cachedInputTokens >= previous.cachedInputTokens
+      ? current.cachedInputTokens - previous.cachedInputTokens
+      : current.cachedInputTokens;
+  const outputTokens =
+    current.outputTokens >= previous.outputTokens
+      ? current.outputTokens - previous.outputTokens
+      : current.outputTokens;
 
   return {
     inputTokens: Math.max(0, inputTokens),
@@ -385,8 +455,11 @@ function formatCount(value: number | null | undefined) {
   return value.toLocaleString("en-US");
 }
 
-export function parseSessionCompactionPolicy(agent: typeof agents.$inferSelect): SessionCompactionPolicy {
-  return resolveSessionCompactionPolicy(agent.adapterType, agent.runtimeConfig).policy;
+export function parseSessionCompactionPolicy(
+  agent: typeof agents.$inferSelect,
+): SessionCompactionPolicy {
+  return resolveSessionCompactionPolicy(agent.adapterType, agent.runtimeConfig)
+    .policy;
 }
 
 export function resolveRuntimeSessionParamsForWorkspace(input: {
@@ -395,7 +468,9 @@ export function resolveRuntimeSessionParamsForWorkspace(input: {
   resolvedWorkspace: ResolvedWorkspaceForRun;
 }) {
   const { agentId, previousSessionParams, resolvedWorkspace } = input;
-  const previousSessionId = readNonEmptyString(previousSessionParams?.sessionId);
+  const previousSessionId = readNonEmptyString(
+    previousSessionParams?.sessionId,
+  );
   const previousCwd = readNonEmptyString(previousSessionParams?.cwd);
   if (!previousSessionId || !previousCwd) {
     return {
@@ -429,7 +504,9 @@ export function resolveRuntimeSessionParamsForWorkspace(input: {
       warning: null as string | null,
     };
   }
-  const previousWorkspaceId = readNonEmptyString(previousSessionParams?.workspaceId);
+  const previousWorkspaceId = readNonEmptyString(
+    previousSessionParams?.workspaceId,
+  );
   if (
     previousWorkspaceId &&
     resolvedWorkspace.workspaceId &&
@@ -445,9 +522,12 @@ export function resolveRuntimeSessionParamsForWorkspace(input: {
     ...(previousSessionParams ?? {}),
     cwd: projectCwd,
   };
-  if (resolvedWorkspace.workspaceId) migratedSessionParams.workspaceId = resolvedWorkspace.workspaceId;
-  if (resolvedWorkspace.repoUrl) migratedSessionParams.repoUrl = resolvedWorkspace.repoUrl;
-  if (resolvedWorkspace.repoRef) migratedSessionParams.repoRef = resolvedWorkspace.repoRef;
+  if (resolvedWorkspace.workspaceId)
+    migratedSessionParams.workspaceId = resolvedWorkspace.workspaceId;
+  if (resolvedWorkspace.repoUrl)
+    migratedSessionParams.repoUrl = resolvedWorkspace.repoUrl;
+  if (resolvedWorkspace.repoRef)
+    migratedSessionParams.repoRef = resolvedWorkspace.repoRef;
 
   return {
     sessionParams: migratedSessionParams,
@@ -503,7 +583,8 @@ export function shouldResetTaskSessionForWake(
 function describeSessionResetReason(
   contextSnapshot: Record<string, unknown> | null | undefined,
 ) {
-  if (contextSnapshot?.forceFreshSession === true) return "forceFreshSession was requested";
+  if (contextSnapshot?.forceFreshSession === true)
+    return "forceFreshSession was requested";
 
   const wakeReason = readNonEmptyString(contextSnapshot?.wakeReason);
   if (wakeReason === "issue_assigned") return "wake reason is issue_assigned";
@@ -547,7 +628,10 @@ function enrichWakeContextSnapshot(input: {
   if (!readNonEmptyString(contextSnapshot["taskKey"]) && taskKey) {
     contextSnapshot.taskKey = taskKey;
   }
-  if (!readNonEmptyString(contextSnapshot["commentId"]) && commentIdFromPayload) {
+  if (
+    !readNonEmptyString(contextSnapshot["commentId"]) &&
+    commentIdFromPayload
+  ) {
     contextSnapshot.commentId = commentIdFromPayload;
   }
   if (!readNonEmptyString(contextSnapshot["wakeCommentId"]) && wakeCommentId) {
@@ -556,7 +640,10 @@ function enrichWakeContextSnapshot(input: {
   if (!readNonEmptyString(contextSnapshot["wakeSource"]) && source) {
     contextSnapshot.wakeSource = source;
   }
-  if (!readNonEmptyString(contextSnapshot["wakeTriggerDetail"]) && triggerDetail) {
+  if (
+    !readNonEmptyString(contextSnapshot["wakeTriggerDetail"]) &&
+    triggerDetail
+  ) {
     contextSnapshot.wakeTriggerDetail = triggerDetail;
   }
 
@@ -587,7 +674,10 @@ function mergeCoalescedContextSnapshot(
 }
 
 function runTaskKey(run: typeof heartbeatRuns.$inferSelect) {
-  return deriveTaskKey(run.contextSnapshot as Record<string, unknown> | null, null);
+  return deriveTaskKey(
+    run.contextSnapshot as Record<string, unknown> | null,
+    null,
+  );
 }
 
 function isSameTaskScope(left: string | null, right: string | null) {
@@ -609,7 +699,9 @@ const defaultSessionCodec: AdapterSessionCodec = {
   deserialize(raw: unknown) {
     const asObj = parseObject(raw);
     if (Object.keys(asObj).length > 0) return asObj;
-    const sessionId = readNonEmptyString((raw as Record<string, unknown> | null)?.sessionId);
+    const sessionId = readNonEmptyString(
+      (raw as Record<string, unknown> | null)?.sessionId,
+    );
     if (sessionId) return { sessionId };
     return null;
   },
@@ -627,7 +719,9 @@ function getAdapterSessionCodec(adapterType: string) {
   return adapter.sessionCodec ?? defaultSessionCodec;
 }
 
-function normalizeSessionParams(params: Record<string, unknown> | null | undefined) {
+function normalizeSessionParams(
+  params: Record<string, unknown> | null | undefined,
+) {
   if (!params) return null;
   return Object.keys(params).length > 0 ? params : null;
 }
@@ -639,7 +733,13 @@ function resolveNextSessionState(input: {
   previousDisplayId: string | null;
   previousLegacySessionId: string | null;
 }) {
-  const { codec, adapterResult, previousParams, previousDisplayId, previousLegacySessionId } = input;
+  const {
+    codec,
+    adapterResult,
+    previousParams,
+    previousDisplayId,
+    previousLegacySessionId,
+  } = input;
 
   if (adapterResult.clearSession) {
     return {
@@ -655,16 +755,20 @@ function resolveNextSessionState(input: {
   const explicitSessionId = readNonEmptyString(adapterResult.sessionId);
   const hasExplicitDisplay = adapterResult.sessionDisplayId !== undefined;
   const explicitDisplayId = readNonEmptyString(adapterResult.sessionDisplayId);
-  const shouldUsePrevious = !hasExplicitParams && !hasExplicitSessionId && !hasExplicitDisplay;
+  const shouldUsePrevious =
+    !hasExplicitParams && !hasExplicitSessionId && !hasExplicitDisplay;
 
-  const candidateParams =
-    hasExplicitParams
-      ? explicitParams
-      : hasExplicitSessionId
-        ? (explicitSessionId ? { sessionId: explicitSessionId } : null)
-        : previousParams;
+  const candidateParams = hasExplicitParams
+    ? explicitParams
+    : hasExplicitSessionId
+      ? explicitSessionId
+        ? { sessionId: explicitSessionId }
+        : null
+      : previousParams;
 
-  const serialized = normalizeSessionParams(codec.serialize(normalizeSessionParams(candidateParams) ?? null));
+  const serialized = normalizeSessionParams(
+    codec.serialize(normalizeSessionParams(candidateParams) ?? null),
+  );
   const deserialized = normalizeSessionParams(codec.deserialize(serialized));
 
   const displayId = truncateDisplayId(
@@ -775,7 +879,12 @@ export function heartbeatService(db: Db) {
         createdAt: heartbeatRuns.createdAt,
       })
       .from(heartbeatRuns)
-      .where(and(eq(heartbeatRuns.agentId, agentId), eq(heartbeatRuns.sessionIdAfter, sessionId)))
+      .where(
+        and(
+          eq(heartbeatRuns.agentId, agentId),
+          eq(heartbeatRuns.sessionIdAfter, sessionId),
+        ),
+      )
       .orderBy(asc(heartbeatRuns.createdAt), asc(heartbeatRuns.id))
       .limit(1)
       .then((rows) => rows[0] ?? null);
@@ -796,7 +905,9 @@ export function heartbeatService(db: Db) {
       };
     }
 
-    const previousRun = await getLatestRunForSession(agentId, sessionId, { excludeRunId: runId });
+    const previousRun = await getLatestRunForSession(agentId, sessionId, {
+      excludeRunId: runId,
+    });
     const previousRawUsage = readRawUsageTotals(previousRun?.usageJson);
     return {
       normalizedUsage: deriveNormalizedUsageDelta(rawUsage, previousRawUsage),
@@ -830,7 +941,10 @@ export function heartbeatService(db: Db) {
       };
     }
 
-    const fetchLimit = Math.max(policy.maxSessionRuns > 0 ? policy.maxSessionRuns + 1 : 0, 4);
+    const fetchLimit = Math.max(
+      policy.maxSessionRuns > 0 ? policy.maxSessionRuns + 1 : 0,
+      4,
+    );
     const runs = await db
       .select({
         id: heartbeatRuns.id,
@@ -840,7 +954,12 @@ export function heartbeatService(db: Db) {
         error: heartbeatRuns.error,
       })
       .from(heartbeatRuns)
-      .where(and(eq(heartbeatRuns.agentId, agent.id), eq(heartbeatRuns.sessionIdAfter, sessionId)))
+      .where(
+        and(
+          eq(heartbeatRuns.agentId, agent.id),
+          eq(heartbeatRuns.sessionIdAfter, sessionId),
+        ),
+      )
       .orderBy(desc(heartbeatRuns.createdAt))
       .limit(fetchLimit);
 
@@ -857,13 +976,15 @@ export function heartbeatService(db: Db) {
     const oldestRun =
       policy.maxSessionAgeHours > 0
         ? await getOldestRunForSession(agent.id, sessionId)
-        : runs[runs.length - 1] ?? latestRun;
+        : (runs[runs.length - 1] ?? latestRun);
     const latestRawUsage = readRawUsageTotals(latestRun?.usageJson);
     const sessionAgeHours =
       latestRun && oldestRun
         ? Math.max(
             0,
-            (new Date(latestRun.createdAt).getTime() - new Date(oldestRun.createdAt).getTime()) / (1000 * 60 * 60),
+            (new Date(latestRun.createdAt).getTime() -
+              new Date(oldestRun.createdAt).getTime()) /
+              (1000 * 60 * 60),
           )
         : 0;
 
@@ -878,7 +999,10 @@ export function heartbeatService(db: Db) {
       reason =
         `session raw input reached ${formatCount(latestRawUsage.inputTokens)} tokens ` +
         `(threshold ${formatCount(policy.maxRawInputTokens)})`;
-    } else if (policy.maxSessionAgeHours > 0 && sessionAgeHours >= policy.maxSessionAgeHours) {
+    } else if (
+      policy.maxSessionAgeHours > 0 &&
+      sessionAgeHours >= policy.maxSessionAgeHours
+    ) {
       reason = `session age reached ${Math.floor(sessionAgeHours)} hours`;
     }
 
@@ -951,7 +1075,9 @@ export function heartbeatService(db: Db) {
   ): Promise<ResolvedWorkspaceForRun> {
     const issueId = readNonEmptyString(context.issueId);
     const contextProjectId = readNonEmptyString(context.projectId);
-    const contextProjectWorkspaceId = readNonEmptyString(context.projectWorkspaceId);
+    const contextProjectWorkspaceId = readNonEmptyString(
+      context.projectWorkspaceId,
+    );
     const issueProjectRef = issueId
       ? await db
           .select({
@@ -959,7 +1085,9 @@ export function heartbeatService(db: Db) {
             projectWorkspaceId: issues.projectWorkspaceId,
           })
           .from(issues)
-          .where(and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)))
+          .where(
+            and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)),
+          )
           .then((rows) => rows[0] ?? null)
       : null;
     const issueProjectId = issueProjectRef?.projectId ?? null;
@@ -995,14 +1123,15 @@ export function heartbeatService(db: Db) {
 
     if (projectWorkspaceRows.length > 0) {
       const preferredWorkspace = preferredProjectWorkspaceId
-        ? projectWorkspaceRows.find((workspace) => workspace.id === preferredProjectWorkspaceId) ?? null
+        ? (projectWorkspaceRows.find(
+            (workspace) => workspace.id === preferredProjectWorkspaceId,
+          ) ?? null)
         : null;
       const missingProjectCwds: string[] = [];
       let hasConfiguredProjectCwd = false;
       let preferredWorkspaceWarning: string | null = null;
       if (preferredProjectWorkspaceId && !preferredWorkspace) {
-        preferredWorkspaceWarning =
-          `Selected project workspace "${preferredProjectWorkspaceId}" is not available on this project.`;
+        preferredWorkspaceWarning = `Selected project workspace "${preferredProjectWorkspaceId}" is not available on this project.`;
       }
       for (const workspace of projectWorkspaceRows) {
         let projectCwd = readNonEmptyString(workspace.cwd);
@@ -1011,14 +1140,16 @@ export function heartbeatService(db: Db) {
           try {
             const managedWorkspace = await ensureManagedProjectWorkspace({
               companyId: agent.companyId,
-              projectId: workspaceProjectId ?? resolvedProjectId ?? workspace.projectId,
+              projectId:
+                workspaceProjectId ?? resolvedProjectId ?? workspace.projectId,
               repoUrl: readNonEmptyString(workspace.repoUrl),
             });
             projectCwd = managedWorkspace.cwd;
             managedWorkspaceWarning = managedWorkspace.warning;
           } catch (error) {
             if (preferredWorkspace?.id === workspace.id) {
-              preferredWorkspaceWarning = error instanceof Error ? error.message : String(error);
+              preferredWorkspaceWarning =
+                error instanceof Error ? error.message : String(error);
             }
             continue;
           }
@@ -1037,14 +1168,14 @@ export function heartbeatService(db: Db) {
             repoUrl: workspace.repoUrl,
             repoRef: workspace.repoRef,
             workspaceHints,
-            warnings: [preferredWorkspaceWarning, managedWorkspaceWarning].filter(
-              (value): value is string => Boolean(value),
-            ),
+            warnings: [
+              preferredWorkspaceWarning,
+              managedWorkspaceWarning,
+            ].filter((value): value is string => Boolean(value)),
           };
         }
         if (preferredWorkspace?.id === workspace.id) {
-          preferredWorkspaceWarning =
-            `Selected project workspace path "${projectCwd}" is not available yet.`;
+          preferredWorkspaceWarning = `Selected project workspace path "${projectCwd}" is not available yet.`;
         }
         missingProjectCwds.push(projectCwd);
       }
@@ -1256,8 +1387,12 @@ export function heartbeatService(db: Db) {
           triggerDetail: updated.triggerDetail,
           error: updated.error ?? null,
           errorCode: updated.errorCode ?? null,
-          startedAt: updated.startedAt ? new Date(updated.startedAt).toISOString() : null,
-          finishedAt: updated.finishedAt ? new Date(updated.finishedAt).toISOString() : null,
+          startedAt: updated.startedAt
+            ? new Date(updated.startedAt).toISOString()
+            : null,
+          finishedAt: updated.finishedAt
+            ? new Date(updated.finishedAt).toISOString()
+            : null,
         },
       });
     }
@@ -1289,8 +1424,12 @@ export function heartbeatService(db: Db) {
       payload?: Record<string, unknown>;
     },
   ) {
-    const sanitizedMessage = event.message ? redactCurrentUserText(event.message) : event.message;
-    const sanitizedPayload = event.payload ? redactCurrentUserValue(event.payload) : event.payload;
+    const sanitizedMessage = event.message
+      ? redactCurrentUserText(event.message)
+      : event.message;
+    const sanitizedPayload = event.payload
+      ? redactCurrentUserValue(event.payload)
+      : event.payload;
 
     await db.insert(heartbeatRunEvents).values({
       companyId: run.companyId,
@@ -1329,8 +1468,16 @@ export function heartbeatService(db: Db) {
     return {
       enabled: asBoolean(heartbeat.enabled, true),
       intervalSec: Math.max(0, asNumber(heartbeat.intervalSec, 0)),
-      wakeOnDemand: asBoolean(heartbeat.wakeOnDemand ?? heartbeat.wakeOnAssignment ?? heartbeat.wakeOnOnDemand ?? heartbeat.wakeOnAutomation, true),
-      maxConcurrentRuns: normalizeMaxConcurrentRuns(heartbeat.maxConcurrentRuns),
+      wakeOnDemand: asBoolean(
+        heartbeat.wakeOnDemand ??
+          heartbeat.wakeOnAssignment ??
+          heartbeat.wakeOnOnDemand ??
+          heartbeat.wakeOnAutomation,
+        true,
+      ),
+      maxConcurrentRuns: normalizeMaxConcurrentRuns(
+        heartbeat.maxConcurrentRuns,
+      ),
     };
   }
 
@@ -1338,7 +1485,12 @@ export function heartbeatService(db: Db) {
     const [{ count }] = await db
       .select({ count: sql<number>`count(*)` })
       .from(heartbeatRuns)
-      .where(and(eq(heartbeatRuns.agentId, agentId), eq(heartbeatRuns.status, "running")));
+      .where(
+        and(
+          eq(heartbeatRuns.agentId, agentId),
+          eq(heartbeatRuns.status, "running"),
+        ),
+      );
     return Number(count ?? 0);
   }
 
@@ -1346,19 +1498,33 @@ export function heartbeatService(db: Db) {
     if (run.status !== "queued") return run;
     const agent = await getAgent(run.agentId);
     if (!agent) {
-      await cancelRunInternal(run.id, "Cancelled because the agent no longer exists");
+      await cancelRunInternal(
+        run.id,
+        "Cancelled because the agent no longer exists",
+      );
       return null;
     }
-    if (agent.status === "paused" || agent.status === "terminated" || agent.status === "pending_approval") {
-      await cancelRunInternal(run.id, "Cancelled because the agent is not invokable");
+    if (
+      agent.status === "paused" ||
+      agent.status === "terminated" ||
+      agent.status === "pending_approval"
+    ) {
+      await cancelRunInternal(
+        run.id,
+        "Cancelled because the agent is not invokable",
+      );
       return null;
     }
 
     const context = parseObject(run.contextSnapshot);
-    const budgetBlock = await budgets.getInvocationBlock(run.companyId, run.agentId, {
-      issueId: readNonEmptyString(context.issueId),
-      projectId: readNonEmptyString(context.projectId),
-    });
+    const budgetBlock = await budgets.getInvocationBlock(
+      run.companyId,
+      run.agentId,
+      {
+        issueId: readNonEmptyString(context.issueId),
+        projectId: readNonEmptyString(context.projectId),
+      },
+    );
     if (budgetBlock) {
       await cancelRunInternal(run.id, budgetBlock.reason);
       return null;
@@ -1372,7 +1538,9 @@ export function heartbeatService(db: Db) {
         startedAt: run.startedAt ?? claimedAt,
         updatedAt: claimedAt,
       })
-      .where(and(eq(heartbeatRuns.id, run.id), eq(heartbeatRuns.status, "queued")))
+      .where(
+        and(eq(heartbeatRuns.id, run.id), eq(heartbeatRuns.status, "queued")),
+      )
       .returning()
       .then((rows) => rows[0] ?? null);
     if (!claimed) return null;
@@ -1388,8 +1556,12 @@ export function heartbeatService(db: Db) {
         triggerDetail: claimed.triggerDetail,
         error: claimed.error ?? null,
         errorCode: claimed.errorCode ?? null,
-        startedAt: claimed.startedAt ? new Date(claimed.startedAt).toISOString() : null,
-        finishedAt: claimed.finishedAt ? new Date(claimed.finishedAt).toISOString() : null,
+        startedAt: claimed.startedAt
+          ? new Date(claimed.startedAt).toISOString()
+          : null,
+        finishedAt: claimed.finishedAt
+          ? new Date(claimed.finishedAt).toISOString()
+          : null,
       },
     });
 
@@ -1456,7 +1628,8 @@ export function heartbeatService(db: Db) {
     const reaped: string[] = [];
 
     for (const run of activeRuns) {
-      if (runningProcesses.has(run.id) || activeRunExecutions.has(run.id)) continue;
+      if (runningProcesses.has(run.id) || activeRunExecutions.has(run.id))
+        continue;
 
       // Apply staleness threshold to avoid false positives
       if (staleThresholdMs > 0) {
@@ -1490,7 +1663,10 @@ export function heartbeatService(db: Db) {
     }
 
     if (reaped.length > 0) {
-      logger.warn({ reapedCount: reaped.length, runIds: reaped }, "reaped orphaned heartbeat runs");
+      logger.warn(
+        { reapedCount: reaped.length, runIds: reaped },
+        "reaped orphaned heartbeat runs",
+      );
     }
     return { reaped: reaped.length, runIds: reaped };
   }
@@ -1520,11 +1696,19 @@ export function heartbeatService(db: Db) {
     const outputTokens = usage?.outputTokens ?? 0;
     const cachedInputTokens = usage?.cachedInputTokens ?? 0;
     const billingType = normalizeLedgerBillingType(result.billingType);
-    const additionalCostCents = normalizeBilledCostCents(result.costUsd, billingType);
-    const hasTokenUsage = inputTokens > 0 || outputTokens > 0 || cachedInputTokens > 0;
+    const additionalCostCents = normalizeBilledCostCents(
+      result.costUsd,
+      billingType,
+    );
+    const hasTokenUsage =
+      inputTokens > 0 || outputTokens > 0 || cachedInputTokens > 0;
     const provider = result.provider ?? "unknown";
     const biller = resolveLedgerBiller(result);
-    const ledgerScope = await resolveLedgerScopeForRun(db, agent.companyId, run);
+    const ledgerScope = await resolveLedgerScopeForRun(
+      db,
+      agent.companyId,
+      run,
+    );
 
     await db
       .update(agentRuntimeState)
@@ -1566,18 +1750,30 @@ export function heartbeatService(db: Db) {
     return withAgentStartLock(agentId, async () => {
       const agent = await getAgent(agentId);
       if (!agent) return [];
-      if (agent.status === "paused" || agent.status === "terminated" || agent.status === "pending_approval") {
+      if (
+        agent.status === "paused" ||
+        agent.status === "terminated" ||
+        agent.status === "pending_approval"
+      ) {
         return [];
       }
       const policy = parseHeartbeatPolicy(agent);
       const runningCount = await countRunningRunsForAgent(agentId);
-      const availableSlots = Math.max(0, policy.maxConcurrentRuns - runningCount);
+      const availableSlots = Math.max(
+        0,
+        policy.maxConcurrentRuns - runningCount,
+      );
       if (availableSlots <= 0) return [];
 
       const queuedRuns = await db
         .select()
         .from(heartbeatRuns)
-        .where(and(eq(heartbeatRuns.agentId, agentId), eq(heartbeatRuns.status, "queued")))
+        .where(
+          and(
+            eq(heartbeatRuns.agentId, agentId),
+            eq(heartbeatRuns.status, "queued"),
+          ),
+        )
         .orderBy(asc(heartbeatRuns.createdAt))
         .limit(availableSlots);
       if (queuedRuns.length === 0) return [];
@@ -1591,7 +1787,10 @@ export function heartbeatService(db: Db) {
 
       for (const claimedRun of claimedRuns) {
         void executeRun(claimedRun.id).catch((err) => {
-          logger.error({ err, runId: claimedRun.id }, "queued heartbeat execution failed");
+          logger.error(
+            { err, runId: claimedRun.id },
+            "queued heartbeat execution failed",
+          );
         });
       }
       return claimedRuns;
@@ -1615,475 +1814,321 @@ export function heartbeatService(db: Db) {
     activeRunExecutions.add(run.id);
 
     try {
-    const agent = await getAgent(run.agentId);
-    if (!agent) {
-      await setRunStatus(runId, "failed", {
-        error: "Agent not found",
-        errorCode: "agent_not_found",
-        finishedAt: new Date(),
-      });
-      await setWakeupStatus(run.wakeupRequestId, "failed", {
-        finishedAt: new Date(),
-        error: "Agent not found",
-      });
-      const failedRun = await getRun(runId);
-      if (failedRun) await releaseIssueExecutionAndPromote(failedRun);
-      return;
-    }
+      const agent = await getAgent(run.agentId);
+      if (!agent) {
+        await setRunStatus(runId, "failed", {
+          error: "Agent not found",
+          errorCode: "agent_not_found",
+          finishedAt: new Date(),
+        });
+        await setWakeupStatus(run.wakeupRequestId, "failed", {
+          finishedAt: new Date(),
+          error: "Agent not found",
+        });
+        const failedRun = await getRun(runId);
+        if (failedRun) await releaseIssueExecutionAndPromote(failedRun);
+        return;
+      }
 
-    const runtime = await ensureRuntimeState(agent);
-    const context = parseObject(run.contextSnapshot);
-    const taskKey = deriveTaskKey(context, null);
-    const sessionCodec = getAdapterSessionCodec(agent.adapterType);
-    const issueId = readNonEmptyString(context.issueId);
-    const issueContext = issueId
-      ? await db
-          .select({
-            id: issues.id,
-            identifier: issues.identifier,
-            title: issues.title,
-            projectId: issues.projectId,
-            projectWorkspaceId: issues.projectWorkspaceId,
-            executionWorkspaceId: issues.executionWorkspaceId,
-            executionWorkspacePreference: issues.executionWorkspacePreference,
-            assigneeAgentId: issues.assigneeAgentId,
-            assigneeAdapterOverrides: issues.assigneeAdapterOverrides,
-            executionWorkspaceSettings: issues.executionWorkspaceSettings,
-          })
-          .from(issues)
-          .where(and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)))
-          .then((rows) => rows[0] ?? null)
-      : null;
-    const issueAssigneeOverrides =
-      issueContext && issueContext.assigneeAgentId === agent.id
-        ? parseIssueAssigneeAdapterOverrides(
-            issueContext.assigneeAdapterOverrides,
+      const runtime = await ensureRuntimeState(agent);
+      const context = parseObject(run.contextSnapshot);
+      const taskKey = deriveTaskKey(context, null);
+      const sessionCodec = getAdapterSessionCodec(agent.adapterType);
+      const issueId = readNonEmptyString(context.issueId);
+      const issueContext = issueId
+        ? await db
+            .select({
+              id: issues.id,
+              identifier: issues.identifier,
+              title: issues.title,
+              projectId: issues.projectId,
+              projectWorkspaceId: issues.projectWorkspaceId,
+              executionWorkspaceId: issues.executionWorkspaceId,
+              executionWorkspacePreference: issues.executionWorkspacePreference,
+              assigneeAgentId: issues.assigneeAgentId,
+              assigneeAdapterOverrides: issues.assigneeAdapterOverrides,
+              executionWorkspaceSettings: issues.executionWorkspaceSettings,
+            })
+            .from(issues)
+            .where(
+              and(
+                eq(issues.id, issueId),
+                eq(issues.companyId, agent.companyId),
+              ),
+            )
+            .then((rows) => rows[0] ?? null)
+        : null;
+      const issueAssigneeOverrides =
+        issueContext && issueContext.assigneeAgentId === agent.id
+          ? parseIssueAssigneeAdapterOverrides(
+              issueContext.assigneeAdapterOverrides,
+            )
+          : null;
+      const isolatedWorkspacesEnabled = (
+        await instanceSettings.getExperimental()
+      ).enableIsolatedWorkspaces;
+      const issueExecutionWorkspaceSettings = isolatedWorkspacesEnabled
+        ? parseIssueExecutionWorkspaceSettings(
+            issueContext?.executionWorkspaceSettings,
           )
         : null;
-    const isolatedWorkspacesEnabled = (await instanceSettings.getExperimental()).enableIsolatedWorkspaces;
-    const issueExecutionWorkspaceSettings = isolatedWorkspacesEnabled
-      ? parseIssueExecutionWorkspaceSettings(issueContext?.executionWorkspaceSettings)
-      : null;
-    const contextProjectId = readNonEmptyString(context.projectId);
-    const executionProjectId = issueContext?.projectId ?? contextProjectId;
-    const projectExecutionWorkspacePolicy = executionProjectId
-      ? await db
-          .select({ executionWorkspacePolicy: projects.executionWorkspacePolicy })
-          .from(projects)
-          .where(and(eq(projects.id, executionProjectId), eq(projects.companyId, agent.companyId)))
-          .then((rows) =>
-            gateProjectExecutionWorkspacePolicy(
-              parseProjectExecutionWorkspacePolicy(rows[0]?.executionWorkspacePolicy),
-              isolatedWorkspacesEnabled,
-            ))
-      : null;
-    const taskSession = taskKey
-      ? await getTaskSession(agent.companyId, agent.id, agent.adapterType, taskKey)
-      : null;
-    const resetTaskSession = shouldResetTaskSessionForWake(context);
-    const sessionResetReason = describeSessionResetReason(context);
-    const taskSessionForRun = resetTaskSession ? null : taskSession;
-    const previousSessionParams = normalizeSessionParams(
-      sessionCodec.deserialize(taskSessionForRun?.sessionParamsJson ?? null),
-    );
-    const config = parseObject(agent.adapterConfig);
-    const executionWorkspaceMode = resolveExecutionWorkspaceMode({
-      projectPolicy: projectExecutionWorkspacePolicy,
-      issueSettings: issueExecutionWorkspaceSettings,
-      legacyUseProjectWorkspace: issueAssigneeOverrides?.useProjectWorkspace ?? null,
-    });
-    const resolvedWorkspace = await resolveWorkspaceForRun(
-      agent,
-      context,
-      previousSessionParams,
-      { useProjectWorkspace: executionWorkspaceMode !== "agent_default" },
-    );
-    const workspaceManagedConfig = buildExecutionWorkspaceAdapterConfig({
-      agentConfig: config,
-      projectPolicy: projectExecutionWorkspacePolicy,
-      issueSettings: issueExecutionWorkspaceSettings,
-      mode: executionWorkspaceMode,
-      legacyUseProjectWorkspace: issueAssigneeOverrides?.useProjectWorkspace ?? null,
-    });
-    const mergedConfig = issueAssigneeOverrides?.adapterConfig
-      ? { ...workspaceManagedConfig, ...issueAssigneeOverrides.adapterConfig }
-      : workspaceManagedConfig;
-    const { config: resolvedConfig, secretKeys } = await secretsSvc.resolveAdapterConfigForRuntime(
-      agent.companyId,
-      mergedConfig,
-    );
-    const issueRef = issueContext
-      ? {
-          id: issueContext.id,
-          identifier: issueContext.identifier,
-          title: issueContext.title,
-          projectId: issueContext.projectId,
-          projectWorkspaceId: issueContext.projectWorkspaceId,
-          executionWorkspaceId: issueContext.executionWorkspaceId,
-          executionWorkspacePreference: issueContext.executionWorkspacePreference,
-        }
-      : null;
-    const existingExecutionWorkspace =
-      issueRef?.executionWorkspaceId ? await executionWorkspacesSvc.getById(issueRef.executionWorkspaceId) : null;
-    const workspaceOperationRecorder = workspaceOperationsSvc.createRecorder({
-      companyId: agent.companyId,
-      heartbeatRunId: run.id,
-      executionWorkspaceId: existingExecutionWorkspace?.id ?? null,
-    });
-    const executionWorkspace = await realizeExecutionWorkspace({
-      base: {
-        baseCwd: resolvedWorkspace.cwd,
-        source: resolvedWorkspace.source,
-        projectId: resolvedWorkspace.projectId,
-        workspaceId: resolvedWorkspace.workspaceId,
-        repoUrl: resolvedWorkspace.repoUrl,
-        repoRef: resolvedWorkspace.repoRef,
-      },
-      config: resolvedConfig,
-      issue: issueRef,
-      agent: {
-        id: agent.id,
-        name: agent.name,
-        companyId: agent.companyId,
-      },
-      recorder: workspaceOperationRecorder,
-    });
-    const resolvedProjectId = executionWorkspace.projectId ?? issueRef?.projectId ?? executionProjectId ?? null;
-    const resolvedProjectWorkspaceId = issueRef?.projectWorkspaceId ?? resolvedWorkspace.workspaceId ?? null;
-    const shouldReuseExisting =
-      issueRef?.executionWorkspacePreference === "reuse_existing" &&
-      existingExecutionWorkspace &&
-      existingExecutionWorkspace.status !== "archived";
-    let persistedExecutionWorkspace = null;
-    try {
-      persistedExecutionWorkspace = shouldReuseExisting && existingExecutionWorkspace
-        ? await executionWorkspacesSvc.update(existingExecutionWorkspace.id, {
-            cwd: executionWorkspace.cwd,
-            repoUrl: executionWorkspace.repoUrl,
-            baseRef: executionWorkspace.repoRef,
-            branchName: executionWorkspace.branchName,
-            providerType: executionWorkspace.strategy === "git_worktree" ? "git_worktree" : "local_fs",
-            providerRef: executionWorkspace.worktreePath,
-            status: "active",
-            lastUsedAt: new Date(),
-            metadata: {
-              ...(existingExecutionWorkspace.metadata ?? {}),
-              source: executionWorkspace.source,
-              createdByRuntime: executionWorkspace.created,
-            },
-          })
-        : resolvedProjectId
-          ? await executionWorkspacesSvc.create({
-              companyId: agent.companyId,
-              projectId: resolvedProjectId,
-              projectWorkspaceId: resolvedProjectWorkspaceId,
-              sourceIssueId: issueRef?.id ?? null,
-              mode:
-                executionWorkspaceMode === "isolated_workspace"
-                  ? "isolated_workspace"
-                  : executionWorkspaceMode === "operator_branch"
-                    ? "operator_branch"
-                    : executionWorkspaceMode === "agent_default"
-                      ? "adapter_managed"
-                      : "shared_workspace",
-              strategyType: executionWorkspace.strategy === "git_worktree" ? "git_worktree" : "project_primary",
-              name: executionWorkspace.branchName ?? issueRef?.identifier ?? `workspace-${agent.id.slice(0, 8)}`,
-              status: "active",
-              cwd: executionWorkspace.cwd,
-              repoUrl: executionWorkspace.repoUrl,
-              baseRef: executionWorkspace.repoRef,
-              branchName: executionWorkspace.branchName,
-              providerType: executionWorkspace.strategy === "git_worktree" ? "git_worktree" : "local_fs",
-              providerRef: executionWorkspace.worktreePath,
-              lastUsedAt: new Date(),
-              openedAt: new Date(),
-              metadata: {
-                source: executionWorkspace.source,
-                createdByRuntime: executionWorkspace.created,
-              },
+      const contextProjectId = readNonEmptyString(context.projectId);
+      const executionProjectId = issueContext?.projectId ?? contextProjectId;
+      const projectExecutionWorkspacePolicy = executionProjectId
+        ? await db
+            .select({
+              executionWorkspacePolicy: projects.executionWorkspacePolicy,
             })
-          : null;
-    } catch (error) {
-      if (executionWorkspace.created) {
-        try {
-          await cleanupExecutionWorkspaceArtifacts({
-            workspace: {
-              id: existingExecutionWorkspace?.id ?? `transient-${run.id}`,
-              cwd: executionWorkspace.cwd,
-              providerType: executionWorkspace.strategy === "git_worktree" ? "git_worktree" : "local_fs",
-              providerRef: executionWorkspace.worktreePath,
-              branchName: executionWorkspace.branchName,
-              repoUrl: executionWorkspace.repoUrl,
-              baseRef: executionWorkspace.repoRef,
-              projectId: resolvedProjectId,
-              projectWorkspaceId: resolvedProjectWorkspaceId,
-              sourceIssueId: issueRef?.id ?? null,
-              metadata: {
-                createdByRuntime: true,
-                source: executionWorkspace.source,
-              },
-            },
-            projectWorkspace: {
-              cwd: resolvedWorkspace.cwd,
-              cleanupCommand: null,
-            },
-            teardownCommand: projectExecutionWorkspacePolicy?.workspaceStrategy?.teardownCommand ?? null,
-            recorder: workspaceOperationRecorder,
-          });
-        } catch (cleanupError) {
-          logger.warn(
-            {
-              runId: run.id,
-              issueId,
-              executionWorkspaceCwd: executionWorkspace.cwd,
-              cleanupError: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
-            },
-            "Failed to cleanup realized execution workspace after persistence failure",
-          );
-        }
-      }
-      throw error;
-    }
-    await workspaceOperationRecorder.attachExecutionWorkspaceId(persistedExecutionWorkspace?.id ?? null);
-    if (
-      existingExecutionWorkspace &&
-      persistedExecutionWorkspace &&
-      existingExecutionWorkspace.id !== persistedExecutionWorkspace.id &&
-      existingExecutionWorkspace.status === "active"
-    ) {
-      await executionWorkspacesSvc.update(existingExecutionWorkspace.id, {
-        status: "idle",
-        cleanupReason: null,
-      });
-    }
-    if (issueId && persistedExecutionWorkspace && issueRef?.executionWorkspaceId !== persistedExecutionWorkspace.id) {
-      await issuesSvc.update(issueId, {
-        executionWorkspaceId: persistedExecutionWorkspace.id,
-        ...(resolvedProjectWorkspaceId ? { projectWorkspaceId: resolvedProjectWorkspaceId } : {}),
-      });
-    }
-    if (persistedExecutionWorkspace) {
-      context.executionWorkspaceId = persistedExecutionWorkspace.id;
-      await db
-        .update(heartbeatRuns)
-        .set({
-          contextSnapshot: context,
-          updatedAt: new Date(),
-        })
-        .where(eq(heartbeatRuns.id, run.id));
-    }
-    const runtimeSessionResolution = resolveRuntimeSessionParamsForWorkspace({
-      agentId: agent.id,
-      previousSessionParams,
-      resolvedWorkspace: {
-        ...resolvedWorkspace,
-        cwd: executionWorkspace.cwd,
-      },
-    });
-    const runtimeSessionParams = runtimeSessionResolution.sessionParams;
-    const runtimeWorkspaceWarnings = [
-      ...resolvedWorkspace.warnings,
-      ...executionWorkspace.warnings,
-      ...(runtimeSessionResolution.warning ? [runtimeSessionResolution.warning] : []),
-      ...(resetTaskSession && sessionResetReason
-        ? [
-            taskKey
-              ? `Skipping saved session resume for task "${taskKey}" because ${sessionResetReason}.`
-              : `Skipping saved session resume because ${sessionResetReason}.`,
-          ]
-        : []),
-    ];
-    context.paperclipWorkspace = {
-      cwd: executionWorkspace.cwd,
-      source: executionWorkspace.source,
-      mode: executionWorkspaceMode,
-      strategy: executionWorkspace.strategy,
-      projectId: executionWorkspace.projectId,
-      workspaceId: executionWorkspace.workspaceId,
-      repoUrl: executionWorkspace.repoUrl,
-      repoRef: executionWorkspace.repoRef,
-      branchName: executionWorkspace.branchName,
-      worktreePath: executionWorkspace.worktreePath,
-      agentHome: resolveDefaultAgentWorkspaceDir(agent.id),
-    };
-    context.paperclipWorkspaces = resolvedWorkspace.workspaceHints;
-    const runtimeServiceIntents = (() => {
-      const runtimeConfig = parseObject(resolvedConfig.workspaceRuntime);
-      return Array.isArray(runtimeConfig.services)
-        ? runtimeConfig.services.filter(
-            (value): value is Record<string, unknown> => typeof value === "object" && value !== null,
+            .from(projects)
+            .where(
+              and(
+                eq(projects.id, executionProjectId),
+                eq(projects.companyId, agent.companyId),
+              ),
+            )
+            .then((rows) =>
+              gateProjectExecutionWorkspacePolicy(
+                parseProjectExecutionWorkspacePolicy(
+                  rows[0]?.executionWorkspacePolicy,
+                ),
+                isolatedWorkspacesEnabled,
+              ),
+            )
+        : null;
+      const taskSession = taskKey
+        ? await getTaskSession(
+            agent.companyId,
+            agent.id,
+            agent.adapterType,
+            taskKey,
           )
-        : [];
-    })();
-    if (runtimeServiceIntents.length > 0) {
-      context.paperclipRuntimeServiceIntents = runtimeServiceIntents;
-    } else {
-      delete context.paperclipRuntimeServiceIntents;
-    }
-    if (executionWorkspace.projectId && !readNonEmptyString(context.projectId)) {
-      context.projectId = executionWorkspace.projectId;
-    }
-    const runtimeSessionFallback = taskKey || resetTaskSession ? null : runtime.sessionId;
-    let previousSessionDisplayId = truncateDisplayId(
-      taskSessionForRun?.sessionDisplayId ??
-        (sessionCodec.getDisplayId ? sessionCodec.getDisplayId(runtimeSessionParams) : null) ??
-        readNonEmptyString(runtimeSessionParams?.sessionId) ??
-        runtimeSessionFallback,
-    );
-    let runtimeSessionIdForAdapter =
-      readNonEmptyString(runtimeSessionParams?.sessionId) ?? runtimeSessionFallback;
-    let runtimeSessionParamsForAdapter = runtimeSessionParams;
-
-    const sessionCompaction = await evaluateSessionCompaction({
-      agent,
-      sessionId: previousSessionDisplayId ?? runtimeSessionIdForAdapter,
-      issueId,
-    });
-    if (sessionCompaction.rotate) {
-      context.paperclipSessionHandoffMarkdown = sessionCompaction.handoffMarkdown;
-      context.paperclipSessionRotationReason = sessionCompaction.reason;
-      context.paperclipPreviousSessionId = previousSessionDisplayId ?? runtimeSessionIdForAdapter;
-      runtimeSessionIdForAdapter = null;
-      runtimeSessionParamsForAdapter = null;
-      previousSessionDisplayId = null;
-      if (sessionCompaction.reason) {
-        runtimeWorkspaceWarnings.push(
-          `Starting a fresh session because ${sessionCompaction.reason}.`,
-        );
-      }
-    } else {
-      delete context.paperclipSessionHandoffMarkdown;
-      delete context.paperclipSessionRotationReason;
-      delete context.paperclipPreviousSessionId;
-    }
-
-    const runtimeForAdapter = {
-      sessionId: runtimeSessionIdForAdapter,
-      sessionParams: runtimeSessionParamsForAdapter,
-      sessionDisplayId: previousSessionDisplayId,
-      taskKey,
-    };
-
-    let seq = 1;
-    let handle: RunLogHandle | null = null;
-    let stdoutExcerpt = "";
-    let stderrExcerpt = "";
-    try {
-      const startedAt = run.startedAt ?? new Date();
-      const runningWithSession = await db
-        .update(heartbeatRuns)
-        .set({
-          startedAt,
-          sessionIdBefore: runtimeForAdapter.sessionDisplayId ?? runtimeForAdapter.sessionId,
-          contextSnapshot: context,
-          updatedAt: new Date(),
-        })
-        .where(eq(heartbeatRuns.id, run.id))
-        .returning()
-        .then((rows) => rows[0] ?? null);
-      if (runningWithSession) run = runningWithSession;
-
-      const runningAgent = await db
-        .update(agents)
-        .set({ status: "running", updatedAt: new Date() })
-        .where(eq(agents.id, agent.id))
-        .returning()
-        .then((rows) => rows[0] ?? null);
-
-      if (runningAgent) {
-        publishLiveEvent({
-          companyId: runningAgent.companyId,
-          type: "agent.status",
-          payload: {
-            agentId: runningAgent.id,
-            status: runningAgent.status,
-            outcome: "running",
-          },
-        });
-      }
-
-      const currentRun = run;
-      await appendRunEvent(currentRun, seq++, {
-        eventType: "lifecycle",
-        stream: "system",
-        level: "info",
-        message: "run started",
-      });
-
-      handle = await runLogStore.begin({
-        companyId: run.companyId,
-        agentId: run.agentId,
-        runId,
-      });
-
-      await db
-        .update(heartbeatRuns)
-        .set({
-          logStore: handle.store,
-          logRef: handle.logRef,
-          updatedAt: new Date(),
-        })
-        .where(eq(heartbeatRuns.id, runId));
-
-      const onLog = async (stream: "stdout" | "stderr", chunk: string) => {
-        const sanitizedChunk = redactCurrentUserText(chunk);
-        if (stream === "stdout") stdoutExcerpt = appendExcerpt(stdoutExcerpt, sanitizedChunk);
-        if (stream === "stderr") stderrExcerpt = appendExcerpt(stderrExcerpt, sanitizedChunk);
-        const ts = new Date().toISOString();
-
-        if (handle) {
-          await runLogStore.append(handle, {
-            stream,
-            chunk: sanitizedChunk,
-            ts,
-          });
-        }
-
-        const payloadChunk =
-          sanitizedChunk.length > MAX_LIVE_LOG_CHUNK_BYTES
-            ? sanitizedChunk.slice(sanitizedChunk.length - MAX_LIVE_LOG_CHUNK_BYTES)
-            : sanitizedChunk;
-
-        publishLiveEvent({
-          companyId: run.companyId,
-          type: "heartbeat.run.log",
-          payload: {
-            runId: run.id,
-            agentId: run.agentId,
-            ts,
-            stream,
-            chunk: payloadChunk,
-            truncated: payloadChunk.length !== sanitizedChunk.length,
-          },
-        });
-      };
-      for (const warning of runtimeWorkspaceWarnings) {
-        await onLog("stderr", `[paperclip] ${warning}\n`);
-      }
-      const adapterEnv = Object.fromEntries(
-        Object.entries(parseObject(resolvedConfig.env)).filter(
-          (entry): entry is [string, string] => typeof entry[0] === "string" && typeof entry[1] === "string",
-        ),
+        : null;
+      const resetTaskSession = shouldResetTaskSessionForWake(context);
+      const sessionResetReason = describeSessionResetReason(context);
+      const taskSessionForRun = resetTaskSession ? null : taskSession;
+      const previousSessionParams = normalizeSessionParams(
+        sessionCodec.deserialize(taskSessionForRun?.sessionParamsJson ?? null),
       );
-      const runtimeServices = await ensureRuntimeServicesForRun({
-        db,
-        runId: run.id,
+      const config = parseObject(agent.adapterConfig);
+      const executionWorkspaceMode = resolveExecutionWorkspaceMode({
+        projectPolicy: projectExecutionWorkspacePolicy,
+        issueSettings: issueExecutionWorkspaceSettings,
+        legacyUseProjectWorkspace:
+          issueAssigneeOverrides?.useProjectWorkspace ?? null,
+      });
+      const resolvedWorkspace = await resolveWorkspaceForRun(
+        agent,
+        context,
+        previousSessionParams,
+        { useProjectWorkspace: executionWorkspaceMode !== "agent_default" },
+      );
+      const workspaceManagedConfig = buildExecutionWorkspaceAdapterConfig({
+        agentConfig: config,
+        projectPolicy: projectExecutionWorkspacePolicy,
+        issueSettings: issueExecutionWorkspaceSettings,
+        mode: executionWorkspaceMode,
+        legacyUseProjectWorkspace:
+          issueAssigneeOverrides?.useProjectWorkspace ?? null,
+      });
+      const mergedConfig = issueAssigneeOverrides?.adapterConfig
+        ? { ...workspaceManagedConfig, ...issueAssigneeOverrides.adapterConfig }
+        : workspaceManagedConfig;
+      const { config: resolvedConfig, secretKeys } =
+        await secretsSvc.resolveAdapterConfigForRuntime(
+          agent.companyId,
+          mergedConfig,
+        );
+      const issueRef = issueContext
+        ? {
+            id: issueContext.id,
+            identifier: issueContext.identifier,
+            title: issueContext.title,
+            projectId: issueContext.projectId,
+            projectWorkspaceId: issueContext.projectWorkspaceId,
+            executionWorkspaceId: issueContext.executionWorkspaceId,
+            executionWorkspacePreference:
+              issueContext.executionWorkspacePreference,
+          }
+        : null;
+      const existingExecutionWorkspace = issueRef?.executionWorkspaceId
+        ? await executionWorkspacesSvc.getById(issueRef.executionWorkspaceId)
+        : null;
+      const workspaceOperationRecorder = workspaceOperationsSvc.createRecorder({
+        companyId: agent.companyId,
+        heartbeatRunId: run.id,
+        executionWorkspaceId: existingExecutionWorkspace?.id ?? null,
+      });
+      const executionWorkspace = await realizeExecutionWorkspace({
+        base: {
+          baseCwd: resolvedWorkspace.cwd,
+          source: resolvedWorkspace.source,
+          projectId: resolvedWorkspace.projectId,
+          workspaceId: resolvedWorkspace.workspaceId,
+          repoUrl: resolvedWorkspace.repoUrl,
+          repoRef: resolvedWorkspace.repoRef,
+        },
+        config: resolvedConfig,
+        issue: issueRef,
         agent: {
           id: agent.id,
           name: agent.name,
           companyId: agent.companyId,
         },
-        issue: issueRef,
-        workspace: executionWorkspace,
-        executionWorkspaceId: persistedExecutionWorkspace?.id ?? issueRef?.executionWorkspaceId ?? null,
-        config: resolvedConfig,
-        adapterEnv,
-        onLog,
+        recorder: workspaceOperationRecorder,
       });
-      if (runtimeServices.length > 0) {
-        context.paperclipRuntimeServices = runtimeServices;
-        context.paperclipRuntimePrimaryUrl =
-          runtimeServices.find((service) => readNonEmptyString(service.url))?.url ?? null;
+      const resolvedProjectId =
+        executionWorkspace.projectId ??
+        issueRef?.projectId ??
+        executionProjectId ??
+        null;
+      const resolvedProjectWorkspaceId =
+        issueRef?.projectWorkspaceId ?? resolvedWorkspace.workspaceId ?? null;
+      const shouldReuseExisting =
+        issueRef?.executionWorkspacePreference === "reuse_existing" &&
+        existingExecutionWorkspace &&
+        existingExecutionWorkspace.status !== "archived";
+      let persistedExecutionWorkspace = null;
+      try {
+        persistedExecutionWorkspace =
+          shouldReuseExisting && existingExecutionWorkspace
+            ? await executionWorkspacesSvc.update(
+                existingExecutionWorkspace.id,
+                {
+                  cwd: executionWorkspace.cwd,
+                  repoUrl: executionWorkspace.repoUrl,
+                  baseRef: executionWorkspace.repoRef,
+                  branchName: executionWorkspace.branchName,
+                  providerType:
+                    executionWorkspace.strategy === "git_worktree"
+                      ? "git_worktree"
+                      : "local_fs",
+                  providerRef: executionWorkspace.worktreePath,
+                  status: "active",
+                  lastUsedAt: new Date(),
+                  metadata: {
+                    ...(existingExecutionWorkspace.metadata ?? {}),
+                    source: executionWorkspace.source,
+                    createdByRuntime: executionWorkspace.created,
+                  },
+                },
+              )
+            : resolvedProjectId
+              ? await executionWorkspacesSvc.create({
+                  companyId: agent.companyId,
+                  projectId: resolvedProjectId,
+                  projectWorkspaceId: resolvedProjectWorkspaceId,
+                  sourceIssueId: issueRef?.id ?? null,
+                  mode:
+                    executionWorkspaceMode === "isolated_workspace"
+                      ? "isolated_workspace"
+                      : executionWorkspaceMode === "operator_branch"
+                        ? "operator_branch"
+                        : executionWorkspaceMode === "agent_default"
+                          ? "adapter_managed"
+                          : "shared_workspace",
+                  strategyType:
+                    executionWorkspace.strategy === "git_worktree"
+                      ? "git_worktree"
+                      : "project_primary",
+                  name:
+                    executionWorkspace.branchName ??
+                    issueRef?.identifier ??
+                    `workspace-${agent.id.slice(0, 8)}`,
+                  status: "active",
+                  cwd: executionWorkspace.cwd,
+                  repoUrl: executionWorkspace.repoUrl,
+                  baseRef: executionWorkspace.repoRef,
+                  branchName: executionWorkspace.branchName,
+                  providerType:
+                    executionWorkspace.strategy === "git_worktree"
+                      ? "git_worktree"
+                      : "local_fs",
+                  providerRef: executionWorkspace.worktreePath,
+                  lastUsedAt: new Date(),
+                  openedAt: new Date(),
+                  metadata: {
+                    source: executionWorkspace.source,
+                    createdByRuntime: executionWorkspace.created,
+                  },
+                })
+              : null;
+      } catch (error) {
+        if (executionWorkspace.created) {
+          try {
+            await cleanupExecutionWorkspaceArtifacts({
+              workspace: {
+                id: existingExecutionWorkspace?.id ?? `transient-${run.id}`,
+                cwd: executionWorkspace.cwd,
+                providerType:
+                  executionWorkspace.strategy === "git_worktree"
+                    ? "git_worktree"
+                    : "local_fs",
+                providerRef: executionWorkspace.worktreePath,
+                branchName: executionWorkspace.branchName,
+                repoUrl: executionWorkspace.repoUrl,
+                baseRef: executionWorkspace.repoRef,
+                projectId: resolvedProjectId,
+                projectWorkspaceId: resolvedProjectWorkspaceId,
+                sourceIssueId: issueRef?.id ?? null,
+                metadata: {
+                  createdByRuntime: true,
+                  source: executionWorkspace.source,
+                },
+              },
+              projectWorkspace: {
+                cwd: resolvedWorkspace.cwd,
+                cleanupCommand: null,
+              },
+              teardownCommand:
+                projectExecutionWorkspacePolicy?.workspaceStrategy
+                  ?.teardownCommand ?? null,
+              recorder: workspaceOperationRecorder,
+            });
+          } catch (cleanupError) {
+            logger.warn(
+              {
+                runId: run.id,
+                issueId,
+                executionWorkspaceCwd: executionWorkspace.cwd,
+                cleanupError:
+                  cleanupError instanceof Error
+                    ? cleanupError.message
+                    : String(cleanupError),
+              },
+              "Failed to cleanup realized execution workspace after persistence failure",
+            );
+          }
+        }
+        throw error;
+      }
+      await workspaceOperationRecorder.attachExecutionWorkspaceId(
+        persistedExecutionWorkspace?.id ?? null,
+      );
+      if (
+        existingExecutionWorkspace &&
+        persistedExecutionWorkspace &&
+        existingExecutionWorkspace.id !== persistedExecutionWorkspace.id &&
+        existingExecutionWorkspace.status === "active"
+      ) {
+        await executionWorkspacesSvc.update(existingExecutionWorkspace.id, {
+          status: "idle",
+          cleanupReason: null,
+        });
+      }
+      if (
+        issueId &&
+        persistedExecutionWorkspace &&
+        issueRef?.executionWorkspaceId !== persistedExecutionWorkspace.id
+      ) {
+        await issuesSvc.update(issueId, {
+          executionWorkspaceId: persistedExecutionWorkspace.id,
+          ...(resolvedProjectWorkspaceId
+            ? { projectWorkspaceId: resolvedProjectWorkspaceId }
+            : {}),
+        });
+      }
+      if (persistedExecutionWorkspace) {
+        context.executionWorkspaceId = persistedExecutionWorkspace.id;
         await db
           .update(heartbeatRuns)
           .set({
@@ -2092,530 +2137,853 @@ export function heartbeatService(db: Db) {
           })
           .where(eq(heartbeatRuns.id, run.id));
       }
-      if (issueId && (executionWorkspace.created || runtimeServices.some((service) => !service.reused))) {
-        try {
-          await issuesSvc.addComment(
-            issueId,
-            buildWorkspaceReadyComment({
-              workspace: executionWorkspace,
-              runtimeServices,
-            }),
-            { agentId: agent.id },
-          );
-        } catch (err) {
-          await onLog(
-            "stderr",
-            `[paperclip] Failed to post workspace-ready comment: ${err instanceof Error ? err.message : String(err)}\n`,
-          );
-        }
+      const runtimeSessionResolution = resolveRuntimeSessionParamsForWorkspace({
+        agentId: agent.id,
+        previousSessionParams,
+        resolvedWorkspace: {
+          ...resolvedWorkspace,
+          cwd: executionWorkspace.cwd,
+        },
+      });
+      const runtimeSessionParams = runtimeSessionResolution.sessionParams;
+      const runtimeWorkspaceWarnings = [
+        ...resolvedWorkspace.warnings,
+        ...executionWorkspace.warnings,
+        ...(runtimeSessionResolution.warning
+          ? [runtimeSessionResolution.warning]
+          : []),
+        ...(resetTaskSession && sessionResetReason
+          ? [
+              taskKey
+                ? `Skipping saved session resume for task "${taskKey}" because ${sessionResetReason}.`
+                : `Skipping saved session resume because ${sessionResetReason}.`,
+            ]
+          : []),
+      ];
+      context.paperclipWorkspace = {
+        cwd: executionWorkspace.cwd,
+        source: executionWorkspace.source,
+        mode: executionWorkspaceMode,
+        strategy: executionWorkspace.strategy,
+        projectId: executionWorkspace.projectId,
+        workspaceId: executionWorkspace.workspaceId,
+        repoUrl: executionWorkspace.repoUrl,
+        repoRef: executionWorkspace.repoRef,
+        branchName: executionWorkspace.branchName,
+        worktreePath: executionWorkspace.worktreePath,
+        agentHome: resolveDefaultAgentWorkspaceDir(agent.id),
+      };
+      context.paperclipWorkspaces = resolvedWorkspace.workspaceHints;
+      const runtimeServiceIntents = (() => {
+        const runtimeConfig = parseObject(resolvedConfig.workspaceRuntime);
+        return Array.isArray(runtimeConfig.services)
+          ? runtimeConfig.services.filter(
+              (value): value is Record<string, unknown> =>
+                typeof value === "object" && value !== null,
+            )
+          : [];
+      })();
+      if (runtimeServiceIntents.length > 0) {
+        context.paperclipRuntimeServiceIntents = runtimeServiceIntents;
+      } else {
+        delete context.paperclipRuntimeServiceIntents;
       }
-      const onAdapterMeta = async (meta: AdapterInvocationMeta) => {
-        if (meta.env && secretKeys.size > 0) {
-          for (const key of secretKeys) {
-            if (key in meta.env) meta.env[key] = "***REDACTED***";
-          }
+      if (
+        executionWorkspace.projectId &&
+        !readNonEmptyString(context.projectId)
+      ) {
+        context.projectId = executionWorkspace.projectId;
+      }
+      const runtimeSessionFallback =
+        taskKey || resetTaskSession ? null : runtime.sessionId;
+      let previousSessionDisplayId = truncateDisplayId(
+        taskSessionForRun?.sessionDisplayId ??
+          (sessionCodec.getDisplayId
+            ? sessionCodec.getDisplayId(runtimeSessionParams)
+            : null) ??
+          readNonEmptyString(runtimeSessionParams?.sessionId) ??
+          runtimeSessionFallback,
+      );
+      let runtimeSessionIdForAdapter =
+        readNonEmptyString(runtimeSessionParams?.sessionId) ??
+        runtimeSessionFallback;
+      let runtimeSessionParamsForAdapter = runtimeSessionParams;
+
+      const sessionCompaction = await evaluateSessionCompaction({
+        agent,
+        sessionId: previousSessionDisplayId ?? runtimeSessionIdForAdapter,
+        issueId,
+      });
+      if (sessionCompaction.rotate) {
+        context.paperclipSessionHandoffMarkdown =
+          sessionCompaction.handoffMarkdown;
+        context.paperclipSessionRotationReason = sessionCompaction.reason;
+        context.paperclipPreviousSessionId =
+          previousSessionDisplayId ?? runtimeSessionIdForAdapter;
+        runtimeSessionIdForAdapter = null;
+        runtimeSessionParamsForAdapter = null;
+        previousSessionDisplayId = null;
+        if (sessionCompaction.reason) {
+          runtimeWorkspaceWarnings.push(
+            `Starting a fresh session because ${sessionCompaction.reason}.`,
+          );
         }
-        await appendRunEvent(currentRun, seq++, {
-          eventType: "adapter.invoke",
-          stream: "system",
-          level: "info",
-          message: "adapter invocation",
-          payload: meta as unknown as Record<string, unknown>,
-        });
+      } else {
+        delete context.paperclipSessionHandoffMarkdown;
+        delete context.paperclipSessionRotationReason;
+        delete context.paperclipPreviousSessionId;
+      }
+
+      const runtimeForAdapter = {
+        sessionId: runtimeSessionIdForAdapter,
+        sessionParams: runtimeSessionParamsForAdapter,
+        sessionDisplayId: previousSessionDisplayId,
+        taskKey,
       };
 
-      const adapter = getServerAdapter(agent.adapterType);
-      const authToken = adapter.supportsLocalAgentJwt
-        ? createLocalAgentJwt(agent.id, agent.companyId, agent.adapterType, run.id)
-        : null;
-      if (adapter.supportsLocalAgentJwt && !authToken) {
-        logger.warn(
-          {
-            companyId: agent.companyId,
-            agentId: agent.id,
-            runId: run.id,
-            adapterType: agent.adapterType,
-          },
-          "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
-        );
-      }
-
-      // Check prompt with AI Firewall if enabled
-      if (isAIFirewallEnabled()) {
-        const promptCheck = await checkPrompt({
-          prompt: context,
-          userId: agent.id,
-          sessionId: run.id,
-          metadata: {
-            companyId: agent.companyId,
-            agentId: agent.id,
-            agentName: agent.name,
-            agentRole: agent.role,
-            issueId: run.issueId ?? undefined,
-          },
-        });
-
-        if (promptCheck.blocked) {
-          logger.warn(
-            {
-              companyId: agent.companyId,
-              agentId: agent.id,
-              runId: run.id,
-              reason: promptCheck.reason,
-              detections: promptCheck.detections,
-            },
-            "AI Firewall blocked prompt",
-          );
-
-          await onLog(
-            "stderr",
-            `[AI Firewall] Prompt blocked: ${promptCheck.reason}\n`,
-          );
-
-          // Return early with firewall block error
-          const firewallBlockResult: AdapterExecutionResult = {
-            exitCode: 1,
-            signal: null,
-            timedOut: false,
-            errorMessage: `AI Firewall blocked prompt: ${promptCheck.reason}`,
-            errorCode: "ai_firewall_blocked_prompt",
-          };
-
-          return { ...firewallBlockResult, runEnded: true };
-        }
-
-        // Use sanitized prompt if provided
-        if (promptCheck.sanitizedPrompt) {
-          context = promptCheck.sanitizedPrompt;
-          await onLog(
-            "stdout",
-            "[AI Firewall] Prompt sanitized (PII redacted)\n",
-          );
-        }
-      }
-
-      // Discover and inject MCP tools if configured
-      if (isMCPConfigured()) {
-        try {
-          const manager = getMCPManager();
-          const allowedServers = getAllowedMCPServers(agent.role);
-
-          if (allowedServers.length > 0) {
-            const availableTools: Array<MCPTool & { server: string }> = [];
-
-            // Discover tools from each allowed server
-            for (const serverName of allowedServers) {
-              try {
-                const tools = await manager.listTools(serverName);
-                availableTools.push(
-                  ...tools.map((t) => ({
-                    ...t,
-                    server: serverName,
-                  }))
-                );
-              } catch (err) {
-                logger.warn(
-                  {
-                    serverName,
-                    agentId: agent.id,
-                    error: err instanceof Error ? err.message : String(err),
-                  },
-                  "Failed to list tools from MCP server"
-                );
-              }
-            }
-
-            // Inject tools into context if any were discovered
-            if (availableTools.length > 0) {
-              const toolDescriptions = availableTools
-                .map((t) => `${t.server}.${t.name}: ${t.description}`)
-                .join("\n");
-
-              const toolsContext = `
-Available MCP tools:
-${toolDescriptions}
-
-To call a tool, use: TOOL_CALL(server, tool_name, {args})
-`;
-
-              context = context + "\n\n" + toolsContext;
-
-              await onLog(
-                "stdout",
-                `[MCP] Loaded ${availableTools.length} tools from ${allowedServers.length} server(s)\n`
-              );
-
-              logger.info(
-                {
-                  agentId: agent.id,
-                  runId: run.id,
-                  toolCount: availableTools.length,
-                  servers: allowedServers,
-                },
-                "MCP tools injected into agent context"
-              );
-            }
-          }
-        } catch (err) {
-          logger.error(
-            {
-              agentId: agent.id,
-              runId: run.id,
-              error: err instanceof Error ? err.message : String(err),
-            },
-            "Failed to inject MCP tools into agent context"
-          );
-          // Continue execution even if MCP injection fails (fail-open)
-        }
-      }
-
-      // Wrap adapter execution with Langfuse tracing
-      const adapterResult = await traceAdapterExecution(
-        adapter.execute.bind(adapter),
-        {
-          runId: run.id,
-          agent,
-          runtime: runtimeForAdapter,
-          config: resolvedConfig,
-          context,
-          onLog,
-          onMeta: onAdapterMeta,
-          authToken: authToken ?? undefined,
-        }
-      );
-
-      // Check response with AI Firewall if enabled
-      if (isAIFirewallEnabled() && adapterResult.summary) {
-        const responseCheck = await checkResponse(adapterResult.summary, {
-          companyId: agent.companyId,
-          agentId: agent.id,
-        });
-
-        if (responseCheck.blocked) {
-          logger.warn(
-            {
-              companyId: agent.companyId,
-              agentId: agent.id,
-              runId: run.id,
-              reason: responseCheck.reason,
-              detections: responseCheck.detections,
-            },
-            "AI Firewall blocked response",
-          );
-
-          await onLog(
-            "stderr",
-            `[AI Firewall] Response blocked: ${responseCheck.reason}\n`,
-          );
-
-          // Override result with firewall block
-          return {
-            exitCode: 1,
-            signal: null,
-            timedOut: false,
-            errorMessage: `AI Firewall blocked response: ${responseCheck.reason}`,
-            errorCode: "ai_firewall_blocked_response",
-            runEnded: true,
-          };
-        }
-
-        // Use sanitized response if provided
-        if (responseCheck.sanitizedContent && adapterResult.summary) {
-          adapterResult.summary = responseCheck.sanitizedContent;
-          await onLog(
-            "stdout",
-            "[AI Firewall] Response sanitized (PII redacted)\n",
-          );
-        }
-      }
-      const adapterManagedRuntimeServices = adapterResult.runtimeServices
-        ? await persistAdapterManagedRuntimeServices({
-            db,
-            adapterType: agent.adapterType,
-            runId: run.id,
-            agent: {
-              id: agent.id,
-              name: agent.name,
-              companyId: agent.companyId,
-            },
-            issue: issueRef,
-            workspace: executionWorkspace,
-            reports: adapterResult.runtimeServices,
-          })
-        : [];
-      if (adapterManagedRuntimeServices.length > 0) {
-        const combinedRuntimeServices = [
-          ...runtimeServices,
-          ...adapterManagedRuntimeServices,
-        ];
-        context.paperclipRuntimeServices = combinedRuntimeServices;
-        context.paperclipRuntimePrimaryUrl =
-          combinedRuntimeServices.find((service) => readNonEmptyString(service.url))?.url ?? null;
-        await db
+      let seq = 1;
+      let handle: RunLogHandle | null = null;
+      let stdoutExcerpt = "";
+      let stderrExcerpt = "";
+      try {
+        const startedAt = run.startedAt ?? new Date();
+        const runningWithSession = await db
           .update(heartbeatRuns)
           .set({
+            startedAt,
+            sessionIdBefore:
+              runtimeForAdapter.sessionDisplayId ?? runtimeForAdapter.sessionId,
             contextSnapshot: context,
             updatedAt: new Date(),
           })
-          .where(eq(heartbeatRuns.id, run.id));
-        if (issueId) {
+          .where(eq(heartbeatRuns.id, run.id))
+          .returning()
+          .then((rows) => rows[0] ?? null);
+        if (runningWithSession) run = runningWithSession;
+
+        const runningAgent = await db
+          .update(agents)
+          .set({ status: "running", updatedAt: new Date() })
+          .where(eq(agents.id, agent.id))
+          .returning()
+          .then((rows) => rows[0] ?? null);
+
+        if (runningAgent) {
+          publishLiveEvent({
+            companyId: runningAgent.companyId,
+            type: "agent.status",
+            payload: {
+              agentId: runningAgent.id,
+              status: runningAgent.status,
+              outcome: "running",
+            },
+          });
+        }
+
+        const currentRun = run;
+        await appendRunEvent(currentRun, seq++, {
+          eventType: "lifecycle",
+          stream: "system",
+          level: "info",
+          message: "run started",
+        });
+
+        handle = await runLogStore.begin({
+          companyId: run.companyId,
+          agentId: run.agentId,
+          runId,
+        });
+
+        await db
+          .update(heartbeatRuns)
+          .set({
+            logStore: handle.store,
+            logRef: handle.logRef,
+            updatedAt: new Date(),
+          })
+          .where(eq(heartbeatRuns.id, runId));
+
+        const onLog = async (stream: "stdout" | "stderr", chunk: string) => {
+          const sanitizedChunk = redactCurrentUserText(chunk);
+          if (stream === "stdout")
+            stdoutExcerpt = appendExcerpt(stdoutExcerpt, sanitizedChunk);
+          if (stream === "stderr")
+            stderrExcerpt = appendExcerpt(stderrExcerpt, sanitizedChunk);
+          const ts = new Date().toISOString();
+
+          if (handle) {
+            await runLogStore.append(handle, {
+              stream,
+              chunk: sanitizedChunk,
+              ts,
+            });
+          }
+
+          const payloadChunk =
+            sanitizedChunk.length > MAX_LIVE_LOG_CHUNK_BYTES
+              ? sanitizedChunk.slice(
+                  sanitizedChunk.length - MAX_LIVE_LOG_CHUNK_BYTES,
+                )
+              : sanitizedChunk;
+
+          publishLiveEvent({
+            companyId: run.companyId,
+            type: "heartbeat.run.log",
+            payload: {
+              runId: run.id,
+              agentId: run.agentId,
+              ts,
+              stream,
+              chunk: payloadChunk,
+              truncated: payloadChunk.length !== sanitizedChunk.length,
+            },
+          });
+        };
+        for (const warning of runtimeWorkspaceWarnings) {
+          await onLog("stderr", `[paperclip] ${warning}\n`);
+        }
+        const adapterEnv = Object.fromEntries(
+          Object.entries(parseObject(resolvedConfig.env)).filter(
+            (entry): entry is [string, string] =>
+              typeof entry[0] === "string" && typeof entry[1] === "string",
+          ),
+        );
+        const runtimeServices = await ensureRuntimeServicesForRun({
+          db,
+          runId: run.id,
+          agent: {
+            id: agent.id,
+            name: agent.name,
+            companyId: agent.companyId,
+          },
+          issue: issueRef,
+          workspace: executionWorkspace,
+          executionWorkspaceId:
+            persistedExecutionWorkspace?.id ??
+            issueRef?.executionWorkspaceId ??
+            null,
+          config: resolvedConfig,
+          adapterEnv,
+          onLog,
+        });
+        if (runtimeServices.length > 0) {
+          context.paperclipRuntimeServices = runtimeServices;
+          context.paperclipRuntimePrimaryUrl =
+            runtimeServices.find((service) => readNonEmptyString(service.url))
+              ?.url ?? null;
+          await db
+            .update(heartbeatRuns)
+            .set({
+              contextSnapshot: context,
+              updatedAt: new Date(),
+            })
+            .where(eq(heartbeatRuns.id, run.id));
+        }
+        if (
+          issueId &&
+          (executionWorkspace.created ||
+            runtimeServices.some((service) => !service.reused))
+        ) {
           try {
             await issuesSvc.addComment(
               issueId,
               buildWorkspaceReadyComment({
                 workspace: executionWorkspace,
-                runtimeServices: adapterManagedRuntimeServices,
+                runtimeServices,
               }),
               { agentId: agent.id },
             );
           } catch (err) {
             await onLog(
               "stderr",
-              `[paperclip] Failed to post adapter-managed runtime comment: ${err instanceof Error ? err.message : String(err)}\n`,
+              `[paperclip] Failed to post workspace-ready comment: ${err instanceof Error ? err.message : String(err)}\n`,
             );
           }
         }
-      }
-      const nextSessionState = resolveNextSessionState({
-        codec: sessionCodec,
-        adapterResult,
-        previousParams: previousSessionParams,
-        previousDisplayId: runtimeForAdapter.sessionDisplayId,
-        previousLegacySessionId: runtimeForAdapter.sessionId,
-      });
-      const rawUsage = normalizeUsageTotals(adapterResult.usage);
-      const sessionUsageResolution = await resolveNormalizedUsageForSession({
-        agentId: agent.id,
-        runId: run.id,
-        sessionId: nextSessionState.displayId ?? nextSessionState.legacySessionId,
-        rawUsage,
-      });
-      const normalizedUsage = sessionUsageResolution.normalizedUsage;
+        const onAdapterMeta = async (meta: AdapterInvocationMeta) => {
+          if (meta.env && secretKeys.size > 0) {
+            for (const key of secretKeys) {
+              if (key in meta.env) meta.env[key] = "***REDACTED***";
+            }
+          }
+          await appendRunEvent(currentRun, seq++, {
+            eventType: "adapter.invoke",
+            stream: "system",
+            level: "info",
+            message: "adapter invocation",
+            payload: meta as unknown as Record<string, unknown>,
+          });
+        };
 
-      let outcome: "succeeded" | "failed" | "cancelled" | "timed_out";
-      const latestRun = await getRun(run.id);
-      if (latestRun?.status === "cancelled") {
-        outcome = "cancelled";
-      } else if (adapterResult.timedOut) {
-        outcome = "timed_out";
-      } else if ((adapterResult.exitCode ?? 0) === 0 && !adapterResult.errorMessage) {
-        outcome = "succeeded";
-      } else {
-        outcome = "failed";
-      }
-
-      let logSummary: { bytes: number; sha256?: string; compressed: boolean } | null = null;
-      if (handle) {
-        logSummary = await runLogStore.finalize(handle);
-      }
-
-      const status =
-        outcome === "succeeded"
-          ? "succeeded"
-          : outcome === "cancelled"
-            ? "cancelled"
-            : outcome === "timed_out"
-              ? "timed_out"
-              : "failed";
-
-      const usageJson =
-        normalizedUsage || adapterResult.costUsd != null
-          ? ({
-              ...(normalizedUsage ?? {}),
-              ...(rawUsage ? {
-                rawInputTokens: rawUsage.inputTokens,
-                rawCachedInputTokens: rawUsage.cachedInputTokens,
-                rawOutputTokens: rawUsage.outputTokens,
-              } : {}),
-              ...(sessionUsageResolution.derivedFromSessionTotals ? { usageSource: "session_delta" } : {}),
-              ...((nextSessionState.displayId ?? nextSessionState.legacySessionId)
-                ? { persistedSessionId: nextSessionState.displayId ?? nextSessionState.legacySessionId }
-                : {}),
-              sessionReused: runtimeForAdapter.sessionId != null || runtimeForAdapter.sessionDisplayId != null,
-              taskSessionReused: taskSessionForRun != null,
-              freshSession: runtimeForAdapter.sessionId == null && runtimeForAdapter.sessionDisplayId == null,
-              sessionRotated: sessionCompaction.rotate,
-              sessionRotationReason: sessionCompaction.reason,
-              provider: readNonEmptyString(adapterResult.provider) ?? "unknown",
-              biller: resolveLedgerBiller(adapterResult),
-              model: readNonEmptyString(adapterResult.model) ?? "unknown",
-              ...(adapterResult.costUsd != null ? { costUsd: adapterResult.costUsd } : {}),
-              billingType: normalizeLedgerBillingType(adapterResult.billingType),
-            } as Record<string, unknown>)
+        const adapter = getServerAdapter(agent.adapterType);
+        const authToken = adapter.supportsLocalAgentJwt
+          ? createLocalAgentJwt(
+              agent.id,
+              agent.companyId,
+              agent.adapterType,
+              run.id,
+            )
           : null;
+        if (adapter.supportsLocalAgentJwt && !authToken) {
+          logger.warn(
+            {
+              companyId: agent.companyId,
+              agentId: agent.id,
+              runId: run.id,
+              adapterType: agent.adapterType,
+            },
+            "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
+          );
+        }
 
-      await setRunStatus(run.id, status, {
-        finishedAt: new Date(),
-        error:
+        // Check prompt with AI Firewall if enabled
+        if (isAIFirewallEnabled()) {
+          const promptCheck = await checkPrompt({
+            prompt: JSON.stringify(context),
+            userId: agent.id,
+            sessionId: run.id,
+            metadata: {
+              companyId: agent.companyId,
+              agentId: agent.id,
+              agentName: agent.name,
+              agentRole: (agent as any).role,
+              issueId: (run as any).issueId ?? undefined,
+            },
+          });
+
+          if (promptCheck.blocked) {
+            logger.warn(
+              {
+                companyId: agent.companyId,
+                agentId: agent.id,
+                runId: run.id,
+                reason: promptCheck.reason,
+                detections: promptCheck.detections,
+              },
+              "AI Firewall blocked prompt",
+            );
+
+            await onLog(
+              "stderr",
+              `[AI Firewall] Prompt blocked: ${promptCheck.reason}\n`,
+            );
+
+            // Return early with firewall block error
+            const firewallBlockResult: AdapterExecutionResult = {
+              exitCode: 1,
+              signal: null,
+              timedOut: false,
+              errorMessage: `AI Firewall blocked prompt: ${promptCheck.reason}`,
+              errorCode: "ai_firewall_blocked_prompt",
+            };
+
+            return { ...firewallBlockResult, runEnded: true };
+          }
+
+          // Use sanitized prompt if provided
+          if (promptCheck.sanitizedPrompt) {
+            // TODO: Implement prompt sanitization - needs to be stored in context object
+            // context.sanitizedPrompt = promptCheck.sanitizedPrompt;
+            await onLog(
+              "stdout",
+              "[AI Firewall] Prompt sanitized (PII redacted)\n",
+            );
+          }
+        }
+
+        // Discover and inject MCP tools if configured
+        if (isMCPConfigured()) {
+          try {
+            const manager = getMCPManager();
+            const allowedServers = getAllowedMCPServers(agent.role);
+
+            if (allowedServers.length > 0) {
+              const availableTools: Array<MCPTool & { server: string }> = [];
+
+              // Discover tools from each allowed server
+              for (const serverName of allowedServers) {
+                try {
+                  const tools = await manager.listTools(serverName);
+                  availableTools.push(
+                    ...tools.map((t) => ({
+                      ...t,
+                      server: serverName,
+                    })),
+                  );
+                } catch (err) {
+                  logger.warn(
+                    {
+                      serverName,
+                      agentId: agent.id,
+                      error: err instanceof Error ? err.message : String(err),
+                    },
+                    "Failed to list tools from MCP server",
+                  );
+                }
+              }
+
+              // Inject tools into context if any were discovered
+              if (availableTools.length > 0) {
+                const toolDescriptions = availableTools
+                  .map((t) => `${t.server}.${t.name}: ${t.description}`)
+                  .join("\n");
+
+                const toolsContext = `
+Available MCP tools:
+${toolDescriptions}
+
+To call a tool, use: TOOL_CALL(server, tool_name, {args})
+`;
+
+                // TODO: Implement MCP tools injection - needs to be stored in context object
+                // context.mcpToolsContext = toolsContext;
+
+                await onLog(
+                  "stdout",
+                  `[MCP] Loaded ${availableTools.length} tools from ${allowedServers.length} server(s)\n`,
+                );
+
+                logger.info(
+                  {
+                    agentId: agent.id,
+                    runId: run.id,
+                    toolCount: availableTools.length,
+                    servers: allowedServers,
+                  },
+                  "MCP tools injected into agent context",
+                );
+              }
+            }
+          } catch (err) {
+            logger.error(
+              {
+                agentId: agent.id,
+                runId: run.id,
+                error: err instanceof Error ? err.message : String(err),
+              },
+              "Failed to inject MCP tools into agent context",
+            );
+            // Continue execution even if MCP injection fails (fail-open)
+          }
+        }
+
+        // Wrap adapter execution with Langfuse tracing
+        const adapterResult = await traceAdapterExecution(
+          adapter.execute.bind(adapter),
+          {
+            runId: run.id,
+            agent,
+            runtime: runtimeForAdapter,
+            config: resolvedConfig,
+            context,
+            onLog,
+            onMeta: onAdapterMeta,
+            authToken: authToken ?? undefined,
+          },
+        );
+
+        // Check response with AI Firewall if enabled
+        if (isAIFirewallEnabled() && adapterResult.summary) {
+          const responseCheck = await checkResponse(adapterResult.summary, {
+            companyId: agent.companyId,
+            agentId: agent.id,
+          });
+
+          if (responseCheck.blocked) {
+            logger.warn(
+              {
+                companyId: agent.companyId,
+                agentId: agent.id,
+                runId: run.id,
+                reason: responseCheck.reason,
+                detections: responseCheck.detections,
+              },
+              "AI Firewall blocked response",
+            );
+
+            await onLog(
+              "stderr",
+              `[AI Firewall] Response blocked: ${responseCheck.reason}\n`,
+            );
+
+            // Override result with firewall block
+            return {
+              exitCode: 1,
+              signal: null,
+              timedOut: false,
+              errorMessage: `AI Firewall blocked response: ${responseCheck.reason}`,
+              errorCode: "ai_firewall_blocked_response",
+              runEnded: true,
+            };
+          }
+
+          // Use sanitized response if provided
+          // TODO: Implement response sanitization - FirewallResponseCheck needs sanitizedContent field
+          // if (responseCheck.sanitizedContent && adapterResult.summary) {
+          //   adapterResult.summary = responseCheck.sanitizedContent;
+          //   await onLog(
+          //     "stdout",
+          //     "[AI Firewall] Response sanitized (PII redacted)\n",
+          //   );
+          // }
+        }
+        const adapterManagedRuntimeServices = adapterResult.runtimeServices
+          ? await persistAdapterManagedRuntimeServices({
+              db,
+              adapterType: agent.adapterType,
+              runId: run.id,
+              agent: {
+                id: agent.id,
+                name: agent.name,
+                companyId: agent.companyId,
+              },
+              issue: issueRef,
+              workspace: executionWorkspace,
+              reports: adapterResult.runtimeServices,
+            })
+          : [];
+        if (adapterManagedRuntimeServices.length > 0) {
+          const combinedRuntimeServices = [
+            ...runtimeServices,
+            ...adapterManagedRuntimeServices,
+          ];
+          context.paperclipRuntimeServices = combinedRuntimeServices;
+          context.paperclipRuntimePrimaryUrl =
+            combinedRuntimeServices.find((service) =>
+              readNonEmptyString(service.url),
+            )?.url ?? null;
+          await db
+            .update(heartbeatRuns)
+            .set({
+              contextSnapshot: context,
+              updatedAt: new Date(),
+            })
+            .where(eq(heartbeatRuns.id, run.id));
+          if (issueId) {
+            try {
+              await issuesSvc.addComment(
+                issueId,
+                buildWorkspaceReadyComment({
+                  workspace: executionWorkspace,
+                  runtimeServices: adapterManagedRuntimeServices,
+                }),
+                { agentId: agent.id },
+              );
+            } catch (err) {
+              await onLog(
+                "stderr",
+                `[paperclip] Failed to post adapter-managed runtime comment: ${err instanceof Error ? err.message : String(err)}\n`,
+              );
+            }
+          }
+        }
+        const nextSessionState = resolveNextSessionState({
+          codec: sessionCodec,
+          adapterResult,
+          previousParams: previousSessionParams,
+          previousDisplayId: runtimeForAdapter.sessionDisplayId,
+          previousLegacySessionId: runtimeForAdapter.sessionId,
+        });
+        const rawUsage = normalizeUsageTotals(adapterResult.usage);
+        const sessionUsageResolution = await resolveNormalizedUsageForSession({
+          agentId: agent.id,
+          runId: run.id,
+          sessionId:
+            nextSessionState.displayId ?? nextSessionState.legacySessionId,
+          rawUsage,
+        });
+        const normalizedUsage = sessionUsageResolution.normalizedUsage;
+
+        let outcome: "succeeded" | "failed" | "cancelled" | "timed_out";
+        const latestRun = await getRun(run.id);
+        if (latestRun?.status === "cancelled") {
+          outcome = "cancelled";
+        } else if (adapterResult.timedOut) {
+          outcome = "timed_out";
+        } else if (
+          (adapterResult.exitCode ?? 0) === 0 &&
+          !adapterResult.errorMessage
+        ) {
+          outcome = "succeeded";
+        } else {
+          outcome = "failed";
+        }
+
+        let logSummary: {
+          bytes: number;
+          sha256?: string;
+          compressed: boolean;
+        } | null = null;
+        if (handle) {
+          logSummary = await runLogStore.finalize(handle);
+        }
+
+        const status =
           outcome === "succeeded"
-            ? null
-            : redactCurrentUserText(
-                adapterResult.errorMessage ?? (outcome === "timed_out" ? "Timed out" : "Adapter failed"),
-              ),
-        errorCode:
-          outcome === "timed_out"
-            ? "timeout"
+            ? "succeeded"
             : outcome === "cancelled"
               ? "cancelled"
-              : outcome === "failed"
-                ? (adapterResult.errorCode ?? "adapter_failed")
-                : null,
-        exitCode: adapterResult.exitCode,
-        signal: adapterResult.signal,
-        usageJson,
-        resultJson: adapterResult.resultJson ?? null,
-        sessionIdAfter: nextSessionState.displayId ?? nextSessionState.legacySessionId,
-        stdoutExcerpt,
-        stderrExcerpt,
-        logBytes: logSummary?.bytes,
-        logSha256: logSummary?.sha256,
-        logCompressed: logSummary?.compressed ?? false,
-      });
+              : outcome === "timed_out"
+                ? "timed_out"
+                : "failed";
 
-      await setWakeupStatus(run.wakeupRequestId, outcome === "succeeded" ? "completed" : status, {
-        finishedAt: new Date(),
-        error: adapterResult.errorMessage ?? null,
-      });
+        const usageJson =
+          normalizedUsage || adapterResult.costUsd != null
+            ? ({
+                ...(normalizedUsage ?? {}),
+                ...(rawUsage
+                  ? {
+                      rawInputTokens: rawUsage.inputTokens,
+                      rawCachedInputTokens: rawUsage.cachedInputTokens,
+                      rawOutputTokens: rawUsage.outputTokens,
+                    }
+                  : {}),
+                ...(sessionUsageResolution.derivedFromSessionTotals
+                  ? { usageSource: "session_delta" }
+                  : {}),
+                ...((nextSessionState.displayId ??
+                nextSessionState.legacySessionId)
+                  ? {
+                      persistedSessionId:
+                        nextSessionState.displayId ??
+                        nextSessionState.legacySessionId,
+                    }
+                  : {}),
+                sessionReused:
+                  runtimeForAdapter.sessionId != null ||
+                  runtimeForAdapter.sessionDisplayId != null,
+                taskSessionReused: taskSessionForRun != null,
+                freshSession:
+                  runtimeForAdapter.sessionId == null &&
+                  runtimeForAdapter.sessionDisplayId == null,
+                sessionRotated: sessionCompaction.rotate,
+                sessionRotationReason: sessionCompaction.reason,
+                provider:
+                  readNonEmptyString(adapterResult.provider) ?? "unknown",
+                biller: resolveLedgerBiller(adapterResult),
+                model: readNonEmptyString(adapterResult.model) ?? "unknown",
+                ...(adapterResult.costUsd != null
+                  ? { costUsd: adapterResult.costUsd }
+                  : {}),
+                billingType: normalizeLedgerBillingType(
+                  adapterResult.billingType,
+                ),
+              } as Record<string, unknown>)
+            : null;
 
-      const finalizedRun = await getRun(run.id);
-      if (finalizedRun) {
-        await appendRunEvent(finalizedRun, seq++, {
-          eventType: "lifecycle",
-          stream: "system",
-          level: outcome === "succeeded" ? "info" : "error",
-          message: `run ${outcome}`,
-          payload: {
-            status,
-            exitCode: adapterResult.exitCode,
-          },
+        await setRunStatus(run.id, status, {
+          finishedAt: new Date(),
+          error:
+            outcome === "succeeded"
+              ? null
+              : redactCurrentUserText(
+                  adapterResult.errorMessage ??
+                    (outcome === "timed_out" ? "Timed out" : "Adapter failed"),
+                ),
+          errorCode:
+            outcome === "timed_out"
+              ? "timeout"
+              : outcome === "cancelled"
+                ? "cancelled"
+                : outcome === "failed"
+                  ? (adapterResult.errorCode ?? "adapter_failed")
+                  : null,
+          exitCode: adapterResult.exitCode,
+          signal: adapterResult.signal,
+          usageJson,
+          resultJson: adapterResult.resultJson ?? null,
+          sessionIdAfter:
+            nextSessionState.displayId ?? nextSessionState.legacySessionId,
+          stdoutExcerpt,
+          stderrExcerpt,
+          logBytes: logSummary?.bytes,
+          logSha256: logSummary?.sha256,
+          logCompressed: logSummary?.compressed ?? false,
         });
-        await releaseIssueExecutionAndPromote(finalizedRun);
-      }
 
-      if (finalizedRun) {
-        await updateRuntimeState(agent, finalizedRun, adapterResult, {
-          legacySessionId: nextSessionState.legacySessionId,
-        }, normalizedUsage);
-        if (taskKey) {
-          if (adapterResult.clearSession || (!nextSessionState.params && !nextSessionState.displayId)) {
-            await clearTaskSessions(agent.companyId, agent.id, {
-              taskKey,
-              adapterType: agent.adapterType,
-            });
-          } else {
+        await setWakeupStatus(
+          run.wakeupRequestId,
+          outcome === "succeeded" ? "completed" : status,
+          {
+            finishedAt: new Date(),
+            error: adapterResult.errorMessage ?? null,
+          },
+        );
+
+        const finalizedRun = await getRun(run.id);
+        if (finalizedRun) {
+          await appendRunEvent(finalizedRun, seq++, {
+            eventType: "lifecycle",
+            stream: "system",
+            level: outcome === "succeeded" ? "info" : "error",
+            message: `run ${outcome}`,
+            payload: {
+              status,
+              exitCode: adapterResult.exitCode,
+            },
+          });
+          await releaseIssueExecutionAndPromote(finalizedRun);
+        }
+
+        if (finalizedRun) {
+          await updateRuntimeState(
+            agent,
+            finalizedRun,
+            adapterResult,
+            {
+              legacySessionId: nextSessionState.legacySessionId,
+            },
+            normalizedUsage,
+          );
+          if (taskKey) {
+            if (
+              adapterResult.clearSession ||
+              (!nextSessionState.params && !nextSessionState.displayId)
+            ) {
+              await clearTaskSessions(agent.companyId, agent.id, {
+                taskKey,
+                adapterType: agent.adapterType,
+              });
+            } else {
+              await upsertTaskSession({
+                companyId: agent.companyId,
+                agentId: agent.id,
+                adapterType: agent.adapterType,
+                taskKey,
+                sessionParamsJson: nextSessionState.params,
+                sessionDisplayId: nextSessionState.displayId,
+                lastRunId: finalizedRun.id,
+                lastError:
+                  outcome === "succeeded"
+                    ? null
+                    : (adapterResult.errorMessage ?? "run_failed"),
+              });
+            }
+          }
+        }
+        await finalizeAgentStatus(agent.id, outcome);
+      } catch (err) {
+        const message = redactCurrentUserText(
+          err instanceof Error ? err.message : "Unknown adapter failure",
+        );
+        logger.error({ err, runId }, "heartbeat execution failed");
+
+        let logSummary: {
+          bytes: number;
+          sha256?: string;
+          compressed: boolean;
+        } | null = null;
+        if (handle) {
+          try {
+            logSummary = await runLogStore.finalize(handle);
+          } catch (finalizeErr) {
+            logger.warn(
+              { err: finalizeErr, runId },
+              "failed to finalize run log after error",
+            );
+          }
+        }
+
+        const failedRun = await setRunStatus(run.id, "failed", {
+          error: message,
+          errorCode: "adapter_failed",
+          finishedAt: new Date(),
+          stdoutExcerpt,
+          stderrExcerpt,
+          logBytes: logSummary?.bytes,
+          logSha256: logSummary?.sha256,
+          logCompressed: logSummary?.compressed ?? false,
+        });
+        await setWakeupStatus(run.wakeupRequestId, "failed", {
+          finishedAt: new Date(),
+          error: message,
+        });
+
+        if (failedRun) {
+          await appendRunEvent(failedRun, seq++, {
+            eventType: "error",
+            stream: "system",
+            level: "error",
+            message,
+          });
+          await releaseIssueExecutionAndPromote(failedRun);
+
+          await updateRuntimeState(
+            agent,
+            failedRun,
+            {
+              exitCode: null,
+              signal: null,
+              timedOut: false,
+              errorMessage: message,
+            },
+            {
+              legacySessionId: runtimeForAdapter.sessionId,
+            },
+          );
+
+          if (
+            taskKey &&
+            (previousSessionParams || previousSessionDisplayId || taskSession)
+          ) {
             await upsertTaskSession({
               companyId: agent.companyId,
               agentId: agent.id,
               adapterType: agent.adapterType,
               taskKey,
-              sessionParamsJson: nextSessionState.params,
-              sessionDisplayId: nextSessionState.displayId,
-              lastRunId: finalizedRun.id,
-              lastError: outcome === "succeeded" ? null : (adapterResult.errorMessage ?? "run_failed"),
+              sessionParamsJson: previousSessionParams,
+              sessionDisplayId: previousSessionDisplayId,
+              lastRunId: failedRun.id,
+              lastError: message,
             });
           }
         }
-      }
-      await finalizeAgentStatus(agent.id, outcome);
-    } catch (err) {
-      const message = redactCurrentUserText(err instanceof Error ? err.message : "Unknown adapter failure");
-      logger.error({ err, runId }, "heartbeat execution failed");
 
-      let logSummary: { bytes: number; sha256?: string; compressed: boolean } | null = null;
-      if (handle) {
-        try {
-          logSummary = await runLogStore.finalize(handle);
-        } catch (finalizeErr) {
-          logger.warn({ err: finalizeErr, runId }, "failed to finalize run log after error");
-        }
+        await finalizeAgentStatus(agent.id, "failed");
       }
-
-      const failedRun = await setRunStatus(run.id, "failed", {
+    } catch (outerErr) {
+      // Setup code before adapter.execute threw (e.g. ensureRuntimeState, resolveWorkspaceForRun).
+      // The inner catch did not fire, so we must record the failure here.
+      const message =
+        outerErr instanceof Error ? outerErr.message : "Unknown setup failure";
+      logger.error(
+        { err: outerErr, runId },
+        "heartbeat execution setup failed",
+      );
+      await setRunStatus(runId, "failed", {
         error: message,
         errorCode: "adapter_failed",
         finishedAt: new Date(),
-        stdoutExcerpt,
-        stderrExcerpt,
-        logBytes: logSummary?.bytes,
-        logSha256: logSummary?.sha256,
-        logCompressed: logSummary?.compressed ?? false,
-      });
+      }).catch(() => undefined);
       await setWakeupStatus(run.wakeupRequestId, "failed", {
         finishedAt: new Date(),
         error: message,
-      });
-
+      }).catch(() => undefined);
+      const failedRun = await getRun(runId).catch(() => null);
       if (failedRun) {
-        await appendRunEvent(failedRun, seq++, {
+        // Emit a run-log event so the failure is visible in the run timeline,
+        // consistent with what the inner catch block does for adapter failures.
+        await appendRunEvent(failedRun, 1, {
           eventType: "error",
           stream: "system",
           level: "error",
           message,
-        });
-        await releaseIssueExecutionAndPromote(failedRun);
-
-        await updateRuntimeState(agent, failedRun, {
-          exitCode: null,
-          signal: null,
-          timedOut: false,
-          errorMessage: message,
-        }, {
-          legacySessionId: runtimeForAdapter.sessionId,
-        });
-
-        if (taskKey && (previousSessionParams || previousSessionDisplayId || taskSession)) {
-          await upsertTaskSession({
-            companyId: agent.companyId,
-            agentId: agent.id,
-            adapterType: agent.adapterType,
-            taskKey,
-            sessionParamsJson: previousSessionParams,
-            sessionDisplayId: previousSessionDisplayId,
-            lastRunId: failedRun.id,
-            lastError: message,
-          });
-        }
+        }).catch(() => undefined);
+        await releaseIssueExecutionAndPromote(failedRun).catch(() => undefined);
       }
-
-      await finalizeAgentStatus(agent.id, "failed");
+      // Ensure the agent is not left stuck in "running" if the inner catch handler's
+      // DB calls threw (e.g. a transient DB error in finalizeAgentStatus).
+      await finalizeAgentStatus(run.agentId, "failed").catch(() => undefined);
+    } finally {
+      await releaseRuntimeServicesForRun(run.id).catch(() => undefined);
+      activeRunExecutions.delete(run.id);
+      await startNextQueuedRunForAgent(run.agentId);
     }
-    } catch (outerErr) {
-          // Setup code before adapter.execute threw (e.g. ensureRuntimeState, resolveWorkspaceForRun).
-          // The inner catch did not fire, so we must record the failure here.
-          const message = outerErr instanceof Error ? outerErr.message : "Unknown setup failure";
-          logger.error({ err: outerErr, runId }, "heartbeat execution setup failed");
-          await setRunStatus(runId, "failed", {
-            error: message,
-            errorCode: "adapter_failed",
-            finishedAt: new Date(),
-          }).catch(() => undefined);
-          await setWakeupStatus(run.wakeupRequestId, "failed", {
-            finishedAt: new Date(),
-            error: message,
-          }).catch(() => undefined);
-          const failedRun = await getRun(runId).catch(() => null);
-          if (failedRun) {
-            // Emit a run-log event so the failure is visible in the run timeline,
-            // consistent with what the inner catch block does for adapter failures.
-            await appendRunEvent(failedRun, 1, {
-              eventType: "error",
-              stream: "system",
-              level: "error",
-              message,
-            }).catch(() => undefined);
-            await releaseIssueExecutionAndPromote(failedRun).catch(() => undefined);
-          }
-          // Ensure the agent is not left stuck in "running" if the inner catch handler's
-          // DB calls threw (e.g. a transient DB error in finalizeAgentStatus).
-          await finalizeAgentStatus(run.agentId, "failed").catch(() => undefined);
-        } finally {
-          await releaseRuntimeServicesForRun(run.id).catch(() => undefined);
-          activeRunExecutions.delete(run.id);
-          await startNextQueuedRunForAgent(run.agentId);
-        }
   }
 
-  async function releaseIssueExecutionAndPromote(run: typeof heartbeatRuns.$inferSelect) {
+  async function releaseIssueExecutionAndPromote(
+    run: typeof heartbeatRuns.$inferSelect,
+  ) {
     const promotedRun = await db.transaction(async (tx) => {
       await tx.execute(
         sql`select id from issues where company_id = ${run.companyId} and execution_run_id = ${run.id} for update`,
@@ -2627,7 +2995,12 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
           companyId: issues.companyId,
         })
         .from(issues)
-        .where(and(eq(issues.companyId, run.companyId), eq(issues.executionRunId, run.id)))
+        .where(
+          and(
+            eq(issues.companyId, run.companyId),
+            eq(issues.executionRunId, run.id),
+          ),
+        )
         .then((rows) => rows[0] ?? null);
 
       if (!issue) return;
@@ -2677,7 +3050,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             .set({
               status: "failed",
               finishedAt: new Date(),
-              error: "Deferred wake could not be promoted: agent is not invokable",
+              error:
+                "Deferred wake could not be promoted: agent is not invokable",
               updatedAt: new Date(),
             })
             .where(eq(agentWakeupRequests.id, deferred.id));
@@ -2685,13 +3059,21 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
         }
 
         const deferredPayload = parseObject(deferred.payload);
-        const deferredContextSeed = parseObject(deferredPayload[DEFERRED_WAKE_CONTEXT_KEY]);
-        const promotedContextSeed: Record<string, unknown> = { ...deferredContextSeed };
-        const promotedReason = readNonEmptyString(deferred.reason) ?? "issue_execution_promoted";
+        const deferredContextSeed = parseObject(
+          deferredPayload[DEFERRED_WAKE_CONTEXT_KEY],
+        );
+        const promotedContextSeed: Record<string, unknown> = {
+          ...deferredContextSeed,
+        };
+        const promotedReason =
+          readNonEmptyString(deferred.reason) ?? "issue_execution_promoted";
         const promotedSource =
-          (readNonEmptyString(deferred.source) as WakeupOptions["source"]) ?? "automation";
+          (readNonEmptyString(deferred.source) as WakeupOptions["source"]) ??
+          "automation";
         const promotedTriggerDetail =
-          (readNonEmptyString(deferred.triggerDetail) as WakeupOptions["triggerDetail"]) ?? null;
+          (readNonEmptyString(
+            deferred.triggerDetail,
+          ) as WakeupOptions["triggerDetail"]) ?? null;
         const promotedPayload = deferredPayload;
         delete promotedPayload[DEFERRED_WAKE_CONTEXT_KEY];
 
@@ -2706,7 +3088,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
           payload: promotedPayload,
         });
 
-        const sessionBefore = await resolveSessionBeforeForWakeup(deferredAgent, promotedTaskKey);
+        const sessionBefore = await resolveSessionBeforeForWakeup(
+          deferredAgent,
+          promotedTaskKey,
+        );
         const now = new Date();
         const newRun = await tx
           .insert(heartbeatRuns)
@@ -2770,7 +3155,9 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
   async function enqueueWakeup(agentId: string, opts: WakeupOptions = {}) {
     const source = opts.source ?? "on_demand";
     const triggerDetail = opts.triggerDetail ?? null;
-    const contextSnapshot: Record<string, unknown> = { ...(opts.contextSnapshot ?? {}) };
+    const contextSnapshot: Record<string, unknown> = {
+      ...(opts.contextSnapshot ?? {}),
+    };
     const reason = opts.reason ?? null;
     const payload = opts.payload ?? null;
     const {
@@ -2785,7 +3172,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       triggerDetail,
       payload,
     });
-    const issueId = readNonEmptyString(enrichedContextSnapshot.issueId) ?? issueIdFromPayload;
+    const issueId =
+      readNonEmptyString(enrichedContextSnapshot.issueId) ?? issueIdFromPayload;
 
     const agent = await getAgent(agentId);
     if (!agent) throw notFound("Agent not found");
@@ -2811,14 +3199,20 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       projectId = await db
         .select({ projectId: issues.projectId })
         .from(issues)
-        .where(and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)))
+        .where(
+          and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)),
+        )
         .then((rows) => rows[0]?.projectId ?? null);
     }
 
-    const budgetBlock = await budgets.getInvocationBlock(agent.companyId, agentId, {
-      issueId,
-      projectId,
-    });
+    const budgetBlock = await budgets.getInvocationBlock(
+      agent.companyId,
+      agentId,
+      {
+        issueId,
+        projectId,
+      },
+    );
     if (budgetBlock) {
       await writeSkippedRequest("budget.blocked");
       throw conflict(budgetBlock.reason, {
@@ -2832,7 +3226,9 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       agent.status === "terminated" ||
       agent.status === "pending_approval"
     ) {
-      throw conflict("Agent is not invokable in its current state", { status: agent.status });
+      throw conflict("Agent is not invokable in its current state", {
+        status: agent.status,
+      });
     }
 
     const policy = parseHeartbeatPolicy(agent);
@@ -2848,7 +3244,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
 
     const bypassIssueExecutionLock =
       reason === "issue_comment_mentioned" ||
-      readNonEmptyString(enrichedContextSnapshot.wakeReason) === "issue_comment_mentioned";
+      readNonEmptyString(enrichedContextSnapshot.wakeReason) ===
+        "issue_comment_mentioned";
 
     if (issueId && !bypassIssueExecutionLock) {
       const agentNameKey = normalizeAgentNameKey(agent.name);
@@ -2867,7 +3264,9 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             executionAgentNameKey: issues.executionAgentNameKey,
           })
           .from(issues)
-          .where(and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)))
+          .where(
+            and(eq(issues.id, issueId), eq(issues.companyId, agent.companyId)),
+          )
           .then((rows) => rows[0] ?? null);
 
         if (!issue) {
@@ -2889,13 +3288,17 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
 
         let activeExecutionRun = issue.executionRunId
           ? await tx
-            .select()
-            .from(heartbeatRuns)
-            .where(eq(heartbeatRuns.id, issue.executionRunId))
-            .then((rows) => rows[0] ?? null)
+              .select()
+              .from(heartbeatRuns)
+              .where(eq(heartbeatRuns.id, issue.executionRunId))
+              .then((rows) => rows[0] ?? null)
           : null;
 
-        if (activeExecutionRun && activeExecutionRun.status !== "queued" && activeExecutionRun.status !== "running") {
+        if (
+          activeExecutionRun &&
+          activeExecutionRun.status !== "queued" &&
+          activeExecutionRun.status !== "running"
+        ) {
           activeExecutionRun = null;
         }
 
@@ -2958,7 +3361,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             normalizeAgentNameKey(issue.executionAgentNameKey) ??
             normalizeAgentNameKey(executionAgent?.name);
           const isSameExecutionAgent =
-            Boolean(executionAgentNameKey) && executionAgentNameKey === agentNameKey;
+            Boolean(executionAgentNameKey) &&
+            executionAgentNameKey === agentNameKey;
           const shouldQueueFollowupForCommentWake =
             Boolean(wakeCommentId) &&
             activeExecutionRun.status === "running" &&
@@ -3020,8 +3424,12 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             .then((rows) => rows[0] ?? null);
 
           if (existingDeferred) {
-            const existingDeferredPayload = parseObject(existingDeferred.payload);
-            const existingDeferredContext = parseObject(existingDeferredPayload[DEFERRED_WAKE_CONTEXT_KEY]);
+            const existingDeferredPayload = parseObject(
+              existingDeferred.payload,
+            );
+            const existingDeferredContext = parseObject(
+              existingDeferredPayload[DEFERRED_WAKE_CONTEXT_KEY],
+            );
             const mergedDeferredContext = mergeCoalescedContextSnapshot(
               existingDeferredContext,
               enrichedContextSnapshot,
@@ -3114,7 +3522,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
         return { kind: "queued" as const, run: newRun };
       });
 
-      if (outcome.kind === "deferred" || outcome.kind === "skipped") return null;
+      if (outcome.kind === "deferred" || outcome.kind === "skipped")
+        return null;
       if (outcome.kind === "coalesced") return outcome.run;
 
       const newRun = outcome.run;
@@ -3137,21 +3546,34 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     const activeRuns = await db
       .select()
       .from(heartbeatRuns)
-      .where(and(eq(heartbeatRuns.agentId, agentId), inArray(heartbeatRuns.status, ["queued", "running"])))
+      .where(
+        and(
+          eq(heartbeatRuns.agentId, agentId),
+          inArray(heartbeatRuns.status, ["queued", "running"]),
+        ),
+      )
       .orderBy(desc(heartbeatRuns.createdAt));
 
     const sameScopeQueuedRun = activeRuns.find(
-      (candidate) => candidate.status === "queued" && isSameTaskScope(runTaskKey(candidate), taskKey),
+      (candidate) =>
+        candidate.status === "queued" &&
+        isSameTaskScope(runTaskKey(candidate), taskKey),
     );
     const sameScopeRunningRun = activeRuns.find(
-      (candidate) => candidate.status === "running" && isSameTaskScope(runTaskKey(candidate), taskKey),
+      (candidate) =>
+        candidate.status === "running" &&
+        isSameTaskScope(runTaskKey(candidate), taskKey),
     );
     const shouldQueueFollowupForCommentWake =
-      Boolean(wakeCommentId) && Boolean(sameScopeRunningRun) && !sameScopeQueuedRun;
+      Boolean(wakeCommentId) &&
+      Boolean(sameScopeRunningRun) &&
+      !sameScopeQueuedRun;
 
     const coalescedTargetRun =
       sameScopeQueuedRun ??
-      (shouldQueueFollowupForCommentWake ? null : sameScopeRunningRun ?? null);
+      (shouldQueueFollowupForCommentWake
+        ? null
+        : (sameScopeRunningRun ?? null));
 
     if (coalescedTargetRun) {
       const mergedContextSnapshot = mergeCoalescedContextSnapshot(
@@ -3246,8 +3668,12 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
   }
 
   async function listProjectScopedRunIds(companyId: string, projectId: string) {
-    const runIssueId = sql<string | null>`${heartbeatRuns.contextSnapshot} ->> 'issueId'`;
-    const effectiveProjectId = sql<string | null>`coalesce(${heartbeatRuns.contextSnapshot} ->> 'projectId', ${issues.projectId}::text)`;
+    const runIssueId = sql<
+      string | null
+    >`${heartbeatRuns.contextSnapshot} ->> 'issueId'`;
+    const effectiveProjectId = sql<
+      string | null
+    >`coalesce(${heartbeatRuns.contextSnapshot} ->> 'projectId', ${issues.projectId}::text)`;
 
     const rows = await db
       .selectDistinctOn([heartbeatRuns.id], { id: heartbeatRuns.id })
@@ -3270,12 +3696,21 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     return rows.map((row) => row.id);
   }
 
-  async function listProjectScopedWakeupIds(companyId: string, projectId: string) {
-    const wakeIssueId = sql<string | null>`${agentWakeupRequests.payload} ->> 'issueId'`;
-    const effectiveProjectId = sql<string | null>`coalesce(${agentWakeupRequests.payload} ->> 'projectId', ${issues.projectId}::text)`;
+  async function listProjectScopedWakeupIds(
+    companyId: string,
+    projectId: string,
+  ) {
+    const wakeIssueId = sql<
+      string | null
+    >`${agentWakeupRequests.payload} ->> 'issueId'`;
+    const effectiveProjectId = sql<
+      string | null
+    >`coalesce(${agentWakeupRequests.payload} ->> 'projectId', ${issues.projectId}::text)`;
 
     const rows = await db
-      .selectDistinctOn([agentWakeupRequests.id], { id: agentWakeupRequests.id })
+      .selectDistinctOn([agentWakeupRequests.id], {
+        id: agentWakeupRequests.id,
+      })
       .from(agentWakeupRequests)
       .leftJoin(
         issues,
@@ -3287,7 +3722,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       .where(
         and(
           eq(agentWakeupRequests.companyId, companyId),
-          inArray(agentWakeupRequests.status, ["queued", "deferred_issue_execution"]),
+          inArray(agentWakeupRequests.status, [
+            "queued",
+            "deferred_issue_execution",
+          ]),
           sql`${agentWakeupRequests.runId} is null`,
           sql`${effectiveProjectId} = ${projectId}`,
         ),
@@ -3296,7 +3734,9 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     return rows.map((row) => row.id);
   }
 
-  async function cancelPendingWakeupsForBudgetScope(scope: BudgetEnforcementScope) {
+  async function cancelPendingWakeupsForBudgetScope(
+    scope: BudgetEnforcementScope,
+  ) {
     const now = new Date();
     let wakeupIds: string[] = [];
 
@@ -3307,7 +3747,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
         .where(
           and(
             eq(agentWakeupRequests.companyId, scope.companyId),
-            inArray(agentWakeupRequests.status, ["queued", "deferred_issue_execution"]),
+            inArray(agentWakeupRequests.status, [
+              "queued",
+              "deferred_issue_execution",
+            ]),
             sql`${agentWakeupRequests.runId} is null`,
           ),
         )
@@ -3320,13 +3763,19 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
           and(
             eq(agentWakeupRequests.companyId, scope.companyId),
             eq(agentWakeupRequests.agentId, scope.scopeId),
-            inArray(agentWakeupRequests.status, ["queued", "deferred_issue_execution"]),
+            inArray(agentWakeupRequests.status, [
+              "queued",
+              "deferred_issue_execution",
+            ]),
             sql`${agentWakeupRequests.runId} is null`,
           ),
         )
         .then((rows) => rows.map((row) => row.id));
     } else {
-      wakeupIds = await listProjectScopedWakeupIds(scope.companyId, scope.scopeId);
+      wakeupIds = await listProjectScopedWakeupIds(
+        scope.companyId,
+        scope.scopeId,
+      );
     }
 
     if (wakeupIds.length === 0) return 0;
@@ -3344,7 +3793,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     return wakeupIds.length;
   }
 
-  async function cancelRunInternal(runId: string, reason = "Cancelled by control plane") {
+  async function cancelRunInternal(
+    runId: string,
+    reason = "Cancelled by control plane",
+  ) {
     const run = await getRun(runId);
     if (!run) throw notFound("Heartbeat run not found");
     if (run.status !== "running" && run.status !== "queued") return run;
@@ -3387,11 +3839,19 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     return cancelled;
   }
 
-  async function cancelActiveForAgentInternal(agentId: string, reason = "Cancelled due to agent pause") {
+  async function cancelActiveForAgentInternal(
+    agentId: string,
+    reason = "Cancelled due to agent pause",
+  ) {
     const runs = await db
       .select()
       .from(heartbeatRuns)
-      .where(and(eq(heartbeatRuns.agentId, agentId), inArray(heartbeatRuns.status, ["queued", "running"])));
+      .where(
+        and(
+          eq(heartbeatRuns.agentId, agentId),
+          inArray(heartbeatRuns.status, ["queued", "running"]),
+        ),
+      );
 
     for (const run of runs) {
       await setRunStatus(run.id, "cancelled", {
@@ -3418,7 +3878,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
 
   async function cancelBudgetScopeWork(scope: BudgetEnforcementScope) {
     if (scope.scopeType === "agent") {
-      await cancelActiveForAgentInternal(scope.scopeId, "Cancelled due to budget pause");
+      await cancelActiveForAgentInternal(
+        scope.scopeId,
+        "Cancelled due to budget pause",
+      );
       await cancelPendingWakeupsForBudgetScope(scope);
       return;
     }
@@ -3426,15 +3889,15 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
     const runIds =
       scope.scopeType === "company"
         ? await db
-          .select({ id: heartbeatRuns.id })
-          .from(heartbeatRuns)
-          .where(
-            and(
-              eq(heartbeatRuns.companyId, scope.companyId),
-              inArray(heartbeatRuns.status, ["queued", "running"]),
-            ),
-          )
-          .then((rows) => rows.map((row) => row.id))
+            .select({ id: heartbeatRuns.id })
+            .from(heartbeatRuns)
+            .where(
+              and(
+                eq(heartbeatRuns.companyId, scope.companyId),
+                inArray(heartbeatRuns.status, ["queued", "running"]),
+              ),
+            )
+            .then((rows) => rows.map((row) => row.id))
         : await listProjectScopedRunIds(scope.companyId, scope.scopeId);
 
     for (const runId of runIds) {
@@ -3451,7 +3914,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
         .from(heartbeatRuns)
         .where(
           agentId
-            ? and(eq(heartbeatRuns.companyId, companyId), eq(heartbeatRuns.agentId, agentId))
+            ? and(
+                eq(heartbeatRuns.companyId, companyId),
+                eq(heartbeatRuns.agentId, agentId),
+              )
             : eq(heartbeatRuns.companyId, companyId),
         )
         .orderBy(desc(heartbeatRuns.createdAt));
@@ -3473,13 +3939,19 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       const latestTaskSession = await db
         .select()
         .from(agentTaskSessions)
-        .where(and(eq(agentTaskSessions.companyId, agent.companyId), eq(agentTaskSessions.agentId, agent.id)))
+        .where(
+          and(
+            eq(agentTaskSessions.companyId, agent.companyId),
+            eq(agentTaskSessions.agentId, agent.id),
+          ),
+        )
         .orderBy(desc(agentTaskSessions.updatedAt))
         .limit(1)
         .then((rows) => rows[0] ?? null);
       return {
         ...ensured,
-        sessionDisplayId: latestTaskSession?.sessionDisplayId ?? ensured.sessionId,
+        sessionDisplayId:
+          latestTaskSession?.sessionDisplayId ?? ensured.sessionId,
         sessionParamsJson: latestTaskSession?.sessionParamsJson ?? null,
       };
     },
@@ -3491,11 +3963,22 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       return db
         .select()
         .from(agentTaskSessions)
-        .where(and(eq(agentTaskSessions.companyId, agent.companyId), eq(agentTaskSessions.agentId, agentId)))
-        .orderBy(desc(agentTaskSessions.updatedAt), desc(agentTaskSessions.createdAt));
+        .where(
+          and(
+            eq(agentTaskSessions.companyId, agent.companyId),
+            eq(agentTaskSessions.agentId, agentId),
+          ),
+        )
+        .orderBy(
+          desc(agentTaskSessions.updatedAt),
+          desc(agentTaskSessions.createdAt),
+        );
     },
 
-    resetRuntimeSession: async (agentId: string, opts?: { taskKey?: string | null }) => {
+    resetRuntimeSession: async (
+      agentId: string,
+      opts?: { taskKey?: string | null },
+    ) => {
       const agent = await getAgent(agentId);
       if (!agent) throw notFound("Agent not found");
       await ensureRuntimeState(agent);
@@ -3534,11 +4017,19 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       db
         .select()
         .from(heartbeatRunEvents)
-        .where(and(eq(heartbeatRunEvents.runId, runId), gt(heartbeatRunEvents.seq, afterSeq)))
+        .where(
+          and(
+            eq(heartbeatRunEvents.runId, runId),
+            gt(heartbeatRunEvents.seq, afterSeq),
+          ),
+        )
         .orderBy(asc(heartbeatRunEvents.seq))
         .limit(Math.max(1, Math.min(limit, 1000))),
 
-    readLog: async (runId: string, opts?: { offset?: number; limitBytes?: number }) => {
+    readLog: async (
+      runId: string,
+      opts?: { offset?: number; limitBytes?: number },
+    ) => {
       const run = await getRun(runId);
       if (!run) throw notFound("Heartbeat run not found");
       if (!run.logStore || !run.logRef) throw notFound("Run log not found");
@@ -3565,7 +4056,10 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       source: "timer" | "assignment" | "on_demand" | "automation" = "on_demand",
       contextSnapshot: Record<string, unknown> = {},
       triggerDetail: "manual" | "ping" | "callback" | "system" = "manual",
-      actor?: { actorType?: "user" | "agent" | "system"; actorId?: string | null },
+      actor?: {
+        actorType?: "user" | "agent" | "system";
+        actorId?: string | null;
+      },
     ) =>
       enqueueWakeup(agentId, {
         source,
@@ -3588,12 +4082,19 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
       let skipped = 0;
 
       for (const agent of allAgents) {
-        if (agent.status === "paused" || agent.status === "terminated" || agent.status === "pending_approval") continue;
+        if (
+          agent.status === "paused" ||
+          agent.status === "terminated" ||
+          agent.status === "pending_approval"
+        )
+          continue;
         const policy = parseHeartbeatPolicy(agent);
         if (!policy.enabled || policy.intervalSec <= 0) continue;
 
         checked += 1;
-        const baseline = new Date(agent.lastHeartbeatAt ?? agent.createdAt).getTime();
+        const baseline = new Date(
+          agent.lastHeartbeatAt ?? agent.createdAt,
+        ).getTime();
         const elapsedMs = now.getTime() - baseline;
         if (elapsedMs < policy.intervalSec * 1000) continue;
 
@@ -3618,7 +4119,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
 
     cancelRun: (runId: string) => cancelRunInternal(runId),
 
-    cancelActiveForAgent: (agentId: string) => cancelActiveForAgentInternal(agentId),
+    cancelActiveForAgent: (agentId: string) =>
+      cancelActiveForAgentInternal(agentId),
 
     cancelBudgetScopeWork,
 

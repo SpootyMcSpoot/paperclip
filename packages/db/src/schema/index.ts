@@ -52,3 +52,7 @@ export { pluginJobs, pluginJobRuns } from "./plugin_jobs.js";
 export { pluginWebhookDeliveries } from "./plugin_webhooks.js";
 export { pluginLogs } from "./plugin_logs.js";
 export { memories } from "./memories.js";
+export { customers } from "./customers.js";
+export { subscriptions } from "./subscriptions.js";
+export { marketingCampaigns } from "./marketing_campaigns.js";
+export { seoProjects } from "./seo_projects.js";

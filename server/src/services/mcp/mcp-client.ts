@@ -101,14 +101,16 @@ export class MCPClientManager {
         const transport = new StdioClientTransport({
           reader: childProcess.stdout,
           writer: childProcess.stdin,
-        });
+        } as any);
 
         await client.connect(transport);
         this.clients.set(serverName, client);
         return client;
       }
 
-      console.error(`MCP server ${serverName} has no supported transport (command or url)`);
+      console.error(
+        `MCP server ${serverName} has no supported transport (command or url)`,
+      );
       return null;
     } catch (err) {
       console.error(`Failed to connect to MCP server ${serverName}:`, err);

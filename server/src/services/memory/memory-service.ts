@@ -3,6 +3,7 @@ import {
   getQdrantClient,
   getCompanyCollectionName,
   isQdrantConfigured,
+  checkQdrantHealth,
 } from "./qdrant-client.js";
 import {
   generateEmbedding,
@@ -12,6 +13,9 @@ import {
 import type { Database } from "@paperclipai/db";
 import { memories } from "@paperclipai/db";
 import { eq, and, desc } from "drizzle-orm";
+
+// Re-export functions that are used by memory-routes
+export { checkQdrantHealth, isQdrantConfigured, isProductionEmbeddingConfigured, getEmbeddingDimensions };
 
 export interface StoreMemoryInput {
   companyId: string;

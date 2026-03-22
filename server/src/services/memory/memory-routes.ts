@@ -77,7 +77,7 @@ export function registerMemoryRoutes(app: Express, db: Database) {
         issueId,
         documentId,
         heartbeatRunId,
-        createdByUserId: req.user?.id, // If auth middleware provides user
+        createdByUserId: (req as any).user?.id, // If auth middleware provides user
       });
 
       res.json(memory);
@@ -134,18 +134,21 @@ export function registerMemoryRoutes(app: Express, db: Database) {
   });
 
   // Delete memory
-  app.delete("/api/companies/:companyId/memories/:memoryId", async (req, res) => {
-    try {
-      const { companyId, memoryId } = req.params;
+  app.delete(
+    "/api/companies/:companyId/memories/:memoryId",
+    async (req, res) => {
+      try {
+        const { companyId, memoryId } = req.params;
 
-      await deleteMemory(db, memoryId, companyId);
+        await deleteMemory(db, memoryId, companyId);
 
-      res.json({ success: true });
-    } catch (err) {
-      console.error("Delete memory error:", err);
-      res.status(500).json({ error: "Failed to delete memory" });
-    }
-  });
+        res.json({ success: true });
+      } catch (err) {
+        console.error("Delete memory error:", err);
+        res.status(500).json({ error: "Failed to delete memory" });
+      }
+    },
+  );
 
   // Get memory statistics
   app.get("/api/companies/:companyId/memories/stats", async (req, res) => {
