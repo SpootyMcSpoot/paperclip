@@ -11,6 +11,7 @@ export {
   type MigrationBootstrapResult,
   type Db,
 } from "./client.js";
+export type { Db as Database } from "./client.js";
 export {
   runDatabaseBackup,
   runDatabaseRestore,

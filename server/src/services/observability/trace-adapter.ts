@@ -37,21 +37,19 @@ export async function traceAdapterExecution(
       companyId: agent.companyId,
       agentId: agent.id,
       agentName: agent.name,
-      agentRole: agent.role,
+      agentRole: (agent as any).role || "unknown",
       runId,
       adapterType: config.type || "unknown",
     },
-    tags: [
-      agent.role || "unknown",
-      config.type || "unknown",
-    ],
+    tags: [(agent as any).role || "unknown", config.type || "unknown"],
   });
 
   // Extract model and prompt from config/context
   const configObj = typeof config === "object" && config !== null ? config : {};
-  const model = "model" in configObj && typeof configObj.model === "string"
-    ? configObj.model
-    : "unknown";
+  const model =
+    "model" in configObj && typeof configObj.model === "string"
+      ? configObj.model
+      : "unknown";
 
   // Create generation span for LLM call
   const generation = trace.generation({
@@ -59,15 +57,18 @@ export async function traceAdapterExecution(
     model,
     input: context, // Full context passed to agent
     metadata: {
-      baseUrl: "baseUrl" in configObj && typeof configObj.baseUrl === "string"
-        ? configObj.baseUrl
-        : undefined,
-      temperature: "temperature" in configObj && typeof configObj.temperature === "number"
-        ? configObj.temperature
-        : undefined,
-      maxTokens: "maxTokens" in configObj && typeof configObj.maxTokens === "number"
-        ? configObj.maxTokens
-        : undefined,
+      baseUrl:
+        "baseUrl" in configObj && typeof configObj.baseUrl === "string"
+          ? configObj.baseUrl
+          : undefined,
+      temperature:
+        "temperature" in configObj && typeof configObj.temperature === "number"
+          ? configObj.temperature
+          : undefined,
+      maxTokens:
+        "maxTokens" in configObj && typeof configObj.maxTokens === "number"
+          ? configObj.maxTokens
+          : undefined,
     },
   });
 
@@ -83,7 +84,8 @@ export async function traceAdapterExecution(
             promptTokens: result.usage.inputTokens,
             completionTokens: result.usage.outputTokens,
             totalTokens:
-              (result.usage.inputTokens || 0) + (result.usage.outputTokens || 0),
+              (result.usage.inputTokens || 0) +
+              (result.usage.outputTokens || 0),
           }
         : undefined,
       statusMessage: result.exitCode === 0 ? "success" : "error",
