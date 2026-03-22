@@ -56,3 +56,25 @@ tests/release-smoke/test-results/
 tests/release-smoke/playwright-report/
 .superset/
 .claude/worktrees/
+# STAX-specific configuration (not for public repo)
+roadmap.yaml
+roadmap.json
+.stax/
+stax-*.yaml
+stax-*.json
+*-stax.yaml
+*-stax.json
+
+# STAX-specific deployment documentation (belongs in private STAX repo)
+# These docs contain proprietary infrastructure details and should NOT be in public repo
+docs/DEPLOYMENT.md
+docs/INITIAL_SETUP.md
+docs/**/STAX_*.md
+docs/**/*-stax-*.md
+docs/deployment/stax/
+docs/deploy/*-stax-*
+
+# Files containing internal infrastructure references
+**/*cluster.local*
+**/*spooty.io*
+**/*-internal-infra-*

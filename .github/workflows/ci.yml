@@ -16,5 +16,6 @@ jobs:
       working-directory: '.'
       run-tests: true
       run-docker-build: true
-      docker-registry: 'harbor.spooty.io'
+      # Override docker-registry in your fork's workflow file or use ghcr.io
+      # docker-registry: 'your-registry.example.com'
     secrets: inherit
