@@ -1,8 +1,8 @@
 export function buildConfig(v?: Record<string, unknown>): Record<string, unknown> {
   const config: Record<string, unknown> = {};
 
-  // Default to local STAX LiteLLM gateway
-  config.baseUrl = v?.baseUrl || "http://litellm.llm.svc.cluster.local:4000";
+  // Default to localhost LiteLLM gateway (override with baseUrl parameter)
+  config.baseUrl = v?.baseUrl || "http://localhost:4000";
 
   // Model defaults to empty - user must select from available models
   if (v?.model) config.model = v.model;
