@@ -28,7 +28,7 @@ const [ceo] = await db
     status: "idle",
     adapterType: "litellm_gateway",
     adapterConfig: {
-      baseUrl: "http://litellm.llm.svc.cluster.local:4000",
+      baseUrl: "http://localhost:4000",
       model: "qwen35-coder",
       maxTokens: 4096,
       temperature: 0.7,
