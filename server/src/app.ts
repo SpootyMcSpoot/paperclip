@@ -28,6 +28,7 @@ import { assetRoutes } from "./routes/assets.js";
 import { accessRoutes } from "./routes/access.js";
 import { pluginRoutes } from "./routes/plugins.js";
 import { pluginUiStaticRoutes } from "./routes/plugin-ui-static.js";
+import { chatRoutes } from "./routes/chat.js";
 import { registerMemoryRoutes } from "./services/memory/memory-routes.js";
 import {
   registerCustomerRoutes,
@@ -133,6 +134,7 @@ export async function createApp(
   // Mount API routes
   const api = Router();
   api.use(boardMutationGuard());
+  api.use(chatRoutes());
   api.use(
     "/health",
     healthRoutes(db, {

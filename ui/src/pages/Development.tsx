@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import Editor, { DiffEditor } from "@monaco-editor/react";
@@ -12,6 +12,9 @@ import {
   Save,
   Copy,
   Check,
+  Square,
+  Loader2,
+  ChevronDown,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,9 +23,14 @@ type ViewMode = "editor" | "diff" | "output";
 
 interface ChatMessage {
   id: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
+}
+
+interface ModelInfo {
+  id: string;
+  name: string;
 }
 
 export function Development() {
@@ -45,16 +53,55 @@ console.log(greet("Developer"));
     {
       id: "1",
       role: "assistant",
-      content: "Hello! I'm here to help with your development tasks. You can ask me to generate code, explain concepts, or help debug issues.",
+      content:
+        "Hello! I can help with your development tasks. Ask me to generate code, explain concepts, or debug issues. I have access to the code in the editor as context.",
       timestamp: new Date(),
     },
   ]);
   const [chatInput, setChatInput] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [models, setModels] = useState<ModelInfo[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("qwen35-coder");
+  const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const modelDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setBreadcrumbs([{ label: "Development Workspace" }]);
   }, [setBreadcrumbs]);
+
+  useEffect(() => {
+    fetch("/api/chat/models")
+      .then((res) => res.json())
+      .then((data: { models: ModelInfo[]; default?: string }) => {
+        if (data.models?.length > 0) {
+          setModels(data.models);
+          if (data.default) setSelectedModel(data.default);
+        }
+      })
+      .catch(() => {
+        setModels([{ id: "qwen35-coder", name: "qwen35-coder" }]);
+      });
+  }, []);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        modelDropdownRef.current &&
+        !modelDropdownRef.current.contains(e.target as Node)
+      ) {
+        setShowModelDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
@@ -63,7 +110,9 @@ console.log(greet("Developer"));
   };
 
   const handleRunCode = () => {
-    setOutput(`Running code...\n\n${code}\n\n[Output would appear here in a real execution environment]`);
+    setOutput(
+      `Running code...\n\n${code}\n\n[Output would appear here in a real execution environment]`,
+    );
     setViewMode("output");
   };
 
@@ -78,8 +127,14 @@ console.log(greet("Developer"));
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const handleSendMessage = () => {
-    if (!chatInput.trim()) return;
+  const handleStopStreaming = useCallback(() => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    setIsStreaming(false);
+  }, []);
+
+  const handleSendMessage = useCallback(async () => {
+    if (!chatInput.trim() || isStreaming) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -88,20 +143,152 @@ console.log(greet("Developer"));
       timestamp: new Date(),
     };
 
-    setChatMessages([...chatMessages, userMessage]);
-    setChatInput("");
+    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantPlaceholder: ChatMessage = {
+      id: assistantMessageId,
+      role: "assistant",
+      content: "",
+      timestamp: new Date(),
+    };
 
-    // Simulate agent response
-    setTimeout(() => {
-      const agentMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "I've received your message. In a real implementation, this would connect to the AI agent orchestrator.",
-        timestamp: new Date(),
-      };
-      setChatMessages((prev) => [...prev, agentMessage]);
-    }, 1000);
-  };
+    setChatMessages((prev) => [...prev, userMessage, assistantPlaceholder]);
+    setChatInput("");
+    setIsStreaming(true);
+
+    const systemMessage = {
+      role: "system",
+      content: `You are a coding assistant in a development workspace. The user has the following code in their editor:\n\n\`\`\`\n${code}\n\`\`\`\n\nHelp them with their development tasks. When generating code, format it in markdown code blocks with the appropriate language tag.`,
+    };
+
+    const apiMessages = [
+      systemMessage,
+      ...chatMessages
+        .filter((m) => m.role !== "system")
+        .map((m) => ({ role: m.role, content: m.content })),
+      { role: "user", content: chatInput },
+    ];
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    try {
+      const response = await fetch("/api/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: selectedModel,
+          messages: apiMessages,
+          stream: true,
+        }),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMsg =
+          errorData?.error ?? `Request failed (${response.status})`;
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? { ...m, content: `Error: ${errorMsg}` }
+              : m,
+          ),
+        );
+        setIsStreaming(false);
+        return;
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? { ...m, content: "Error: No response stream" }
+              : m,
+          ),
+        );
+        setIsStreaming(false);
+        return;
+      }
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith("data: ")) continue;
+
+          const data = trimmed.slice(6);
+          if (data === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(data) as {
+              choices?: { delta?: { content?: string } }[];
+            };
+            const token = parsed.choices?.[0]?.delta?.content;
+            if (token) {
+              accumulated += token;
+              setChatMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantMessageId
+                    ? { ...m, content: accumulated }
+                    : m,
+                ),
+              );
+            }
+          } catch {
+            // Skip malformed JSON chunks
+          }
+        }
+      }
+
+      if (!accumulated) {
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? { ...m, content: "(No response generated)" }
+              : m,
+          ),
+        );
+      }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? {
+                  ...m,
+                  content: m.content || "(Stopped)",
+                }
+              : m,
+          ),
+        );
+      } else {
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMessageId
+              ? {
+                  ...m,
+                  content: `Error: ${err instanceof Error ? err.message : "Unknown error"}`,
+                }
+              : m,
+          ),
+        );
+      }
+    } finally {
+      abortControllerRef.current = null;
+      setIsStreaming(false);
+    }
+  }, [chatInput, isStreaming, code, chatMessages, selectedModel]);
 
   return (
     <div className="flex flex-col h-full -m-6">
@@ -199,7 +386,9 @@ console.log(greet("Developer"));
 
           {viewMode === "output" && (
             <div className="h-full overflow-auto p-4 font-mono text-sm bg-muted/30">
-              <pre className="text-foreground whitespace-pre-wrap">{output || "No output yet. Run your code to see results."}</pre>
+              <pre className="text-foreground whitespace-pre-wrap">
+                {output || "No output yet. Run your code to see results."}
+              </pre>
             </div>
           )}
         </div>
@@ -209,7 +398,39 @@ console.log(greet("Developer"));
           {/* Chat Header */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
             <MessageSquare className="h-5 w-5 text-muted-foreground" />
-            <span className="text-sm font-medium">Agent Chat</span>
+            <span className="text-sm font-medium flex-1">Agent Chat</span>
+            {/* Model Selector */}
+            <div className="relative" ref={modelDropdownRef}>
+              <button
+                onClick={() => setShowModelDropdown(!showModelDropdown)}
+                className="flex items-center gap-1 px-2 py-1 text-xs rounded border border-border bg-background hover:bg-muted transition-colors"
+              >
+                <span className="max-w-[100px] truncate">
+                  {selectedModel}
+                </span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {showModelDropdown && models.length > 0 && (
+                <div className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-md border border-border bg-popover shadow-md">
+                  {models.map((model) => (
+                    <button
+                      key={model.id}
+                      onClick={() => {
+                        setSelectedModel(model.id);
+                        setShowModelDropdown(false);
+                      }}
+                      className={cn(
+                        "w-full text-left px-3 py-1.5 text-xs hover:bg-muted transition-colors",
+                        model.id === selectedModel &&
+                          "bg-muted font-medium",
+                      )}
+                    >
+                      {model.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Chat Messages */}
@@ -219,24 +440,28 @@ console.log(greet("Developer"));
                 key={message.id}
                 className={cn(
                   "flex flex-col gap-1",
-                  message.role === "user" ? "items-end" : "items-start"
+                  message.role === "user" ? "items-end" : "items-start",
                 )}
               >
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-lg px-3 py-2 text-sm",
+                    "max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap",
                     message.role === "user"
                       ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground"
+                      : "bg-muted text-foreground",
                   )}
                 >
-                  {message.content}
+                  {message.content ||
+                    (isStreaming && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ))}
                 </div>
                 <span className="text-xs text-muted-foreground">
                   {message.timestamp.toLocaleTimeString()}
                 </span>
               </div>
             ))}
+            <div ref={chatEndRef} />
           </div>
 
           {/* Chat Input */}
@@ -253,14 +478,26 @@ console.log(greet("Developer"));
                     handleSendMessage();
                   }
                 }}
-                className="flex-1 px-3 py-2 text-sm rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                disabled={isStreaming}
+                className="flex-1 px-3 py-2 text-sm rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
               />
-              <Button size="sm" onClick={handleSendMessage}>
-                Send
-              </Button>
+              {isStreaming ? (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleStopStreaming}
+                >
+                  <Square className="h-3 w-3 mr-1" />
+                  Stop
+                </Button>
+              ) : (
+                <Button size="sm" onClick={handleSendMessage}>
+                  Send
+                </Button>
+              )}
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Press Enter to send, Shift+Enter for new line
+              Press Enter to send. Model: {selectedModel}
             </p>
           </div>
         </div>
