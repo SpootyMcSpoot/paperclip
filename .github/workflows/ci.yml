@@ -91,6 +91,8 @@ jobs:
     name: Build
     runs-on: stax-general
     needs: [lint, type-check, test]
+    env:
+      NODE_OPTIONS: '--max-old-space-size=4096'
 
     steps:
       - name: Checkout code
