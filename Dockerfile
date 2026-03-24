@@ -1,10 +1,11 @@
-FROM harbor.spooty.io/dockerhub/library/node:22-alpine AS base
-RUN apk add --no-cache ca-certificates curl git bash libc6-compat
+FROM harbor.spooty.io/dockerhub/library/node:22-trixie-slim AS base
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl git \
+  && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
-RUN apk add --no-cache python3 make g++
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY cli/package.json cli/
 COPY server/package.json server/
@@ -28,7 +29,6 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS build
 WORKDIR /app
-RUN apk add --no-cache python3 make g++
 COPY --from=deps /app /app
 COPY . .
 RUN pnpm --filter @paperclipai/plugin-sdk build
@@ -39,10 +39,11 @@ RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" &
 FROM base AS production
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
-RUN apk add --no-cache github-cli \
-  && apk add --no-cache --virtual .build-deps python3 make g++ \
-  && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai \
-  && apk del .build-deps \
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
+  && apt-get update && apt-get install -y --no-install-recommends gh \
+  && rm -rf /var/lib/apt/lists/*
+RUN npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai \
   && mkdir -p /paperclip \
   && chown node:node /paperclip
 
