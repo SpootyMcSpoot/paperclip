@@ -3,6 +3,7 @@ import { Link } from "@/lib/router";
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -14,6 +15,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import {
   SortableContext,
+  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -62,6 +64,29 @@ function KanbanColumn({
   liveIssueIds?: Set<string>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
+  const isEmpty = issues.length === 0;
+
+  if (isEmpty) {
+    return (
+      <div className="flex flex-col min-w-[48px] w-[48px] shrink-0">
+        <div className="flex flex-col items-center gap-1 px-1 py-2 mb-1">
+          <StatusIcon status={status} />
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground text-center leading-tight">
+            {statusLabel(status)}
+          </span>
+          <span className="text-[10px] text-muted-foreground tabular-nums">
+            0
+          </span>
+        </div>
+        <div
+          ref={setNodeRef}
+          className={`flex-1 min-h-[120px] rounded-md transition-colors ${
+            isOver ? "bg-accent/40" : "bg-muted/10"
+          }`}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-w-[260px] w-[260px] shrink-0">
@@ -70,7 +95,7 @@ function KanbanColumn({
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {statusLabel(status)}
         </span>
-        <span className="text-xs text-muted-foreground/60 ml-auto tabular-nums">
+        <span className="text-xs text-muted-foreground ml-auto tabular-nums">
           {issues.length}
         </span>
       </div>
@@ -189,7 +214,8 @@ export function KanbanBoard({
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   const columnIssues = useMemo(() => {

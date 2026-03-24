@@ -50,7 +50,7 @@ export function ActiveAgentsPanel({ companyId }: ActiveAgentsPanelProps) {
   });
 
   return (
-    <div>
+    <div aria-live="polite" aria-atomic="false">
       <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         Agents
       </h3>
