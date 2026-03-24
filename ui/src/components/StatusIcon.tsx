@@ -3,11 +3,35 @@ import { cn } from "../lib/utils";
 import { issueStatusIcon, issueStatusIconDefault } from "../lib/status-colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { Check, X, Clock, Loader2, Pause, Minus, Eye } from "lucide-react";
 
 const allStatuses = ["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"];
 
 function statusLabel(status: string): string {
   return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Returns the inner shape icon for a given status (WCAG 1.4.1 compliance). */
+function StatusShapeIcon({ status }: { status: string }) {
+  const cls = "absolute inset-0 m-auto h-2.5 w-2.5";
+  switch (status) {
+    case "done":
+      return <Check className={cls} strokeWidth={3} />;
+    case "cancelled":
+      return <X className={cls} strokeWidth={3} />;
+    case "backlog":
+      return <Minus className={cls} strokeWidth={3} />;
+    case "todo":
+      return <Clock className={cls} strokeWidth={3} />;
+    case "in_progress":
+      return <Loader2 className={cls} strokeWidth={3} />;
+    case "in_review":
+      return <Eye className={cls} strokeWidth={3} />;
+    case "blocked":
+      return <Pause className={cls} strokeWidth={3} />;
+    default:
+      return null;
+  }
 }
 
 interface StatusIconProps {
@@ -20,7 +44,6 @@ interface StatusIconProps {
 export function StatusIcon({ status, onChange, className, showLabel }: StatusIconProps) {
   const [open, setOpen] = useState(false);
   const colorClass = issueStatusIcon[status] ?? issueStatusIconDefault;
-  const isDone = status === "done";
 
   const circle = (
     <span
@@ -31,9 +54,7 @@ export function StatusIcon({ status, onChange, className, showLabel }: StatusIco
         className
       )}
     >
-      {isDone && (
-        <span className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-current" />
-      )}
+      <StatusShapeIcon status={status} />
     </span>
   );
 

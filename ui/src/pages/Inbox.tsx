@@ -646,7 +646,7 @@ export function Inbox() {
       {showApprovalsSection && (
         <>
           {showSeparatorBefore("approvals") && <Separator />}
-          <div>
+          <div aria-live="polite" aria-atomic="false">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               {tab === "unread" ? "Approvals Needing Action" : "Approvals"}
             </h3>
@@ -728,7 +728,7 @@ export function Inbox() {
       {showFailedRunsSection && (
         <>
           {showSeparatorBefore("failed_runs") && <Separator />}
-          <div>
+          <div aria-live="polite" aria-atomic="false">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
               Failed Runs
             </h3>

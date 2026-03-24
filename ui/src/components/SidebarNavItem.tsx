@@ -67,6 +67,8 @@ export function SidebarNavItem({
               ? "bg-red-600/90 text-red-50"
               : "bg-primary text-primary-foreground",
           )}
+          aria-live="polite"
+          aria-label={`${badge} pending`}
         >
           {badge}
         </span>

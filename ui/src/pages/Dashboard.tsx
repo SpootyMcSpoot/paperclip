@@ -6,6 +6,7 @@ import { activityApi } from "../api/activity";
 import { issuesApi } from "../api/issues";
 import { agentsApi } from "../api/agents";
 import { projectsApi } from "../api/projects";
+import { goalsApi } from "../api/goals";
 import { heartbeatsApi } from "../api/heartbeats";
 import { useCompany } from "../context/CompanyContext";
 import { useDialog } from "../context/DialogContext";
@@ -19,23 +20,40 @@ import { ActivityRow } from "../components/ActivityRow";
 import { Identity } from "../components/Identity";
 import { timeAgo } from "../lib/timeAgo";
 import { cn, formatCents } from "../lib/utils";
-import { Bot, CircleDot, DollarSign, ShieldCheck, LayoutDashboard, PauseCircle } from "lucide-react";
+import {
+  Bot,
+  CircleDot,
+  DollarSign,
+  ShieldCheck,
+  Target,
+  LayoutDashboard,
+  PauseCircle,
+} from "lucide-react";
 import { ActiveAgentsPanel } from "../components/ActiveAgentsPanel";
-import { ChartCard, RunActivityChart, PriorityChart, IssueStatusChart, SuccessRateChart } from "../components/ActivityCharts";
+import {
+  ChartCard,
+  RunActivityChart,
+  PriorityChart,
+  IssueStatusChart,
+  SuccessRateChart,
+} from "../components/ActivityCharts";
 import { PageSkeleton } from "../components/PageSkeleton";
 import type { Agent, Issue } from "@stapleai/shared";
 import { PluginSlotOutlet } from "@/plugins/slots";
 
 function getRecentIssues(issues: Issue[]): Issue[] {
-  return [...issues]
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+  return [...issues].sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+  );
 }
 
 export function Dashboard() {
   const { selectedCompanyId, companies } = useCompany();
   const { openOnboarding } = useDialog();
   const { setBreadcrumbs } = useBreadcrumbs();
-  const [animatedActivityIds, setAnimatedActivityIds] = useState<Set<string>>(new Set());
+  const [animatedActivityIds, setAnimatedActivityIds] = useState<Set<string>>(
+    new Set(),
+  );
   const seenActivityIdsRef = useRef<Set<string>>(new Set());
   const hydratedActivityRef = useRef(false);
   const activityAnimationTimersRef = useRef<number[]>([]);
@@ -74,6 +92,12 @@ export function Dashboard() {
     enabled: !!selectedCompanyId,
   });
 
+  const { data: goals } = useQuery({
+    queryKey: queryKeys.goals.list(selectedCompanyId!),
+    queryFn: () => goalsApi.list(selectedCompanyId!),
+    enabled: !!selectedCompanyId,
+  });
+
   const { data: runs } = useQuery({
     queryKey: queryKeys.heartbeats(selectedCompanyId!),
     queryFn: () => heartbeatsApi.list(selectedCompanyId!),
@@ -81,7 +105,10 @@ export function Dashboard() {
   });
 
   const recentIssues = issues ? getRecentIssues(issues) : [];
-  const recentActivity = useMemo(() => (activity ?? []).slice(0, 10), [activity]);
+  const recentActivity = useMemo(
+    () => (activity ?? []).slice(0, 10),
+    [activity],
+  );
 
   useEffect(() => {
     for (const timer of activityAnimationTimersRef.current) {
@@ -125,7 +152,8 @@ export function Dashboard() {
         for (const id of newIds) next.delete(id);
         return next;
       });
-      activityAnimationTimersRef.current = activityAnimationTimersRef.current.filter((t) => t !== timer);
+      activityAnimationTimersRef.current =
+        activityAnimationTimersRef.current.filter((t) => t !== timer);
     }, 980);
     activityAnimationTimersRef.current.push(timer);
   }, [recentActivity]);
@@ -146,7 +174,8 @@ export function Dashboard() {
 
   const entityNameMap = useMemo(() => {
     const map = new Map<string, string>();
-    for (const i of issues ?? []) map.set(`issue:${i.id}`, i.identifier ?? i.id.slice(0, 8));
+    for (const i of issues ?? [])
+      map.set(`issue:${i.id}`, i.identifier ?? i.id.slice(0, 8));
     for (const a of agents ?? []) map.set(`agent:${a.id}`, a.name);
     for (const p of projects ?? []) map.set(`project:${p.id}`, p.name);
     return map;
@@ -175,7 +204,10 @@ export function Dashboard() {
       );
     }
     return (
-      <EmptyState icon={LayoutDashboard} message="Create or select a company to view the dashboard." />
+      <EmptyState
+        icon={LayoutDashboard}
+        message="Create or select a company to view the dashboard."
+      />
     );
   }
 
@@ -198,7 +230,9 @@ export function Dashboard() {
             </p>
           </div>
           <button
-            onClick={() => openOnboarding({ initialStep: 2, companyId: selectedCompanyId! })}
+            onClick={() =>
+              openOnboarding({ initialStep: 2, companyId: selectedCompanyId! })
+            }
             className="text-sm font-medium text-amber-700 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-100 underline underline-offset-2 shrink-0"
           >
             Create one here
@@ -216,23 +250,34 @@ export function Dashboard() {
                 <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-300" />
                 <div>
                   <p className="text-sm font-medium text-red-50">
-                    {data.budgets.activeIncidents} active budget incident{data.budgets.activeIncidents === 1 ? "" : "s"}
+                    {data.budgets.activeIncidents} active budget incident
+                    {data.budgets.activeIncidents === 1 ? "" : "s"}
                   </p>
                   <p className="text-xs text-red-100/70">
-                    {data.budgets.pausedAgents} agents paused · {data.budgets.pausedProjects} projects paused · {data.budgets.pendingApprovals} pending budget approvals
+                    {data.budgets.pausedAgents} agents paused ·{" "}
+                    {data.budgets.pausedProjects} projects paused ·{" "}
+                    {data.budgets.pendingApprovals} pending budget approvals
                   </p>
                 </div>
               </div>
-              <Link to="/costs" className="text-sm underline underline-offset-2 text-red-100">
+              <Link
+                to="/costs"
+                className="text-sm underline underline-offset-2 text-red-100"
+              >
                 Open budgets
               </Link>
             </div>
           ) : null}
 
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-1 sm:gap-2">
+          <div className="grid grid-cols-2 xl:grid-cols-5 gap-1 sm:gap-2">
             <MetricCard
               icon={Bot}
-              value={data.agents.active + data.agents.running + data.agents.paused + data.agents.error}
+              value={
+                data.agents.active +
+                data.agents.running +
+                data.agents.paused +
+                data.agents.error
+              }
               label="Agents Enabled"
               to="/agents"
               description={
@@ -281,6 +326,33 @@ export function Dashboard() {
                 </span>
               }
             />
+            {goals &&
+              (() => {
+                const activeGoals = goals.filter(
+                  (g) => g.status === "active",
+                ).length;
+                const achievedGoals = goals.filter(
+                  (g) => g.status === "achieved",
+                ).length;
+                const plannedGoals = goals.filter(
+                  (g) => g.status === "planned",
+                ).length;
+                return (
+                  <MetricCard
+                    icon={Target}
+                    value={goals.length}
+                    label="Goals"
+                    to="/goals"
+                    description={
+                      <span>
+                        {activeGoals} active{", "}
+                        {achievedGoals} achieved{", "}
+                        {plannedGoals} planned
+                      </span>
+                    }
+                  />
+                );
+              })()}
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -308,7 +380,7 @@ export function Dashboard() {
           <div className="grid md:grid-cols-2 gap-4">
             {/* Recent Activity */}
             {recentActivity.length > 0 && (
-              <div className="min-w-0">
+              <div className="min-w-0" aria-live="polite" aria-atomic="false">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                   Recent Activity
                 </h3>
@@ -320,7 +392,11 @@ export function Dashboard() {
                       agentMap={agentMap}
                       entityNameMap={entityNameMap}
                       entityTitleMap={entityTitleMap}
-                      className={animatedActivityIds.has(event.id) ? "activity-row-enter" : undefined}
+                      className={
+                        animatedActivityIds.has(event.id)
+                          ? "activity-row-enter"
+                          : undefined
+                      }
                     />
                   ))}
                 </div>
@@ -356,18 +432,27 @@ export function Dashboard() {
                             {issue.title}
                           </span>
                           <span className="flex items-center gap-2 sm:order-1 sm:shrink-0">
-                            <span className="hidden sm:inline-flex"><PriorityIcon priority={issue.priority} /></span>
-                            <span className="hidden sm:inline-flex"><StatusIcon status={issue.status} /></span>
+                            <span className="hidden sm:inline-flex">
+                              <PriorityIcon priority={issue.priority} />
+                            </span>
+                            <span className="hidden sm:inline-flex">
+                              <StatusIcon status={issue.status} />
+                            </span>
                             <span className="text-xs font-mono text-muted-foreground">
                               {issue.identifier ?? issue.id.slice(0, 8)}
                             </span>
-                            {issue.assigneeAgentId && (() => {
-                              const name = agentName(issue.assigneeAgentId);
-                              return name
-                                ? <span className="hidden sm:inline-flex"><Identity name={name} size="sm" /></span>
-                                : null;
-                            })()}
-                            <span className="text-xs text-muted-foreground sm:hidden">&middot;</span>
+                            {issue.assigneeAgentId &&
+                              (() => {
+                                const name = agentName(issue.assigneeAgentId);
+                                return name ? (
+                                  <span className="hidden sm:inline-flex">
+                                    <Identity name={name} size="sm" />
+                                  </span>
+                                ) : null;
+                              })()}
+                            <span className="text-xs text-muted-foreground sm:hidden">
+                              &middot;
+                            </span>
                             <span className="text-xs text-muted-foreground shrink-0 sm:order-last">
                               {timeAgo(issue.updatedAt)}
                             </span>
@@ -380,7 +465,6 @@ export function Dashboard() {
               )}
             </div>
           </div>
-
         </>
       )}
     </div>
