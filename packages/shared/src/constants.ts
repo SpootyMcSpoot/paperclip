@@ -209,6 +209,15 @@ export type GoalLevel = (typeof GOAL_LEVELS)[number];
 export const GOAL_STATUSES = ["planned", "active", "achieved", "cancelled"] as const;
 export type GoalStatus = (typeof GOAL_STATUSES)[number];
 
+export const KEY_RESULT_METRIC_TYPES = ["number", "percentage", "currency", "boolean", "custom"] as const;
+export type KeyResultMetricType = (typeof KEY_RESULT_METRIC_TYPES)[number];
+
+export const KEY_RESULT_STATUSES = ["not_started", "in_progress", "at_risk", "completed", "cancelled"] as const;
+export type KeyResultStatus = (typeof KEY_RESULT_STATUSES)[number];
+
+export const GOAL_PROGRESS_WEIGHTS = ["key_results_only", "issues_only", "balanced", "custom"] as const;
+export type GoalProgressWeight = (typeof GOAL_PROGRESS_WEIGHTS)[number];
+
 export const PROJECT_STATUSES = [
   "backlog",
   "planned",

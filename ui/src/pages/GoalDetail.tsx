@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "@/lib/router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { goalsApi } from "../api/goals";
@@ -15,6 +15,8 @@ import { StatusBadge } from "../components/StatusBadge";
 import { InlineEditor } from "../components/InlineEditor";
 import { EntityRow } from "../components/EntityRow";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { KeyResultList } from "../components/KeyResultList";
+import { GoalProgressSummary } from "../components/GoalProgressSummary";
 import { cn, projectUrl } from "../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -77,6 +79,18 @@ export function GoalDetail() {
     enabled: !!resolvedCompanyId
   });
 
+  const { data: progress } = useQuery({
+    queryKey: queryKeys.goals.progress(goalId!),
+    queryFn: () => goalsApi.getProgress(goalId!),
+    enabled: !!goalId,
+  });
+
+  const { data: keyResults } = useQuery({
+    queryKey: queryKeys.goals.keyResults(goalId!),
+    queryFn: () => goalsApi.listKeyResults(goalId!),
+    enabled: !!goalId,
+  });
+
   useEffect(() => {
     if (!goal?.companyId || goal.companyId === selectedCompanyId) return;
     setSelectedCompanyId(goal.companyId, { source: "route_sync" });
@@ -88,6 +102,9 @@ export function GoalDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.goals.detail(goalId!)
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.goals.progress(goalId!)
       });
       if (resolvedCompanyId) {
         queryClient.invalidateQueries({
@@ -106,6 +123,32 @@ export function GoalDetail() {
         `goals/${goalId ?? "draft"}`
       );
     }
+  });
+
+  const invalidateKrQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.goals.keyResults(goalId!),
+    });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.goals.progress(goalId!),
+    });
+  };
+
+  const createKeyResult = useMutation({
+    mutationFn: (data: Record<string, unknown>) =>
+      goalsApi.createKeyResult(goalId!, data),
+    onSuccess: invalidateKrQueries,
+  });
+
+  const updateKeyResult = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
+      goalsApi.updateKeyResult(id, data),
+    onSuccess: invalidateKrQueries,
+  });
+
+  const removeKeyResult = useMutation({
+    mutationFn: (id: string) => goalsApi.removeKeyResult(id),
+    onSuccess: invalidateKrQueries,
   });
 
   const childGoals = (allGoals ?? []).filter((g) => g.parentId === goalId);
@@ -176,10 +219,15 @@ export function GoalDetail() {
         />
       </div>
 
+      {progress && <GoalProgressSummary progress={progress} />}
+
       <Tabs defaultValue="children">
         <TabsList>
           <TabsTrigger value="children">
             Sub-Goals ({childGoals.length})
+          </TabsTrigger>
+          <TabsTrigger value="key-results">
+            Key Results ({keyResults?.length ?? 0})
           </TabsTrigger>
           <TabsTrigger value="projects">
             Projects ({linkedProjects.length})
@@ -202,6 +250,17 @@ export function GoalDetail() {
           ) : (
             <GoalTree goals={childGoals} goalLink={(g) => `/goals/${g.id}`} />
           )}
+        </TabsContent>
+
+        <TabsContent value="key-results" className="mt-4 space-y-3">
+          <KeyResultList
+            keyResults={keyResults ?? []}
+            progress={progress}
+            onCreate={(data) => createKeyResult.mutate(data)}
+            onUpdate={(id, data) => updateKeyResult.mutate({ id, data })}
+            onRemove={(id) => removeKeyResult.mutate(id)}
+            isCreating={createKeyResult.isPending}
+          />
         </TabsContent>
 
         <TabsContent value="projects" className="mt-4">

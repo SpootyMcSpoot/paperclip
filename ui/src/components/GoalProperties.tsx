@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import type { Goal } from "@paperclipai/shared";
-import { GOAL_STATUSES, GOAL_LEVELS } from "@paperclipai/shared";
+import { GOAL_STATUSES, GOAL_LEVELS, GOAL_PROGRESS_WEIGHTS } from "@paperclipai/shared";
 import { agentsApi } from "../api/agents";
 import { goalsApi } from "../api/goals";
 import { useCompany } from "../context/CompanyContext";
@@ -10,15 +10,26 @@ import { queryKeys } from "../lib/queryKeys";
 import { StatusBadge } from "./StatusBadge";
 import { formatDate, cn, agentUrl } from "../lib/utils";
 import { Separator } from "@/components/ui/separator";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface GoalPropertiesProps {
   goal: Goal;
   onUpdate?: (data: Record<string, unknown>) => void;
 }
 
-function PropertyRow({ label, children }: { label: string; children: React.ReactNode }) {
+function PropertyRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-start gap-3 py-1.5">
       <span className="text-xs text-muted-foreground shrink-0 w-20 mt-0.5">{label}</span>
@@ -56,7 +67,10 @@ function PickerButton({
             key={opt}
             variant="ghost"
             size="sm"
-            className={cn("w-full justify-start text-xs", opt === current && "bg-accent")}
+            className={cn(
+              "w-full justify-start text-xs",
+              opt === current && "bg-accent",
+            )}
             onClick={() => {
               onChange(opt);
               setOpen(false);
@@ -67,6 +81,31 @@ function PickerButton({
         ))}
       </PopoverContent>
     </Popover>
+  );
+}
+
+function DatePropertyRow({
+  label: rowLabel,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string | null;
+  onChange: (value: string | null) => void;
+}) {
+  const dateStr = value ? new Date(value).toISOString().split("T")[0] : "";
+  return (
+    <PropertyRow label={rowLabel}>
+      <Input
+        type="date"
+        value={dateStr}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v ? new Date(v).toISOString() : null);
+        }}
+        className="h-7 text-xs w-36 px-2"
+      />
+    </PropertyRow>
   );
 }
 
@@ -126,10 +165,7 @@ export function GoalProperties({ goal, onUpdate }: GoalPropertiesProps) {
 
         <PropertyRow label="Owner">
           {ownerAgent ? (
-            <Link
-              to={agentUrl(ownerAgent)}
-              className="text-sm hover:underline"
-            >
+            <Link to={agentUrl(ownerAgent)} className="text-sm hover:underline">
               {ownerAgent.name}
             </Link>
           ) : (
@@ -147,11 +183,57 @@ export function GoalProperties({ goal, onUpdate }: GoalPropertiesProps) {
             </Link>
           </PropertyRow>
         )}
+
+        <PropertyRow label="Progress">
+          {onUpdate ? (
+            <PickerButton
+              current={goal.progressWeight}
+              options={GOAL_PROGRESS_WEIGHTS}
+              onChange={(progressWeight) => onUpdate({ progressWeight })}
+            >
+              <span className="text-sm capitalize">
+                {label(goal.progressWeight)}
+              </span>
+            </PickerButton>
+          ) : (
+            <span className="text-sm capitalize">
+              {label(goal.progressWeight)}
+            </span>
+          )}
+        </PropertyRow>
       </div>
 
       <Separator />
 
       <div className="space-y-1">
+        {onUpdate ? (
+          <>
+            <DatePropertyRow
+              label="Start Date"
+              value={goal.startDate}
+              onChange={(startDate) => onUpdate({ startDate })}
+            />
+            <DatePropertyRow
+              label="Due Date"
+              value={goal.dueDate}
+              onChange={(dueDate) => onUpdate({ dueDate })}
+            />
+          </>
+        ) : (
+          <>
+            <PropertyRow label="Start Date">
+              <span className="text-sm">
+                {goal.startDate ? formatDate(goal.startDate) : "Not set"}
+              </span>
+            </PropertyRow>
+            <PropertyRow label="Due Date">
+              <span className="text-sm">
+                {goal.dueDate ? formatDate(goal.dueDate) : "Not set"}
+              </span>
+            </PropertyRow>
+          </>
+        )}
+
         <PropertyRow label="Created">
           <span className="text-sm">{formatDate(goal.createdAt)}</span>
         </PropertyRow>

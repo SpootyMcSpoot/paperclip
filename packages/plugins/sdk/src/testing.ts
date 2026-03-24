@@ -1136,6 +1136,9 @@ export function createTestHarness(options: TestHarnessOptions): TestHarness {
           status: input.status ?? "planned",
           parentId: input.parentId ?? null,
           ownerAgentId: input.ownerAgentId ?? null,
+          startDate: null,
+          dueDate: null,
+          progressWeight: "balanced",
           createdAt: now,
           updatedAt: now,
         };
