@@ -281,6 +281,13 @@
       "when": 1774093200000,
       "tag": "0039_monetization_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1774393529407,
+      "tag": "0040_absent_hellfire_club",
+      "breakpoints": true
     }
   ]
 }
