@@ -1,7 +1,7 @@
 import type {
   InstanceExperimentalSettings,
   PatchInstanceExperimentalSettings,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import { api } from "./client";
 
 export const instanceSettingsApi = {

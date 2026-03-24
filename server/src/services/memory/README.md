@@ -1,6 +1,6 @@
 # Memory Service
 
-Vector-based semantic memory for Paperclip agents using Qdrant.
+Vector-based semantic memory for Staple agents using Qdrant.
 
 ## Configuration
 
@@ -75,7 +75,7 @@ export QDRANT_PORT=6333
 
 ### Kubernetes
 
-Deploy Qdrant to your cluster, then configure Paperclip:
+Deploy Qdrant to your cluster, then configure Staple:
 
 ```yaml
 env:

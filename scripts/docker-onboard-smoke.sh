@@ -2,18 +2,18 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-IMAGE_NAME="${IMAGE_NAME:-paperclip-onboard-smoke}"
+IMAGE_NAME="${IMAGE_NAME:-staple-onboard-smoke}"
 HOST_PORT="${HOST_PORT:-3131}"
-PAPERCLIPAI_VERSION="${PAPERCLIPAI_VERSION:-latest}"
+STAPLEAI_VERSION="${STAPLEAI_VERSION:-latest}"
 DATA_DIR="${DATA_DIR:-$REPO_ROOT/data/docker-onboard-smoke}"
 HOST_UID="${HOST_UID:-$(id -u)}"
-PAPERCLIP_DEPLOYMENT_MODE="${PAPERCLIP_DEPLOYMENT_MODE:-authenticated}"
-PAPERCLIP_DEPLOYMENT_EXPOSURE="${PAPERCLIP_DEPLOYMENT_EXPOSURE:-private}"
-PAPERCLIP_PUBLIC_URL="${PAPERCLIP_PUBLIC_URL:-http://localhost:${HOST_PORT}}"
+STAPLE_DEPLOYMENT_MODE="${STAPLE_DEPLOYMENT_MODE:-authenticated}"
+STAPLE_DEPLOYMENT_EXPOSURE="${STAPLE_DEPLOYMENT_EXPOSURE:-private}"
+STAPLE_PUBLIC_URL="${STAPLE_PUBLIC_URL:-http://localhost:${HOST_PORT}}"
 SMOKE_AUTO_BOOTSTRAP="${SMOKE_AUTO_BOOTSTRAP:-true}"
 SMOKE_ADMIN_NAME="${SMOKE_ADMIN_NAME:-Smoke Admin}"
-SMOKE_ADMIN_EMAIL="${SMOKE_ADMIN_EMAIL:-smoke-admin@paperclip.local}"
-SMOKE_ADMIN_PASSWORD="${SMOKE_ADMIN_PASSWORD:-paperclip-smoke-password}"
+SMOKE_ADMIN_EMAIL="${SMOKE_ADMIN_EMAIL:-smoke-admin@staple.local}"
+SMOKE_ADMIN_PASSWORD="${SMOKE_ADMIN_PASSWORD:-staple-smoke-password}"
 CONTAINER_NAME="${IMAGE_NAME//[^a-zA-Z0-9_.-]/-}"
 LOG_PID=""
 COOKIE_JAR=""
@@ -52,12 +52,12 @@ generate_bootstrap_invite_url() {
   local bootstrap_status
   if bootstrap_output="$(
     docker exec \
-      -e PAPERCLIP_DEPLOYMENT_MODE="$PAPERCLIP_DEPLOYMENT_MODE" \
-      -e PAPERCLIP_DEPLOYMENT_EXPOSURE="$PAPERCLIP_DEPLOYMENT_EXPOSURE" \
-      -e PAPERCLIP_PUBLIC_URL="$PAPERCLIP_PUBLIC_URL" \
-      -e PAPERCLIP_HOME="/paperclip" \
+      -e STAPLE_DEPLOYMENT_MODE="$STAPLE_DEPLOYMENT_MODE" \
+      -e STAPLE_DEPLOYMENT_EXPOSURE="$STAPLE_DEPLOYMENT_EXPOSURE" \
+      -e STAPLE_PUBLIC_URL="$STAPLE_PUBLIC_URL" \
+      -e STAPLE_HOME="/staple" \
       "$CONTAINER_NAME" bash -lc \
-      'timeout 20s npx --yes "paperclipai@${PAPERCLIPAI_VERSION}" auth bootstrap-ceo --data-dir "$PAPERCLIP_HOME" --base-url "$PAPERCLIP_PUBLIC_URL"' \
+      'timeout 20s npx --yes "stapleai@${STAPLEAI_VERSION}" auth bootstrap-ceo --data-dir "$STAPLE_HOME" --base-url "$STAPLE_PUBLIC_URL"' \
       2>&1
   )"; then
     bootstrap_status=0
@@ -101,7 +101,7 @@ post_json_with_cookies() {
     -c "$COOKIE_JAR" \
     -b "$COOKIE_JAR" \
     -H "Content-Type: application/json" \
-    -H "Origin: $PAPERCLIP_PUBLIC_URL" \
+    -H "Origin: $STAPLE_PUBLIC_URL" \
     -X POST \
     "$url" \
     --data "$body"
@@ -120,7 +120,7 @@ sign_up_or_sign_in() {
   local signup_response="$TMP_DIR/signup.json"
   local signup_status
   signup_status="$(post_json_with_cookies \
-    "$PAPERCLIP_PUBLIC_URL/api/auth/sign-up/email" \
+    "$STAPLE_PUBLIC_URL/api/auth/sign-up/email" \
     "{\"name\":\"$SMOKE_ADMIN_NAME\",\"email\":\"$SMOKE_ADMIN_EMAIL\",\"password\":\"$SMOKE_ADMIN_PASSWORD\"}" \
     "$signup_response")"
   if [[ "$signup_status" =~ ^2 ]]; then
@@ -131,7 +131,7 @@ sign_up_or_sign_in() {
   local signin_response="$TMP_DIR/signin.json"
   local signin_status
   signin_status="$(post_json_with_cookies \
-    "$PAPERCLIP_PUBLIC_URL/api/auth/sign-in/email" \
+    "$STAPLE_PUBLIC_URL/api/auth/sign-in/email" \
     "{\"email\":\"$SMOKE_ADMIN_EMAIL\",\"password\":\"$SMOKE_ADMIN_PASSWORD\"}" \
     "$signin_response")"
   if [[ "$signin_status" =~ ^2 ]]; then
@@ -150,7 +150,7 @@ sign_up_or_sign_in() {
 }
 
 auto_bootstrap_authenticated_smoke() {
-  local health_url="$PAPERCLIP_PUBLIC_URL/api/health"
+  local health_url="$STAPLE_PUBLIC_URL/api/health"
   local health_json
   health_json="$(curl -fsS "$health_url")"
   if [[ "$health_json" != *'"deploymentMode":"authenticated"'* ]]; then
@@ -170,7 +170,7 @@ auto_bootstrap_authenticated_smoke() {
     local accept_response="$TMP_DIR/accept.json"
     local accept_status
     accept_status="$(post_json_with_cookies \
-      "$PAPERCLIP_PUBLIC_URL/api/invites/$invite_token/accept" \
+      "$STAPLE_PUBLIC_URL/api/invites/$invite_token/accept" \
       '{"requestType":"human"}' \
       "$accept_response")"
     if [[ ! "$accept_status" =~ ^2 ]]; then
@@ -183,7 +183,7 @@ auto_bootstrap_authenticated_smoke() {
   fi
 
   local session_json
-  session_json="$(get_with_cookies "$PAPERCLIP_PUBLIC_URL/api/auth/get-session")"
+  session_json="$(get_with_cookies "$STAPLE_PUBLIC_URL/api/auth/get-session")"
   if [[ "$session_json" != *'"userId"'* ]]; then
     echo "Smoke bootstrap failed: no authenticated session after bootstrap" >&2
     echo "$session_json" >&2
@@ -191,7 +191,7 @@ auto_bootstrap_authenticated_smoke() {
   fi
 
   local companies_json
-  companies_json="$(get_with_cookies "$PAPERCLIP_PUBLIC_URL/api/companies")"
+  companies_json="$(get_with_cookies "$STAPLE_PUBLIC_URL/api/companies")"
   if [[ "${companies_json:0:1}" != "[" ]]; then
     echo "Smoke bootstrap failed: board companies endpoint did not return JSON array" >&2
     echo "$companies_json" >&2
@@ -204,7 +204,7 @@ auto_bootstrap_authenticated_smoke() {
 
 echo "==> Building onboard smoke image"
 docker build \
-  --build-arg PAPERCLIPAI_VERSION="$PAPERCLIPAI_VERSION" \
+  --build-arg STAPLEAI_VERSION="$STAPLEAI_VERSION" \
   --build-arg HOST_UID="$HOST_UID" \
   -f "$REPO_ROOT/Dockerfile.onboard-smoke" \
   -t "$IMAGE_NAME" \
@@ -212,10 +212,10 @@ docker build \
 
 echo "==> Running onboard smoke container"
 echo "    UI should be reachable at: http://localhost:$HOST_PORT"
-echo "    Public URL: $PAPERCLIP_PUBLIC_URL"
+echo "    Public URL: $STAPLE_PUBLIC_URL"
 echo "    Smoke auto-bootstrap: $SMOKE_AUTO_BOOTSTRAP"
 echo "    Data dir: $DATA_DIR"
-echo "    Deployment: $PAPERCLIP_DEPLOYMENT_MODE/$PAPERCLIP_DEPLOYMENT_EXPOSURE"
+echo "    Deployment: $STAPLE_DEPLOYMENT_MODE/$STAPLE_DEPLOYMENT_EXPOSURE"
 echo "    Live output: onboard banner and server logs stream in this terminal (Ctrl+C to stop)"
 
 docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
@@ -225,24 +225,24 @@ docker run -d --rm \
   -p "$HOST_PORT:3100" \
   -e HOST=0.0.0.0 \
   -e PORT=3100 \
-  -e PAPERCLIP_DEPLOYMENT_MODE="$PAPERCLIP_DEPLOYMENT_MODE" \
-  -e PAPERCLIP_DEPLOYMENT_EXPOSURE="$PAPERCLIP_DEPLOYMENT_EXPOSURE" \
-  -e PAPERCLIP_PUBLIC_URL="$PAPERCLIP_PUBLIC_URL" \
-  -v "$DATA_DIR:/paperclip" \
+  -e STAPLE_DEPLOYMENT_MODE="$STAPLE_DEPLOYMENT_MODE" \
+  -e STAPLE_DEPLOYMENT_EXPOSURE="$STAPLE_DEPLOYMENT_EXPOSURE" \
+  -e STAPLE_PUBLIC_URL="$STAPLE_PUBLIC_URL" \
+  -v "$DATA_DIR:/staple" \
   "$IMAGE_NAME" >/dev/null
 
 docker logs -f "$CONTAINER_NAME" &
 LOG_PID=$!
 
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/paperclip-onboard-smoke.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/staple-onboard-smoke.XXXXXX")"
 COOKIE_JAR="$TMP_DIR/cookies.txt"
 
-if ! wait_for_http "$PAPERCLIP_PUBLIC_URL/api/health" 90 1; then
-  echo "Smoke bootstrap failed: server did not become ready at $PAPERCLIP_PUBLIC_URL/api/health" >&2
+if ! wait_for_http "$STAPLE_PUBLIC_URL/api/health" 90 1; then
+  echo "Smoke bootstrap failed: server did not become ready at $STAPLE_PUBLIC_URL/api/health" >&2
   exit 1
 fi
 
-if [[ "$SMOKE_AUTO_BOOTSTRAP" == "true" && "$PAPERCLIP_DEPLOYMENT_MODE" == "authenticated" ]]; then
+if [[ "$SMOKE_AUTO_BOOTSTRAP" == "true" && "$STAPLE_DEPLOYMENT_MODE" == "authenticated" ]]; then
   auto_bootstrap_authenticated_smoke
 fi
 

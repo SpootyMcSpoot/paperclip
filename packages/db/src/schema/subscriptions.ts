@@ -9,7 +9,7 @@ export const subscriptions = pgTable("subscriptions", {
   stripeSubscriptionId: text("stripe_subscription_id"),
   stripePriceId: text("stripe_price_id"),
   status: text("status").notNull(), // 'active', 'canceled', 'past_due', 'trialing'
-  product: text("product").notNull(), // 'visiblai', 'marketing', 'paperclip'
+  product: text("product").notNull(), // 'visiblai', 'marketing', 'staple'
   tier: text("tier").notNull(), // 'starter', 'growth', 'enterprise'
   priceCents: integer("price_cents").notNull(),
   billingPeriod: text("billing_period").notNull().default("monthly"), // 'monthly', 'yearly'

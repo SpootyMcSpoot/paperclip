@@ -19,7 +19,7 @@ Wrap adapters with firewall checks:
 
 ```typescript
 // packages/adapters/litellm-gateway/src/server/execute.ts
-import { checkPrompt, checkResponse, isAIFirewallEnabled } from "@paperclipai/server/services/ai-firewall";
+import { checkPrompt, checkResponse, isAIFirewallEnabled } from "@stapleai/server/services/ai-firewall";
 
 export async function execute(ctx: AdapterExecutionContext) {
   // Check prompt if firewall enabled

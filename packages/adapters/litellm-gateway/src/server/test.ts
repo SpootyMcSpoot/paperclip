@@ -2,8 +2,8 @@ import type {
   AdapterEnvironmentCheck,
   AdapterEnvironmentTestContext,
   AdapterEnvironmentTestResult,
-} from "@paperclipai/adapter-utils";
-import { asString, parseObject } from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils";
+import { asString, parseObject } from "@stapleai/adapter-utils/server-utils";
 
 function summarizeStatus(
   checks: AdapterEnvironmentCheck[]
@@ -148,7 +148,7 @@ export async function testEnvironment(
         code: "litellm_gateway_probe_failed",
         level: "warn",
         message: "Failed to reach LiteLLM /v1/models endpoint.",
-        hint: "Verify that LiteLLM proxy is running and accessible from the Paperclip server.",
+        hint: "Verify that LiteLLM proxy is running and accessible from the Staple server.",
       });
     }
   }

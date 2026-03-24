@@ -1,6 +1,6 @@
 # Integration Services
 
-Paperclip supports optional integrations with external services for enhanced capabilities.
+Staple supports optional integrations with external services for enhanced capabilities.
 
 ## Memory Service (Qdrant)
 

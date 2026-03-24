@@ -117,7 +117,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
-          images: harbor.spooty.io/library/paperclip
+          images: harbor.spooty.io/library/staple
           tags: |
             type=semver,pattern={{version}},value=v${{ steps.version.outputs.VERSION }}
             type=semver,pattern={{major}}.{{minor}},value=v${{ steps.version.outputs.VERSION }}
@@ -132,7 +132,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=harbor.spooty.io/library/paperclip:buildcache-arm64
-          cache-to: type=registry,ref=harbor.spooty.io/library/paperclip:buildcache-arm64,mode=max
+          cache-from: type=registry,ref=harbor.spooty.io/library/staple:buildcache-arm64
+          cache-to: type=registry,ref=harbor.spooty.io/library/staple:buildcache-arm64,mode=max
           provenance: false
           sbom: false

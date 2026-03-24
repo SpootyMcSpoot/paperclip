@@ -72,7 +72,7 @@ export class MCPClientManager {
     try {
       // Create client
       const client = new Client({
-        name: "paperclip-client",
+        name: "staple-client",
         version: "1.0.0",
       });
 

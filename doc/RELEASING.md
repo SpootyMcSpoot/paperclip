@@ -1,6 +1,6 @@
-# Releasing Paperclip
+# Releasing Staple
 
-Maintainer runbook for shipping Paperclip across npm, GitHub, and the website-facing changelog surface.
+Maintainer runbook for shipping Staple across npm, GitHub, and the website-facing changelog surface.
 
 The release model is now commit-driven:
 
@@ -11,7 +11,7 @@ The release model is now commit-driven:
 
 ## Versioning Model
 
-Paperclip uses calendar versions that still fit semver syntax:
+Staple uses calendar versions that still fit semver syntax:
 
 - stable: `YYYY.M.D`
 - canary: `YYYY.M.D-canary.N`
@@ -32,7 +32,7 @@ Important constraints:
 Every stable release has four separate surfaces:
 
 1. **Verification** — the exact git SHA passes typecheck, tests, and build
-2. **npm** — `paperclipai` and public workspace packages are published
+2. **npm** — `stapleai` and public workspace packages are published
 3. **GitHub** — the stable release gets a git tag and GitHub Release
 4. **Website / announcements** — the stable changelog is published externally and announced
 
@@ -65,7 +65,7 @@ It:
 Users install canaries with:
 
 ```bash
-npx paperclipai@canary onboard
+npx stapleai@canary onboard
 ```
 
 ### Stable
@@ -130,7 +130,7 @@ Recommended local generation flow:
 
 ```bash
 VERSION=2026.3.17
-claude --print --output-format stream-json --verbose --dangerously-skip-permissions --model claude-opus-4-6 "Use the release-changelog skill to draft or update releases/v${VERSION}.md for Paperclip. Read doc/RELEASING.md and .agents/skills/release-changelog/SKILL.md, then generate the stable changelog for v${VERSION} from commits since the last stable tag. Do not create a canary changelog."
+claude --print --output-format stream-json --verbose --dangerously-skip-permissions --model claude-opus-4-6 "Use the release-changelog skill to draft or update releases/v${VERSION}.md for Staple. Read doc/RELEASING.md and .agents/skills/release-changelog/SKILL.md, then generate the stable changelog for v${VERSION} from commits since the last stable tag. Do not create a canary changelog."
 ```
 
 The repo intentionally does not run this through GitHub Actions because:
@@ -144,25 +144,25 @@ The repo intentionally does not run this through GitHub Actions because:
 For a canary:
 
 ```bash
-PAPERCLIPAI_VERSION=canary ./scripts/docker-onboard-smoke.sh
+STAPLEAI_VERSION=canary ./scripts/docker-onboard-smoke.sh
 ```
 
 For the current stable:
 
 ```bash
-PAPERCLIPAI_VERSION=latest ./scripts/docker-onboard-smoke.sh
+STAPLEAI_VERSION=latest ./scripts/docker-onboard-smoke.sh
 ```
 
 Useful isolated variants:
 
 ```bash
-HOST_PORT=3232 DATA_DIR=./data/release-smoke-canary PAPERCLIPAI_VERSION=canary ./scripts/docker-onboard-smoke.sh
-HOST_PORT=3233 DATA_DIR=./data/release-smoke-stable PAPERCLIPAI_VERSION=latest ./scripts/docker-onboard-smoke.sh
+HOST_PORT=3232 DATA_DIR=./data/release-smoke-canary STAPLEAI_VERSION=canary ./scripts/docker-onboard-smoke.sh
+HOST_PORT=3233 DATA_DIR=./data/release-smoke-stable STAPLEAI_VERSION=latest ./scripts/docker-onboard-smoke.sh
 ```
 
 Minimum checks:
 
-- `npx paperclipai@canary onboard` installs
+- `npx stapleai@canary onboard` installs
 - onboarding completes without crashes
 - the server boots
 - the UI loads

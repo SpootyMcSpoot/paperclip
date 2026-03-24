@@ -25,7 +25,7 @@ EMBEDDING_DIMENSIONS=1536                # Default
 
 **Benefits:**
 - Centralized model access via LiteLLM
-- No API keys needed in Paperclip
+- No API keys needed in Staple
 - Supports fallback models
 - Cost tracking via LiteLLM
 

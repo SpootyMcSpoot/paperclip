@@ -1,4 +1,4 @@
-import { parseObject } from "@paperclipai/adapter-utils/server-utils";
+import { parseObject } from "@stapleai/adapter-utils/server-utils";
 
 type AdapterModel = { id: string; label: string };
 

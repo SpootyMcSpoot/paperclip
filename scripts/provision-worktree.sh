@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-base_cwd="${PAPERCLIP_WORKSPACE_BASE_CWD:?PAPERCLIP_WORKSPACE_BASE_CWD is required}"
-worktree_cwd="${PAPERCLIP_WORKSPACE_CWD:?PAPERCLIP_WORKSPACE_CWD is required}"
+base_cwd="${STAPLE_WORKSPACE_BASE_CWD:?STAPLE_WORKSPACE_BASE_CWD is required}"
+worktree_cwd="${STAPLE_WORKSPACE_CWD:?STAPLE_WORKSPACE_CWD is required}"
 
 if [[ ! -d "$base_cwd" ]]; then
   echo "Base workspace does not exist: $base_cwd" >&2
@@ -32,6 +32,6 @@ done < <(
       -type d \
       -name node_modules \
       ! -path './.git/*' \
-      ! -path './.paperclip/*' \
+      ! -path './.staple/*' \
       | sed 's#^\./##'
 )

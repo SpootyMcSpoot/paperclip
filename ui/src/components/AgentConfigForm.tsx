@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AGENT_ADAPTER_TYPES } from "@paperclipai/shared";
+import { AGENT_ADAPTER_TYPES } from "@stapleai/shared";
 import {
   hasSessionCompactionThresholds,
   resolveSessionCompactionPolicy,
   type ResolvedSessionCompactionPolicy,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import type {
   Agent,
   AdapterEnvironmentTestResult,
   CompanySecret,
   EnvBinding,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import type { AdapterModel } from "../api/agents";
 import { agentsApi } from "../api/agents";
 import { secretsApi } from "../api/secrets";
@@ -19,9 +19,9 @@ import { assetsApi } from "../api/assets";
 import {
   DEFAULT_CODEX_LOCAL_BYPASS_APPROVALS_AND_SANDBOX,
   DEFAULT_CODEX_LOCAL_MODEL,
-} from "@paperclipai/adapter-codex-local";
-import { DEFAULT_CURSOR_LOCAL_MODEL } from "@paperclipai/adapter-cursor-local";
-import { DEFAULT_GEMINI_LOCAL_MODEL } from "@paperclipai/adapter-gemini-local";
+} from "@stapleai/adapter-codex-local";
+import { DEFAULT_CURSOR_LOCAL_MODEL } from "@stapleai/adapter-cursor-local";
+import { DEFAULT_GEMINI_LOCAL_MODEL } from "@stapleai/adapter-gemini-local";
 import {
   Popover,
   PopoverContent,
@@ -52,10 +52,10 @@ import { OpenCodeLogoIcon } from "./OpenCodeLogoIcon";
 
 /* ---- Create mode values ---- */
 
-// Canonical type lives in @paperclipai/adapter-utils; re-exported here
+// Canonical type lives in @stapleai/adapter-utils; re-exported here
 // so existing imports from this file keep working.
-export type { CreateConfigValues } from "@paperclipai/adapter-utils";
-import type { CreateConfigValues } from "@paperclipai/adapter-utils";
+export type { CreateConfigValues } from "@stapleai/adapter-utils";
+import type { CreateConfigValues } from "@stapleai/adapter-utils";
 
 /* ---- Props ---- */
 
@@ -1192,10 +1192,10 @@ function SessionCompactionPolicyCard({
     !policy.enabled || !hasSessionCompactionThresholds(policy);
   const nativeSummary =
     adapterSessionManagement.nativeContextManagement === "confirmed"
-      ? `${adapterLabel} is treated as natively managing long context, so Paperclip fresh-session rotation defaults to off.`
+      ? `${adapterLabel} is treated as natively managing long context, so Staple fresh-session rotation defaults to off.`
       : adapterSessionManagement.nativeContextManagement === "likely"
-      ? `${adapterLabel} likely manages long context itself, but Paperclip still keeps conservative rotation defaults for now.`
-      : `${adapterLabel} does not have verified native compaction behavior, so Paperclip keeps conservative rotation defaults.`;
+      ? `${adapterLabel} likely manages long context itself, but Staple still keeps conservative rotation defaults for now.`
+      : `${adapterLabel} does not have verified native compaction behavior, so Staple keeps conservative rotation defaults.`;
 
   return (
     <div className="rounded-md border border-sky-500/25 bg-sky-500/10 px-3 py-3 space-y-2">
@@ -1210,8 +1210,8 @@ function SessionCompactionPolicyCard({
       <p className="text-xs text-sky-100/90">{nativeSummary}</p>
       <p className="text-xs text-sky-100/80">
         {rotationDisabled
-          ? "No Paperclip-managed fresh-session thresholds are active for this adapter."
-          : "Paperclip will start a fresh session when one of these thresholds is reached."}
+          ? "No Staple-managed fresh-session thresholds are active for this adapter."
+          : "Staple will start a fresh session when one of these thresholds is reached."}
       </p>
       <div className="grid grid-cols-3 gap-2 text-[11px] text-sky-100/85 tabular-nums">
         <div>
@@ -1580,7 +1580,7 @@ function EnvVarEditor({
       })}
       {sealError && <p className="text-[11px] text-destructive">{sealError}</p>}
       <p className="text-[11px] text-muted-foreground/60">
-        PAPERCLIP_* variables are injected automatically at runtime.
+        STAPLE_* variables are injected automatically at runtime.
       </p>
     </div>
   );

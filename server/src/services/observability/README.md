@@ -1,6 +1,6 @@
 # Observability Service
 
-LLM observability and cost tracking for Paperclip agents using Langfuse.
+LLM observability and cost tracking for Staple agents using Langfuse.
 
 ## Configuration
 
@@ -91,7 +91,7 @@ export LANGFUSE_SECRET_KEY=sk-lf-...
 
 ### Kubernetes
 
-Deploy Langfuse to your cluster, create project, then configure Paperclip:
+Deploy Langfuse to your cluster, create project, then configure Staple:
 
 ```yaml
 env:
@@ -114,7 +114,7 @@ volumeMounts:
 ## Getting Keys
 
 1. Access Langfuse UI
-2. Create a project (e.g., "Paperclip Production")
+2. Create a project (e.g., "Staple Production")
 3. Go to Settings → API Keys
 4. Create new key pair
 5. Copy public key (pk-lf-...) and secret key (sk-lf-...)

@@ -31,7 +31,7 @@ The `litellm_gateway` adapter connects to a LiteLLM proxy server, enabling unifi
 | `baseUrl` | string | Yes | LiteLLM proxy base URL (e.g., `http://localhost:4000`) |
 | `model` | string | Yes | Model identifier as configured in LiteLLM |
 | `apiKey` | string | No | API key for LiteLLM proxy (or use `LITELLM_API_KEY` env var) |
-| `promptTemplate` | string | No | Prompt template for all runs (default: `You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.`) |
+| `promptTemplate` | string | No | Prompt template for all runs (default: `You are agent {{agent.id}} ({{agent.name}}). Continue your Staple work.`) |
 | `temperature` | number | No | Sampling temperature 0.0-2.0 (default: 0.7) |
 | `maxTokens` | number | No | Maximum output tokens (default: 4096) |
 | `timeoutSec` | number | No | Request timeout in seconds (default: 300) |
@@ -39,7 +39,7 @@ The `litellm_gateway` adapter connects to a LiteLLM proxy server, enabling unifi
 
 ## How It Works
 
-1. Paperclip renders the `promptTemplate` with context variables (agent, run, task info)
+1. Staple renders the `promptTemplate` with context variables (agent, run, task info)
 2. The rendered prompt is sent to LiteLLM via OpenAI-compatible `/v1/chat/completions` API
 3. LiteLLM routes the request to the configured provider
 4. Responses stream back via SSE with real-time output
@@ -105,7 +105,7 @@ Start LiteLLM:
 litellm --config config.yaml --port 4000
 ```
 
-## Paperclip Agent Configuration
+## Staple Agent Configuration
 
 ```json
 {
@@ -114,7 +114,7 @@ litellm --config config.yaml --port 4000
   "model": "gpt-4",
   "temperature": 0.7,
   "maxTokens": 4096,
-  "promptTemplate": "You are {{agent.name}}. Continue your Paperclip work."
+  "promptTemplate": "You are {{agent.name}}. Continue your Staple work."
 }
 ```
 

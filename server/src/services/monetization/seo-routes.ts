@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
-import type { Db } from "@paperclipai/db";
-import { seoProjects, customers } from "@paperclipai/db";
+import type { Db } from "@stapleai/db";
+import { seoProjects, customers } from "@stapleai/db";
 import { eq, and, desc } from "drizzle-orm";
 
 /**

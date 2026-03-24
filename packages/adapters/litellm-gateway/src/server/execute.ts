@@ -1,13 +1,13 @@
 import type {
   AdapterExecutionContext,
   AdapterExecutionResult,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import {
   asNumber,
   asString,
   parseObject,
   renderTemplate,
-} from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils/server-utils";
 
 function nonEmpty(value: unknown): string | null {
   return typeof value === "string" && value.trim().length > 0
@@ -245,7 +245,7 @@ export async function execute(
 
   const promptTemplate = asString(
     configObj.promptTemplate,
-    "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work."
+    "You are agent {{agent.id}} ({{agent.name}}). Continue your Staple work."
   );
 
   const prompt = renderTemplate(promptTemplate, {

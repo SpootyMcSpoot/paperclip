@@ -1,6 +1,6 @@
 # Code Graph Service
 
-Semantic code analysis for Paperclip agents using graph-based code understanding.
+Semantic code analysis for Staple agents using graph-based code understanding.
 
 ## What is Code Graph?
 

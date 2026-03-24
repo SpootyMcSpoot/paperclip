@@ -3,8 +3,8 @@ import path from "node:path";
 import { execFile as execFileCallback } from "node:child_process";
 import { promisify } from "node:util";
 import { and, asc, desc, eq, gt, inArray, sql } from "drizzle-orm";
-import type { Db } from "@paperclipai/db";
-import type { BillingType } from "@paperclipai/shared";
+import type { Db } from "@stapleai/db";
+import type { BillingType } from "@stapleai/shared";
 import {
   agents,
   agentRuntimeState,
@@ -15,7 +15,7 @@ import {
   issues,
   projects,
   projectWorkspaces,
-} from "@paperclipai/db";
+} from "@stapleai/db";
 import { conflict, notFound } from "../errors.js";
 import { logger } from "../middleware/logger.js";
 import { publishLiveEvent } from "./live-events.js";
@@ -83,14 +83,14 @@ import {
   hasSessionCompactionThresholds,
   resolveSessionCompactionPolicy,
   type SessionCompactionPolicy,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 
 const MAX_LIVE_LOG_CHUNK_BYTES = 8 * 1024;
 const HEARTBEAT_MAX_CONCURRENT_RUNS_DEFAULT = 1;
 const HEARTBEAT_MAX_CONCURRENT_RUNS_MAX = 10;
-const DEFERRED_WAKE_CONTEXT_KEY = "_paperclipWakeContext";
+const DEFERRED_WAKE_CONTEXT_KEY = "_stapleWakeContext";
 const startLocksByAgent = new Map<string, Promise<void>>();
-const REPO_ONLY_CWD_SENTINEL = "/__paperclip_repo_only__";
+const REPO_ONLY_CWD_SENTINEL = "/__staple_repo_only__";
 const MANAGED_WORKSPACE_GIT_CLONE_TIMEOUT_MS = 10 * 60 * 1000;
 const execFile = promisify(execFileCallback);
 const SESSIONED_LOCAL_ADAPTERS = new Set([
@@ -1023,7 +1023,7 @@ export function heartbeatService(db: Db) {
       readNonEmptyString(latestRun.error);
 
     const handoffMarkdown = [
-      "Paperclip session handoff:",
+      "Staple session handoff:",
       `- Previous session: ${sessionId}`,
       issueId ? `- Issue: ${issueId}` : "",
       `- Rotation reason: ${reason}`,
@@ -2160,7 +2160,7 @@ export function heartbeatService(db: Db) {
             ]
           : []),
       ];
-      context.paperclipWorkspace = {
+      context.stapleWorkspace = {
         cwd: executionWorkspace.cwd,
         source: executionWorkspace.source,
         mode: executionWorkspaceMode,
@@ -2173,7 +2173,7 @@ export function heartbeatService(db: Db) {
         worktreePath: executionWorkspace.worktreePath,
         agentHome: resolveDefaultAgentWorkspaceDir(agent.id),
       };
-      context.paperclipWorkspaces = resolvedWorkspace.workspaceHints;
+      context.stapleWorkspaces = resolvedWorkspace.workspaceHints;
       const runtimeServiceIntents = (() => {
         const runtimeConfig = parseObject(resolvedConfig.workspaceRuntime);
         return Array.isArray(runtimeConfig.services)
@@ -2184,9 +2184,9 @@ export function heartbeatService(db: Db) {
           : [];
       })();
       if (runtimeServiceIntents.length > 0) {
-        context.paperclipRuntimeServiceIntents = runtimeServiceIntents;
+        context.stapleRuntimeServiceIntents = runtimeServiceIntents;
       } else {
-        delete context.paperclipRuntimeServiceIntents;
+        delete context.stapleRuntimeServiceIntents;
       }
       if (
         executionWorkspace.projectId &&
@@ -2215,10 +2215,10 @@ export function heartbeatService(db: Db) {
         issueId,
       });
       if (sessionCompaction.rotate) {
-        context.paperclipSessionHandoffMarkdown =
+        context.stapleSessionHandoffMarkdown =
           sessionCompaction.handoffMarkdown;
-        context.paperclipSessionRotationReason = sessionCompaction.reason;
-        context.paperclipPreviousSessionId =
+        context.stapleSessionRotationReason = sessionCompaction.reason;
+        context.staplePreviousSessionId =
           previousSessionDisplayId ?? runtimeSessionIdForAdapter;
         runtimeSessionIdForAdapter = null;
         runtimeSessionParamsForAdapter = null;
@@ -2229,9 +2229,9 @@ export function heartbeatService(db: Db) {
           );
         }
       } else {
-        delete context.paperclipSessionHandoffMarkdown;
-        delete context.paperclipSessionRotationReason;
-        delete context.paperclipPreviousSessionId;
+        delete context.stapleSessionHandoffMarkdown;
+        delete context.stapleSessionRotationReason;
+        delete context.staplePreviousSessionId;
       }
 
       const runtimeForAdapter = {
@@ -2340,7 +2340,7 @@ export function heartbeatService(db: Db) {
           });
         };
         for (const warning of runtimeWorkspaceWarnings) {
-          await onLog("stderr", `[paperclip] ${warning}\n`);
+          await onLog("stderr", `[staple] ${warning}\n`);
         }
         const adapterEnv = Object.fromEntries(
           Object.entries(parseObject(resolvedConfig.env)).filter(
@@ -2367,8 +2367,8 @@ export function heartbeatService(db: Db) {
           onLog,
         });
         if (runtimeServices.length > 0) {
-          context.paperclipRuntimeServices = runtimeServices;
-          context.paperclipRuntimePrimaryUrl =
+          context.stapleRuntimeServices = runtimeServices;
+          context.stapleRuntimePrimaryUrl =
             runtimeServices.find((service) => readNonEmptyString(service.url))
               ?.url ?? null;
           await db
@@ -2396,7 +2396,7 @@ export function heartbeatService(db: Db) {
           } catch (err) {
             await onLog(
               "stderr",
-              `[paperclip] Failed to post workspace-ready comment: ${err instanceof Error ? err.message : String(err)}\n`,
+              `[staple] Failed to post workspace-ready comment: ${err instanceof Error ? err.message : String(err)}\n`,
             );
           }
         }
@@ -2432,7 +2432,7 @@ export function heartbeatService(db: Db) {
               runId: run.id,
               adapterType: agent.adapterType,
             },
-            "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
+            "local agent jwt secret missing or invalid; running without injected STAPLE_API_KEY",
           );
         }
 
@@ -2647,8 +2647,8 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             ...runtimeServices,
             ...adapterManagedRuntimeServices,
           ];
-          context.paperclipRuntimeServices = combinedRuntimeServices;
-          context.paperclipRuntimePrimaryUrl =
+          context.stapleRuntimeServices = combinedRuntimeServices;
+          context.stapleRuntimePrimaryUrl =
             combinedRuntimeServices.find((service) =>
               readNonEmptyString(service.url),
             )?.url ?? null;
@@ -2672,7 +2672,7 @@ To call a tool, use: TOOL_CALL(server, tool_name, {args})
             } catch (err) {
               await onLog(
                 "stderr",
-                `[paperclip] Failed to post adapter-managed runtime comment: ${err instanceof Error ? err.message : String(err)}\n`,
+                `[staple] Failed to post adapter-managed runtime comment: ${err instanceof Error ? err.message : String(err)}\n`,
               );
             }
           }
