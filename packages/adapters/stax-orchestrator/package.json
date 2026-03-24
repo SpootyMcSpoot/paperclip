@@ -1,8 +1,8 @@
 {
-  "name": "@paperclipai/adapter-stax-orchestrator",
+  "name": "@stapleai/adapter-stax-orchestrator",
   "version": "0.1.0",
   "type": "module",
-  "description": "STAX AI Orchestrator adapter for Paperclip workflow execution",
+  "description": "STAX AI Orchestrator adapter for Staple workflow execution",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@paperclipai/shared": "workspace:*"
+    "@stapleai/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -1,6 +1,6 @@
 # AI Firewall Service
 
-LLM security layer for Paperclip - PII detection, prompt injection protection, content filtering.
+LLM security layer for Staple - PII detection, prompt injection protection, content filtering.
 
 ## What is AI Firewall?
 

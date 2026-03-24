@@ -10,7 +10,7 @@ export const customers = pgTable("customers", {
   name: text("name"),
   stripeCustomerId: text("stripe_customer_id"),
   subscriptionTier: text("subscription_tier"), // 'starter', 'growth', 'enterprise'
-  subscriptionProduct: text("subscription_product"), // 'visiblai', 'marketing', 'paperclip'
+  subscriptionProduct: text("subscription_product"), // 'visiblai', 'marketing', 'staple'
   mrrCents: integer("mrr_cents").notNull().default(0),
   status: text("status").notNull().default("trial"), // 'trial', 'active', 'paused', 'churned'
   trialEndsAt: timestamp("trial_ends_at", { withTimezone: true }),

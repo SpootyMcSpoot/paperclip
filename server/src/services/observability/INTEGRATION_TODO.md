@@ -16,16 +16,16 @@ Current state: Langfuse is deployed at langfuse.llm.svc.cluster.local:3000
 
 Steps:
 1. Access Langfuse UI: https://langfuse.spooty.io
-2. Create project: "Paperclip Production"
+2. Create project: "Staple Production"
 3. Generate API keys (Settings → API Keys)
 4. Store keys in Kubernetes secret:
    ```bash
-   kubectl create secret generic langfuse-paperclip-keys \
+   kubectl create secret generic langfuse-staple-keys \
      --from-literal=public-key=pk-lf-... \
      --from-literal=secret-key=sk-lf-... \
-     -n paperclip
+     -n staple
    ```
-5. Mount secret in Paperclip deployment
+5. Mount secret in Staple deployment
 6. Update `.stax/env` with key paths
 
 ### 4. Cost Attribution

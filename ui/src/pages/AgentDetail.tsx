@@ -70,8 +70,8 @@ import {
   type AgentRuntimeState,
   type LiveEvent,
   type WorkspaceOperation,
-} from "@paperclipai/shared";
-import { redactHomePathUserSegments, redactHomePathUserSegmentsInValue } from "@paperclipai/adapter-utils";
+} from "@stapleai/shared";
+import { redactHomePathUserSegments, redactHomePathUserSegmentsInValue } from "@stapleai/adapter-utils";
 import { agentRouteRef } from "../lib/utils";
 
 const runStatusIcons: Record<string, { icon: typeof CheckCircle2; color: string }> = {
@@ -1488,8 +1488,8 @@ function SkillRow({ skill }: { skill: AvailableSkill }) {
     <div className="rounded-md border border-border bg-muted/20 px-3 py-2 space-y-1.5">
       <div className="flex items-center gap-2">
         <span className="font-mono text-sm">{skill.name}</span>
-        <Badge variant={skill.isPaperclipManaged ? "secondary" : "outline"}>
-          {skill.isPaperclipManaged ? "Paperclip" : "Local"}
+        <Badge variant={skill.isStapleManaged ? "secondary" : "outline"}>
+          {skill.isStapleManaged ? "Staple" : "Local"}
         </Badge>
       </div>
       <p className="text-sm text-muted-foreground">
@@ -2727,7 +2727,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
           Create API Key
         </h3>
         <p className="text-xs text-muted-foreground">
-          API keys allow this agent to authenticate calls to the Paperclip server.
+          API keys allow this agent to authenticate calls to the Staple server.
         </p>
         <div className="flex items-center gap-2">
           <Input

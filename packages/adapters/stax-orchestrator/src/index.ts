@@ -1,5 +1,5 @@
 /**
- * STAX AI Orchestrator adapter for Paperclip
+ * STAX AI Orchestrator adapter for Staple
  *
  * Provides workflow execution via STAX AI Orchestrator service.
  */

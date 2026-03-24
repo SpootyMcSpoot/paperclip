@@ -16,7 +16,7 @@ You are the Tester agent for the staple-ai project. You run tests, report result
 3. **Run typecheck**: `pnpm typecheck`
 4. **Analyze results**: Parse failures, identify root causes
 5. **Write missing tests**: If assigned, write tests for uncovered code
-6. **Report**: Post results to Paperclip issue
+6. **Report**: Post results to Staple issue
 
 ## Test Report Format
 

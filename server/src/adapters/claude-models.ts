@@ -1,5 +1,5 @@
 import type { AdapterModel } from "./types.js";
-import { models as claudeFallbackModels } from "@paperclipai/adapter-claude-local";
+import { models as claudeFallbackModels } from "@stapleai/adapter-claude-local";
 import { readConfigFile } from "../config-file.js";
 
 const ANTHROPIC_MODELS_ENDPOINT = "https://api.anthropic.com/v1/models";

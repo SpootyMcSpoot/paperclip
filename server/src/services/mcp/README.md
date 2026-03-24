@@ -1,6 +1,6 @@
 # MCP (Model Context Protocol) Integration
 
-Enable Paperclip agents to use MCP tools for infrastructure operations.
+Enable Staple agents to use MCP tools for infrastructure operations.
 
 ## What is MCP?
 
@@ -114,7 +114,7 @@ const result = await manager.callTool(
 ## Architecture
 
 ```
-Paperclip Agent
+Staple Agent
       │
       ├─> MCPClientManager
       │        │
@@ -170,7 +170,7 @@ const pr = await manager.callTool("github", "create_pr", {
   title: "Update deployment config",
   head: "feat/update-config",
   base: "main",
-  body: "Automated update from Paperclip",
+  body: "Automated update from Staple",
 });
 ```
 

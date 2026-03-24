@@ -8,7 +8,7 @@ export const agentConfigurationDoc = `# litellm_gateway agent configuration
 Adapter: litellm_gateway
 
 Use when:
-- You want Paperclip to use a LiteLLM proxy as a unified gateway to multiple LLM providers.
+- You want Staple to use a LiteLLM proxy as a unified gateway to multiple LLM providers.
 - You need to access models through a centralized LiteLLM deployment.
 - You want to leverage LiteLLM's load balancing, fallback, and cost tracking features.
 
@@ -49,7 +49,7 @@ model_list:
       api_key: os.environ/ANTHROPIC_API_KEY
 \`\`\`
 
-Paperclip agent adapterConfig example:
+Staple agent adapterConfig example:
 \`\`\`json
 {
   "baseUrl": "http://localhost:4000",

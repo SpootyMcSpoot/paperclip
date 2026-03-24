@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import type { Database } from "@paperclipai/db";
+import type { Database } from "@stapleai/db";
 import {
   storeMemory,
   searchMemories,

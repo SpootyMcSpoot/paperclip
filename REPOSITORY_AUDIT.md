@@ -108,8 +108,8 @@ Created `docs/deploy/kubernetes.md` as replacement for STAX-specific docs:
 ### 3. STAX Docs Moved to STAX Repo
 
 Moved proprietary documentation to proper location:
-- **From**: `paperclip/docs/DEPLOYMENT.md` (public repo)
-- **To**: `/var/home/pestilence/repos/stax/services/paperclip/docs/deployment/`
+- **From**: `staple/docs/DEPLOYMENT.md` (public repo)
+- **To**: `/var/home/pestilence/repos/stax/services/staple/docs/deployment/`
 
 ## Code Defaults Summary
 
@@ -163,4 +163,4 @@ Generic examples and localhost defaults appropriate for open-source project.
 
 ## Conclusion
 
-All proprietary STAX infrastructure details have been removed from the public Paperclip repository. The repository is now safe for public consumption with no exposure of internal infrastructure, endpoints, or architecture.
+All proprietary STAX infrastructure details have been removed from the public Staple repository. The repository is now safe for public consumption with no exposure of internal infrastructure, endpoints, or architecture.

@@ -10,8 +10,8 @@ import {
   getEmbeddingDimensions,
   isProductionEmbeddingConfigured,
 } from "./embedding-service.js";
-import type { Database } from "@paperclipai/db";
-import { memories } from "@paperclipai/db";
+import type { Database } from "@stapleai/db";
+import { memories } from "@stapleai/db";
 import { eq, and, desc } from "drizzle-orm";
 
 // Re-export functions that are used by memory-routes

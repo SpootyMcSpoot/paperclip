@@ -23,7 +23,7 @@ COPY packages/adapters/pi-local/package.json packages/adapters/pi-local/
 COPY packages/adapters/litellm-gateway/package.json packages/adapters/litellm-gateway/
 COPY packages/adapters/stax-orchestrator/package.json packages/adapters/stax-orchestrator/
 COPY packages/plugins/sdk/package.json packages/plugins/sdk/
-COPY packages/plugins/create-paperclip-plugin/package.json packages/plugins/create-paperclip-plugin/
+COPY packages/plugins/create-staple-plugin/package.json packages/plugins/create-staple-plugin/
 
 RUN pnpm install --frozen-lockfile
 
@@ -31,9 +31,9 @@ FROM base AS build
 WORKDIR /app
 COPY --from=deps /app /app
 COPY . .
-RUN pnpm --filter @paperclipai/plugin-sdk build
-RUN pnpm --filter @paperclipai/ui build
-RUN pnpm --filter @paperclipai/server build
+RUN pnpm --filter @stapleai/plugin-sdk build
+RUN pnpm --filter @stapleai/ui build
+RUN pnpm --filter @stapleai/server build
 RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" && exit 1)
 
 FROM base AS production
@@ -44,21 +44,21 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
   && apt-get update && apt-get install -y --no-install-recommends gh \
   && rm -rf /var/lib/apt/lists/*
 RUN npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai \
-  && mkdir -p /paperclip \
-  && chown node:node /paperclip
+  && mkdir -p /staple \
+  && chown node:node /staple
 
 ENV NODE_ENV=production \
-  HOME=/paperclip \
+  HOME=/staple \
   HOST=0.0.0.0 \
   PORT=3100 \
   SERVE_UI=true \
-  PAPERCLIP_HOME=/paperclip \
-  PAPERCLIP_INSTANCE_ID=default \
-  PAPERCLIP_CONFIG=/paperclip/instances/default/config.json \
-  PAPERCLIP_DEPLOYMENT_MODE=authenticated \
-  PAPERCLIP_DEPLOYMENT_EXPOSURE=private
+  STAPLE_HOME=/staple \
+  STAPLE_INSTANCE_ID=default \
+  STAPLE_CONFIG=/staple/instances/default/config.json \
+  STAPLE_DEPLOYMENT_MODE=authenticated \
+  STAPLE_DEPLOYMENT_EXPOSURE=private
 
-VOLUME ["/paperclip"]
+VOLUME ["/staple"]
 EXPOSE 3100
 
 USER node

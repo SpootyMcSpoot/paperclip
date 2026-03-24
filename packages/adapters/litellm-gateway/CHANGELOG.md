@@ -1,4 +1,4 @@
-# @paperclipai/adapter-litellm-gateway
+# @stapleai/adapter-litellm-gateway
 
 ## 0.1.0
 

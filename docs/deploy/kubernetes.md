@@ -1,6 +1,6 @@
 # Kubernetes Deployment Guide
 
-This guide covers deploying Paperclip to a Kubernetes cluster with optional AI service integrations.
+This guide covers deploying Staple to a Kubernetes cluster with optional AI service integrations.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ This guide covers deploying Paperclip to a Kubernetes cluster with optional AI s
 ## Architecture
 
 ```
-Internet → Ingress Controller → Paperclip Service → PostgreSQL
+Internet → Ingress Controller → Staple Service → PostgreSQL
                                       ↓
                           (Optional) AI Services
                           - Qdrant (Vector Memory)
@@ -26,7 +26,7 @@ Internet → Ingress Controller → Paperclip Service → PostgreSQL
 ### 1. Create Namespace
 
 ```bash
-kubectl create namespace paperclip
+kubectl create namespace staple
 ```
 
 ### 2. Database Setup
@@ -36,9 +36,9 @@ kubectl create namespace paperclip
 Create database and user in your PostgreSQL instance:
 
 ```sql
-CREATE DATABASE paperclip;
-CREATE USER paperclip WITH PASSWORD 'secure-password-here';
-GRANT ALL PRIVILEGES ON DATABASE paperclip TO paperclip;
+CREATE DATABASE staple;
+CREATE USER staple WITH PASSWORD 'secure-password-here';
+GRANT ALL PRIVILEGES ON DATABASE staple TO staple;
 ```
 
 **Option B: In-Cluster PostgreSQL**
@@ -49,15 +49,15 @@ Deploy a PostgreSQL StatefulSet (example in `examples/postgres.yaml`).
 
 ```bash
 # Database credentials
-kubectl create secret generic paperclip-db \
-  --from-literal=url='postgresql://paperclip:PASSWORD@postgres-service:5432/paperclip' \
-  -n paperclip
+kubectl create secret generic staple-db \
+  --from-literal=url='postgresql://staple:PASSWORD@postgres-service:5432/staple' \
+  -n staple
 
 # Application secrets
-kubectl create secret generic paperclip-auth \
+kubectl create secret generic staple-auth \
   --from-literal=auth-secret="$(openssl rand -base64 32)" \
   --from-literal=jwt-secret="$(openssl rand -base64 32)" \
-  -n paperclip
+  -n staple
 ```
 
 ### 4. Configure AI Services (Optional)
@@ -66,45 +66,45 @@ If using AI services, create additional secrets:
 
 ```bash
 # Langfuse (LLM Observability)
-kubectl create secret generic paperclip-langfuse \
+kubectl create secret generic staple-langfuse \
   --from-literal=public-key='your-public-key' \
   --from-literal=secret-key='your-secret-key' \
-  -n paperclip
+  -n staple
 
 # Qdrant (Vector Memory)
-# kubectl create secret generic paperclip-qdrant \
+# kubectl create secret generic staple-qdrant \
 #   --from-literal=api-key='your-api-key' \
-#   -n paperclip
+#   -n staple
 
 # AI Firewall (Security)
-# kubectl create secret generic paperclip-ai-firewall \
+# kubectl create secret generic staple-ai-firewall \
 #   --from-literal=api-key='your-api-key' \
-#   -n paperclip
+#   -n staple
 ```
 
-### 5. Deploy Paperclip
+### 5. Deploy Staple
 
-Create deployment manifest (`paperclip-deployment.yaml`):
+Create deployment manifest (`staple-deployment.yaml`):
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: paperclip
-  namespace: paperclip
+  name: staple
+  namespace: staple
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: paperclip
+      app: staple
   template:
     metadata:
       labels:
-        app: paperclip
+        app: staple
     spec:
       containers:
-      - name: paperclip
-        image: ghcr.io/anomalous-ventures/paperclip:latest
+      - name: staple
+        image: ghcr.io/anomalous-ventures/staple:latest
         ports:
         - containerPort: 3100
           name: http
@@ -117,17 +117,17 @@ spec:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: paperclip-db
+              name: staple-db
               key: url
         - name: BETTER_AUTH_SECRET
           valueFrom:
             secretKeyRef:
-              name: paperclip-auth
+              name: staple-auth
               key: auth-secret
-        - name: PAPERCLIP_AGENT_JWT_SECRET
+        - name: STAPLE_AGENT_JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: paperclip-auth
+              name: staple-auth
               key: jwt-secret
 
         # AI Services (optional - uncomment to enable)
@@ -189,17 +189,17 @@ spec:
       # volumes:
       # - name: langfuse-credentials
       #   secret:
-      #     secretName: paperclip-langfuse
+      #     secretName: staple-langfuse
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: paperclip
-  namespace: paperclip
+  name: staple
+  namespace: staple
 spec:
   selector:
-    app: paperclip
+    app: staple
   ports:
   - port: 3100
     targetPort: 3100
@@ -210,7 +210,7 @@ spec:
 Apply the manifest:
 
 ```bash
-kubectl apply -f paperclip-deployment.yaml
+kubectl apply -f staple-deployment.yaml
 ```
 
 ### 6. Configure Ingress
@@ -221,25 +221,25 @@ Example using nginx-ingress:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: paperclip
-  namespace: paperclip
+  name: staple
+  namespace: staple
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - paperclip.example.com
-    secretName: paperclip-tls
+    - staple.example.com
+    secretName: staple-tls
   rules:
-  - host: paperclip.example.com
+  - host: staple.example.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: paperclip
+            name: staple
             port:
               number: 3100
 ```
@@ -254,7 +254,7 @@ spec:
 | `PORT` | No | `3100` | Server port |
 | `SERVE_UI` | No | `false` | Enable built-in web UI |
 | `BETTER_AUTH_SECRET` | Yes | - | Authentication secret |
-| `PAPERCLIP_AGENT_JWT_SECRET` | Yes | - | JWT signing secret |
+| `STAPLE_AGENT_JWT_SECRET` | Yes | - | JWT signing secret |
 
 ### AI Services (Optional)
 
@@ -290,7 +290,7 @@ export QDRANT_URL=http://qdrant-service:6333
 
 **Verification**:
 ```bash
-curl http://paperclip:3100/api/memory/health
+curl http://staple:3100/api/memory/health
 ```
 
 ### Langfuse (LLM Observability)
@@ -327,7 +327,7 @@ export AI_FIREWALL_ENABLED=true
 ```bash
 # Send prompt with PII
 # Check logs for sanitization
-kubectl logs -n paperclip deployment/paperclip | grep "AI Firewall"
+kubectl logs -n staple deployment/staple | grep "AI Firewall"
 ```
 
 ### MCP (Model Context Protocol)
@@ -349,7 +349,7 @@ Store in ConfigMap and mount to container.
 ### Health Check
 
 ```bash
-kubectl port-forward -n paperclip svc/paperclip 3100:3100
+kubectl port-forward -n staple svc/staple 3100:3100
 curl http://localhost:3100/health
 ```
 
@@ -364,7 +364,7 @@ Expected response:
 ### Check Logs
 
 ```bash
-kubectl logs -n paperclip deployment/paperclip --tail=100 -f
+kubectl logs -n staple deployment/staple --tail=100 -f
 ```
 
 ### Test API
@@ -381,7 +381,7 @@ curl -X POST http://localhost:3100/api/companies \
 ### Horizontal Scaling
 
 ```bash
-kubectl scale deployment/paperclip --replicas=3 -n paperclip
+kubectl scale deployment/staple --replicas=3 -n staple
 ```
 
 ### Resource Limits
@@ -402,7 +402,7 @@ resources:
 
 ### Metrics
 
-Paperclip exposes Prometheus metrics at `/metrics`.
+Staple exposes Prometheus metrics at `/metrics`.
 
 ### Grafana Dashboards
 
@@ -414,20 +414,20 @@ Import example dashboards from `examples/grafana/`.
 
 ```bash
 # Check pod status
-kubectl get pods -n paperclip
+kubectl get pods -n staple
 
 # Check events
-kubectl describe pod <pod-name> -n paperclip
+kubectl describe pod <pod-name> -n staple
 
 # Check logs
-kubectl logs <pod-name> -n paperclip
+kubectl logs <pod-name> -n staple
 ```
 
 ### Database Connection Issues
 
 ```bash
 # Test database connectivity from pod
-kubectl exec -it <pod-name> -n paperclip -- \
+kubectl exec -it <pod-name> -n staple -- \
   psql $DATABASE_URL -c "SELECT 1"
 ```
 
@@ -435,11 +435,11 @@ kubectl exec -it <pod-name> -n paperclip -- \
 
 ```bash
 # Test Qdrant connection
-kubectl exec -it <pod-name> -n paperclip -- \
+kubectl exec -it <pod-name> -n staple -- \
   curl http://qdrant-service:6333/health
 
 # Test Langfuse connection
-kubectl exec -it <pod-name> -n paperclip -- \
+kubectl exec -it <pod-name> -n staple -- \
   curl http://langfuse-service:3000/api/public/health
 ```
 
@@ -483,5 +483,5 @@ curl -X POST http://qdrant-service:6333/collections/{collection}/snapshots
 ## Support
 
 - **Documentation**: See `/docs` for detailed guides
-- **Issues**: https://github.com/Anomalous-Ventures/paperclip/issues
-- **Community**: https://github.com/Anomalous-Ventures/paperclip/discussions
+- **Issues**: https://github.com/Anomalous-Ventures/staple/issues
+- **Community**: https://github.com/Anomalous-Ventures/staple/discussions

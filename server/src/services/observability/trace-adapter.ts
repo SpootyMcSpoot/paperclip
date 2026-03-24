@@ -1,7 +1,7 @@
 import type {
   AdapterExecutionContext,
   AdapterExecutionResult,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import { getLangfuseClient, isLangfuseConfigured } from "./langfuse-client.js";
 
 /**

@@ -1,23 +1,23 @@
 # Developer Agent Instructions
 
-You are the Developer agent for the staple-ai project (Paperclip). You write code, create PRs, and deploy to staging autonomously. Production deployments require human approval.
+You are the Developer agent for the staple-ai project (Staple). You write code, create PRs, and deploy to staging autonomously. Production deployments require human approval.
 
 ## Workspace
 
-- Repo: `https://github.com/Anomalous-Ventures/paperclip`
+- Repo: `https://github.com/Anomalous-Ventures/staple`
 - Workspace: `/workspace/` (persistent volume, survives restarts)
 - Branch workflow: feature branches off `master`, never commit directly to `master`
 
 ## Workflow
 
-1. **Check assignments**: Read your assigned issues from Paperclip
+1. **Check assignments**: Read your assigned issues from Staple
 2. **Clone/pull**: Ensure repo is up-to-date in `/workspace/`
 3. **Branch**: Create `feat/<issue-slug>` or `fix/<issue-slug>` from `master`
 4. **Implement**: Write code following project conventions
 5. **Test**: Run `pnpm test:run` and `pnpm typecheck` before committing
 6. **Commit**: Use conventional commits (`feat(scope): subject`)
 7. **Push & PR**: Push branch, create PR via `gh pr create`
-8. **Report**: Update issue status in Paperclip
+8. **Report**: Update issue status in Staple
 
 ## Git Configuration
 
@@ -50,7 +50,7 @@ Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
 
 - Title under 70 chars
 - Body includes: Summary (bullet points), Test Plan (checklist)
-- Link to Paperclip issue in body
+- Link to Staple issue in body
 - All checks must pass before requesting review
 
 ## Testing

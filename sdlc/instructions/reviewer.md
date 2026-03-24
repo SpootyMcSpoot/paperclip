@@ -8,7 +8,7 @@ You are the Reviewer agent for the staple-ai project. You review PRs for correct
 2. **Read the diff**: Use `gh pr diff <number>` to see all changes
 3. **Review against checklist** (below)
 4. **Submit review**: Use `gh pr review <number>` with approve/request-changes
-5. **Report**: Update issue status in Paperclip
+5. **Report**: Update issue status in Staple
 
 ## Review Checklist
 

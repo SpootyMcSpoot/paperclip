@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
-# Setup script for Anomalous Ventures SDLC pipeline in Paperclip.
+# Setup script for Anomalous Ventures SDLC pipeline in Staple.
 # Creates company, project, and autonomous agents.
 #
 # Usage:
-#   PAPERCLIP_URL=https://paperclip.spooty.io ./sdlc/setup.sh
+#   STAPLE_URL=https://staple.spooty.io ./sdlc/setup.sh
 #
 # Requires:
-#   - PAPERCLIP_URL (default: http://localhost:3100)
-#   - PAPERCLIP_API_KEY or valid session cookie
+#   - STAPLE_URL (default: http://localhost:3100)
+#   - STAPLE_API_KEY or valid session cookie
 #   - jq
 
 set -euo pipefail
 
-PAPERCLIP_URL="${PAPERCLIP_URL:-http://localhost:3100}"
-API="${PAPERCLIP_URL}/api"
+STAPLE_URL="${STAPLE_URL:-http://localhost:3100}"
+API="${STAPLE_URL}/api"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Auth header: API key or cookie
-if [[ -n "${PAPERCLIP_API_KEY:-}" ]]; then
-  AUTH_HEADER="Authorization: Bearer ${PAPERCLIP_API_KEY}"
+if [[ -n "${STAPLE_API_KEY:-}" ]]; then
+  AUTH_HEADER="Authorization: Bearer ${STAPLE_API_KEY}"
 else
-  echo "ERROR: PAPERCLIP_API_KEY is required"
+  echo "ERROR: STAPLE_API_KEY is required"
   exit 1
 fi
 
@@ -34,7 +34,7 @@ api() {
 }
 
 echo "=== Anomalous Ventures SDLC Pipeline Setup ==="
-echo "Paperclip: ${PAPERCLIP_URL}"
+echo "Staple: ${STAPLE_URL}"
 echo ""
 
 # ---------------------------------------------------------------
@@ -54,12 +54,12 @@ echo "  Company ID: ${COMPANY_ID}"
 echo "[2/4] Creating project: staple-ai"
 PROJECT=$(api POST "/companies/${COMPANY_ID}/projects" -d '{
   "name": "staple-ai",
-  "description": "Paperclip - orchestration platform for autonomous AI companies",
+  "description": "Staple - orchestration platform for autonomous AI companies",
   "status": "in_progress",
   "workspace": {
     "name": "staple-ai",
     "sourceType": "git_repo",
-    "repoUrl": "https://github.com/Anomalous-Ventures/paperclip",
+    "repoUrl": "https://github.com/Anomalous-Ventures/staple",
     "defaultRef": "master",
     "isPrimary": true
   }

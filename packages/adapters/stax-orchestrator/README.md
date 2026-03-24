@@ -1,15 +1,15 @@
-# @paperclipai/adapter-stax-orchestrator
+# @stapleai/adapter-stax-orchestrator
 
-STAX AI Orchestrator adapter for Paperclip workflow execution.
+STAX AI Orchestrator adapter for Staple workflow execution.
 
 ## Overview
 
-Integrates Paperclip with the STAX AI Orchestrator for executing complex multi-step AI workflows, MCP tool calls, and code intelligence queries.
+Integrates Staple with the STAX AI Orchestrator for executing complex multi-step AI workflows, MCP tool calls, and code intelligence queries.
 
 ## Installation
 
 ```bash
-pnpm add @paperclipai/adapter-stax-orchestrator
+pnpm add @stapleai/adapter-stax-orchestrator
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ pnpm add @paperclipai/adapter-stax-orchestrator
 ### Basic Workflow Execution
 
 ```typescript
-import { OrchestratorClient } from "@paperclipai/adapter-stax-orchestrator";
+import { OrchestratorClient } from "@stapleai/adapter-stax-orchestrator";
 
 const client = new OrchestratorClient();
 
@@ -65,7 +65,7 @@ console.log(execution.task_results);
 import {
   OrchestratorClient,
   createCodeIntelligenceWorkflow,
-} from "@paperclipai/adapter-stax-orchestrator";
+} from "@stapleai/adapter-stax-orchestrator";
 
 const client = new OrchestratorClient();
 const workflow = createCodeIntelligenceWorkflow("find EnvLoader class");
@@ -80,7 +80,7 @@ const results = execution.task_results["find_code"]?.output;
 import {
   OrchestratorClient,
   createLLMCompletionWorkflow,
-} from "@paperclipai/adapter-stax-orchestrator";
+} from "@stapleai/adapter-stax-orchestrator";
 
 const client = new OrchestratorClient();
 const workflow = createLLMCompletionWorkflow(
@@ -116,11 +116,11 @@ const client = new OrchestratorClient(
 - `vector_search`: Search vector database
 - `data_transform`: Transform data with expressions
 
-## Integration with Paperclip Agents
+## Integration with Staple Agents
 
 ```typescript
 // In agent skill/tool execution
-import { OrchestratorClient } from "@paperclipai/adapter-stax-orchestrator";
+import { OrchestratorClient } from "@stapleai/adapter-stax-orchestrator";
 
 async function executeCodeSearch(query: string) {
   const client = new OrchestratorClient();

@@ -1,6 +1,6 @@
-# @paperclipai/adapter-litellm-gateway
+# @stapleai/adapter-litellm-gateway
 
-LiteLLM Gateway adapter for Paperclip.
+LiteLLM Gateway adapter for Staple.
 
 ## Features
 
