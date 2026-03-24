@@ -1,6 +1,7 @@
 import type { Goal } from "@stapleai/shared";
 import { Link } from "@/lib/router";
 import { StatusBadge } from "./StatusBadge";
+import { Progress } from "@/components/ui/progress";
 import { ChevronRight } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useState } from "react";
@@ -9,6 +10,7 @@ interface GoalTreeProps {
   goals: Goal[];
   goalLink?: (goal: Goal) => string;
   onSelect?: (goal: Goal) => void;
+  progressMap?: Record<string, number>;
 }
 
 interface GoalNodeProps {
@@ -18,12 +20,22 @@ interface GoalNodeProps {
   depth: number;
   goalLink?: (goal: Goal) => string;
   onSelect?: (goal: Goal) => void;
+  progressMap?: Record<string, number>;
 }
 
-function GoalNode({ goal, children, allGoals, depth, goalLink, onSelect }: GoalNodeProps) {
+function GoalNode({
+  goal,
+  children,
+  allGoals,
+  depth,
+  goalLink,
+  onSelect,
+  progressMap,
+}: GoalNodeProps) {
   const [expanded, setExpanded] = useState(true);
   const hasChildren = children.length > 0;
   const link = goalLink?.(goal);
+  const progress = progressMap?.[goal.id];
 
   const inner = (
     <>
@@ -37,14 +49,27 @@ function GoalNode({ goal, children, allGoals, depth, goalLink, onSelect }: GoalN
           }}
         >
           <ChevronRight
-            className={cn("h-3 w-3 transition-transform", expanded && "rotate-90")}
+            className={cn(
+              "h-3 w-3 transition-transform",
+              expanded && "rotate-90",
+            )}
           />
         </button>
       ) : (
         <span className="w-4" />
       )}
-      <span className="text-xs text-muted-foreground capitalize">{goal.level}</span>
+      <span className="text-xs text-muted-foreground capitalize">
+        {goal.level}
+      </span>
       <span className="flex-1 truncate">{goal.title}</span>
+      {progress !== undefined && (
+        <div className="flex items-center gap-1.5 shrink-0 w-24">
+          <Progress value={progress} className="h-1.5 flex-1" />
+          <span className="text-xs text-muted-foreground w-8 text-right">
+            {progress}%
+          </span>
+        </div>
+      )}
       <StatusBadge status={goal.status} />
     </>
   );
@@ -83,6 +108,7 @@ function GoalNode({ goal, children, allGoals, depth, goalLink, onSelect }: GoalN
               depth={depth + 1}
               goalLink={goalLink}
               onSelect={onSelect}
+              progressMap={progressMap}
             />
           ))}
         </div>
@@ -91,7 +117,12 @@ function GoalNode({ goal, children, allGoals, depth, goalLink, onSelect }: GoalN
   );
 }
 
-export function GoalTree({ goals, goalLink, onSelect }: GoalTreeProps) {
+export function GoalTree({
+  goals,
+  goalLink,
+  onSelect,
+  progressMap,
+}: GoalTreeProps) {
   const goalIds = new Set(goals.map((g) => g.id));
   const roots = goals.filter((g) => !g.parentId || !goalIds.has(g.parentId));
 
@@ -110,6 +141,7 @@ export function GoalTree({ goals, goalLink, onSelect }: GoalTreeProps) {
           depth={0}
           goalLink={goalLink}
           onSelect={onSelect}
+          progressMap={progressMap}
         />
       ))}
     </div>

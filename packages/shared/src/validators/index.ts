@@ -114,8 +114,12 @@ export {
 export {
   createGoalSchema,
   updateGoalSchema,
+  createKeyResultSchema,
+  updateKeyResultSchema,
   type CreateGoal,
   type UpdateGoal,
+  type CreateKeyResult,
+  type UpdateKeyResult,
 } from "./goal.js";
 
 export {
