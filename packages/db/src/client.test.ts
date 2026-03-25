@@ -63,6 +63,9 @@ async function createTempDatabase(): Promise<string> {
   const port = await getAvailablePort();
   const EmbeddedPostgres = await getEmbeddedPostgresCtor();
   const isRoot = process.getuid?.() === 0;
+  if (isRoot) {
+    fs.chmodSync(dataDir, 0o777);
+  }
   const instance = new EmbeddedPostgres({
     databaseDir: dataDir,
     user: "staple",
