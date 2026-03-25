@@ -23,6 +23,7 @@ type EmbeddedPostgresCtor = new (opts: {
   password: string;
   port: number;
   persistent: boolean;
+  createPostgresUser?: boolean;
   initdbFlags?: string[];
   onLog?: (message: unknown) => void;
   onError?: (message: unknown) => void;
@@ -61,12 +62,14 @@ async function createTempDatabase(): Promise<string> {
   tempPaths.push(dataDir);
   const port = await getAvailablePort();
   const EmbeddedPostgres = await getEmbeddedPostgresCtor();
+  const isRoot = process.getuid?.() === 0;
   const instance = new EmbeddedPostgres({
     databaseDir: dataDir,
     user: "staple",
     password: "staple",
     port,
     persistent: true,
+    createPostgresUser: isRoot,
     initdbFlags: ["--encoding=UTF8", "--locale=C"],
     onLog: () => {},
     onError: () => {},
