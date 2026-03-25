@@ -5,11 +5,18 @@ import { approvalsApi } from "../api/approvals";
 import { agentsApi } from "../api/agents";
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
+import { useToast } from "../context/ToastContext";
 import { queryKeys } from "../lib/queryKeys";
 import { StatusBadge } from "../components/StatusBadge";
 import { Identity } from "../components/Identity";
-import { typeLabel, typeIcon, defaultTypeIcon, ApprovalPayloadRenderer } from "../components/ApprovalPayload";
+import {
+  typeLabel,
+  typeIcon,
+  defaultTypeIcon,
+  ApprovalPayloadRenderer,
+} from "../components/ApprovalPayload";
 import { PageSkeleton } from "../components/PageSkeleton";
+import { ApprovalDecisionDialog } from "../components/ApprovalDecisionDialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, ChevronRight, Sparkles } from "lucide-react";
@@ -23,9 +30,14 @@ export function ApprovalDetail() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const { pushToast } = useToast();
   const [commentBody, setCommentBody] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showRawPayload, setShowRawPayload] = useState(false);
+  const [decisionDialog, setDecisionDialog] = useState<{
+    open: boolean;
+    action: "approve" | "reject" | "revision";
+  }>({ open: false, action: "approve" });
 
   const { data: approval, isLoading } = useQuery({
     queryKey: queryKeys.approvals.detail(approvalId!),
@@ -53,7 +65,8 @@ export function ApprovalDetail() {
   });
 
   useEffect(() => {
-    if (!approval?.companyId || approval.companyId === selectedCompanyId) return;
+    if (!approval?.companyId || approval.companyId === selectedCompanyId)
+      return;
     setSelectedCompanyId(approval.companyId, { source: "route_sync" });
   }, [approval?.companyId, selectedCompanyId, setSelectedCompanyId]);
 
@@ -72,53 +85,117 @@ export function ApprovalDetail() {
 
   const refresh = () => {
     if (!approvalId) return;
-    queryClient.invalidateQueries({ queryKey: queryKeys.approvals.detail(approvalId) });
-    queryClient.invalidateQueries({ queryKey: queryKeys.approvals.comments(approvalId) });
-    queryClient.invalidateQueries({ queryKey: queryKeys.approvals.issues(approvalId) });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.approvals.detail(approvalId),
+    });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.approvals.comments(approvalId),
+    });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.approvals.issues(approvalId),
+    });
     if (approval?.companyId) {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.list(approval.companyId) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.approvals.list(approval.companyId),
+      });
       queryClient.invalidateQueries({
         queryKey: queryKeys.approvals.list(approval.companyId, "pending"),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.agents.list(approval.companyId) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.agents.list(approval.companyId),
+      });
     }
   };
 
   const approveMutation = useMutation({
-    mutationFn: () => approvalsApi.approve(approvalId!),
+    mutationFn: (decisionNote?: string) =>
+      approvalsApi.approve(approvalId!, decisionNote || undefined),
     onSuccess: () => {
       setError(null);
+      setDecisionDialog({ open: false, action: "approve" });
+      pushToast({
+        title: "Approval confirmed",
+        body: "Requesting agent was notified",
+        tone: "success",
+      });
       refresh();
       navigate(`/approvals/${approvalId}?resolved=approved`, { replace: true });
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Approve failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Approval failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
   const rejectMutation = useMutation({
-    mutationFn: () => approvalsApi.reject(approvalId!),
+    mutationFn: (decisionNote?: string) =>
+      approvalsApi.reject(approvalId!, decisionNote || undefined),
     onSuccess: () => {
       setError(null);
+      setDecisionDialog({ open: false, action: "reject" });
+      pushToast({
+        title: "Request rejected",
+        body: "Requesting agent was notified",
+        tone: "success",
+      });
       refresh();
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Reject failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Rejection failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
   const revisionMutation = useMutation({
-    mutationFn: () => approvalsApi.requestRevision(approvalId!),
+    mutationFn: (decisionNote?: string) =>
+      approvalsApi.requestRevision(approvalId!, decisionNote || undefined),
     onSuccess: () => {
       setError(null);
+      setDecisionDialog({ open: false, action: "revision" });
+      pushToast({
+        title: "Revision requested",
+        body: "Requesting agent was asked to revise and resubmit",
+        tone: "success",
+      });
       refresh();
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Revision request failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Revision request failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
   const resubmitMutation = useMutation({
     mutationFn: () => approvalsApi.resubmit(approvalId!),
     onSuccess: () => {
       setError(null);
+      pushToast({
+        title: "Marked as resubmitted",
+        body: "Approval is back in pending review",
+        tone: "success",
+      });
       refresh();
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Resubmit failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Resubmit failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
   const addCommentMutation = useMutation({
@@ -126,49 +203,80 @@ export function ApprovalDetail() {
     onSuccess: () => {
       setCommentBody("");
       setError(null);
+      pushToast({ title: "Comment posted", tone: "success" });
       refresh();
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Comment failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Comment failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
   const deleteAgentMutation = useMutation({
     mutationFn: (agentId: string) => agentsApi.remove(agentId),
     onSuccess: () => {
       setError(null);
+      pushToast({
+        title: "Agent deleted",
+        body: "Disapproved agent was removed",
+        tone: "success",
+      });
       refresh();
       navigate("/approvals");
     },
-    onError: (err) => setError(err instanceof Error ? err.message : "Delete failed"),
+    onError: (err: Error) => {
+      pushToast({
+        title: "Delete failed",
+        body: err.message,
+        tone: "error",
+      });
+      setError(err.message);
+    },
   });
 
+  const handleDecisionSubmit = (note: string) => {
+    const { action } = decisionDialog;
+    if (action === "approve") approveMutation.mutate(note);
+    else if (action === "reject") rejectMutation.mutate(note);
+    else if (action === "revision") revisionMutation.mutate(note);
+  };
+
   if (isLoading) return <PageSkeleton variant="detail" />;
-  if (!approval) return <p className="text-sm text-muted-foreground">Approval not found.</p>;
+  if (!approval)
+    return <p className="text-sm text-muted-foreground">Approval not found.</p>;
 
   const payload = approval.payload as Record<string, unknown>;
-  const linkedAgentId = typeof payload.agentId === "string" ? payload.agentId : null;
-  const isActionable = approval.status === "pending" || approval.status === "revision_requested";
+  const linkedAgentId =
+    typeof payload.agentId === "string" ? payload.agentId : null;
+  const isActionable =
+    approval.status === "pending" || approval.status === "revision_requested";
   const isBudgetApproval = approval.type === "budget_override_required";
   const TypeIcon = typeIcon[approval.type] ?? defaultTypeIcon;
-  const showApprovedBanner = searchParams.get("resolved") === "approved" && approval.status === "approved";
+  const showApprovedBanner =
+    searchParams.get("resolved") === "approved" &&
+    approval.status === "approved";
   const primaryLinkedIssue = linkedIssues?.[0] ?? null;
-  const resolvedCta =
-    primaryLinkedIssue
+  const resolvedCta = primaryLinkedIssue
+    ? {
+        label:
+          (linkedIssues?.length ?? 0) > 1
+            ? "Review linked issues"
+            : "Review linked issue",
+        to: `/issues/${primaryLinkedIssue.identifier ?? primaryLinkedIssue.id}`,
+      }
+    : linkedAgentId
       ? {
-          label:
-            (linkedIssues?.length ?? 0) > 1
-              ? "Review linked issues"
-              : "Review linked issue",
-          to: `/issues/${primaryLinkedIssue.identifier ?? primaryLinkedIssue.id}`,
+          label: "Open hired agent",
+          to: `/agents/${linkedAgentId}`,
         }
-      : linkedAgentId
-        ? {
-            label: "Open hired agent",
-            to: `/agents/${linkedAgentId}`,
-          }
-        : {
-            label: "Back to approvals",
-            to: "/approvals",
-          };
+      : {
+          label: "Back to approvals",
+          to: "/approvals",
+        };
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -181,9 +289,12 @@ export function ApprovalDetail() {
                 <Sparkles className="h-3 w-3 text-green-500 dark:text-green-200 absolute -right-2 -top-1 animate-pulse" />
               </div>
               <div>
-                <p className="text-sm text-green-800 dark:text-green-100 font-medium">Approval confirmed</p>
+                <p className="text-sm text-green-800 dark:text-green-100 font-medium">
+                  Approval confirmed
+                </p>
                 <p className="text-xs text-green-700 dark:text-green-200/90">
-                  Requesting agent was notified to review this approval and linked issues.
+                  Requesting agent was notified to review this approval and
+                  linked issues.
                 </p>
               </div>
             </div>
@@ -203,8 +314,12 @@ export function ApprovalDetail() {
           <div className="flex items-center gap-2">
             <TypeIcon className="h-5 w-5 text-muted-foreground shrink-0" />
             <div>
-              <h2 className="text-lg font-semibold">{typeLabel[approval.type] ?? approval.type.replace(/_/g, " ")}</h2>
-              <p className="text-xs text-muted-foreground font-mono">{approval.id}</p>
+              <h2 className="text-lg font-semibold">
+                {typeLabel[approval.type] ?? approval.type.replace(/_/g, " ")}
+              </h2>
+              <p className="text-xs text-muted-foreground font-mono">
+                {approval.id}
+              </p>
             </div>
           </div>
           <StatusBadge status={approval.status} />
@@ -212,9 +327,14 @@ export function ApprovalDetail() {
         <div className="text-sm space-y-1">
           {approval.requestedByAgentId && (
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">Requested by</span>
+              <span className="text-muted-foreground text-xs">
+                Requested by
+              </span>
               <Identity
-                name={agentNameById.get(approval.requestedByAgentId) ?? approval.requestedByAgentId.slice(0, 8)}
+                name={
+                  agentNameById.get(approval.requestedByAgentId) ??
+                  approval.requestedByAgentId.slice(0, 8)
+                }
                 size="sm"
               />
             </div>
@@ -225,7 +345,9 @@ export function ApprovalDetail() {
             className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-2"
             onClick={() => setShowRawPayload((v) => !v)}
           >
-            <ChevronRight className={`h-3 w-3 transition-transform ${showRawPayload ? "rotate-90" : ""}`} />
+            <ChevronRight
+              className={`h-3 w-3 transition-transform ${showRawPayload ? "rotate-90" : ""}`}
+            />
             See full request
           </button>
           {showRawPayload && (
@@ -234,13 +356,17 @@ export function ApprovalDetail() {
             </pre>
           )}
           {approval.decisionNote && (
-            <p className="text-xs text-muted-foreground">Decision note: {approval.decisionNote}</p>
+            <p className="text-xs text-muted-foreground">
+              Decision note: {approval.decisionNote}
+            </p>
           )}
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
         {linkedIssues && linkedIssues.length > 0 && (
           <div className="pt-2 border-t border-border/60">
-            <p className="text-xs text-muted-foreground mb-1.5">Linked Issues</p>
+            <p className="text-xs text-muted-foreground mb-1.5">
+              Linked Issues
+            </p>
             <div className="space-y-1.5">
               {linkedIssues.map((issue) => (
                 <Link
@@ -256,7 +382,8 @@ export function ApprovalDetail() {
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground mt-2">
-              Linked issues remain open until the requesting agent follows up and closes them.
+              Linked issues remain open until the requesting agent follows up
+              and closes them.
             </p>
           </div>
         )}
@@ -266,7 +393,9 @@ export function ApprovalDetail() {
               <Button
                 size="sm"
                 className="bg-green-700 hover:bg-green-600 text-white"
-                onClick={() => approveMutation.mutate()}
+                onClick={() =>
+                  setDecisionDialog({ open: true, action: "approve" })
+                }
                 disabled={approveMutation.isPending}
               >
                 Approve
@@ -274,7 +403,9 @@ export function ApprovalDetail() {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => rejectMutation.mutate()}
+                onClick={() =>
+                  setDecisionDialog({ open: true, action: "reject" })
+                }
                 disabled={rejectMutation.isPending}
               >
                 Reject
@@ -283,14 +414,20 @@ export function ApprovalDetail() {
           )}
           {isBudgetApproval && approval.status === "pending" && (
             <p className="text-sm text-muted-foreground">
-              Resolve this budget stop from the budget controls on <Link to="/costs" className="underline underline-offset-2">/costs</Link>.
+              Resolve this budget stop from the budget controls on{" "}
+              <Link to="/costs" className="underline underline-offset-2">
+                /costs
+              </Link>
+              .
             </p>
           )}
           {approval.status === "pending" && (
             <Button
               size="sm"
               variant="outline"
-              onClick={() => revisionMutation.mutate()}
+              onClick={() =>
+                setDecisionDialog({ open: true, action: "revision" })
+              }
               disabled={revisionMutation.isPending}
             >
               Request revision
@@ -306,33 +443,51 @@ export function ApprovalDetail() {
               Mark resubmitted
             </Button>
           )}
-          {approval.status === "rejected" && approval.type === "hire_agent" && linkedAgentId && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-destructive border-destructive/40"
-              onClick={() => {
-                if (!window.confirm("Delete this disapproved agent? This cannot be undone.")) return;
-                deleteAgentMutation.mutate(linkedAgentId);
-              }}
-              disabled={deleteAgentMutation.isPending}
-            >
-              Delete disapproved agent
-            </Button>
-          )}
+          {approval.status === "rejected" &&
+            approval.type === "hire_agent" &&
+            linkedAgentId && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-destructive border-destructive/40"
+                onClick={() => {
+                  if (
+                    !window.confirm(
+                      "Delete this disapproved agent? This cannot be undone.",
+                    )
+                  )
+                    return;
+                  deleteAgentMutation.mutate(linkedAgentId);
+                }}
+                disabled={deleteAgentMutation.isPending}
+              >
+                Delete disapproved agent
+              </Button>
+            )}
         </div>
       </div>
 
       <div className="border border-border rounded-lg p-4 space-y-3">
-        <h3 className="text-sm font-medium">Comments ({comments?.length ?? 0})</h3>
+        <h3 className="text-sm font-medium">
+          Comments ({comments?.length ?? 0})
+        </h3>
         <div className="space-y-2">
           {(comments ?? []).map((comment: ApprovalComment) => (
-            <div key={comment.id} className="border border-border/60 rounded-md p-3">
+            <div
+              key={comment.id}
+              className="border border-border/60 rounded-md p-3"
+            >
               <div className="flex items-center justify-between mb-1">
                 {comment.authorAgentId ? (
-                  <Link to={`/agents/${comment.authorAgentId}`} className="hover:underline">
+                  <Link
+                    to={`/agents/${comment.authorAgentId}`}
+                    className="hover:underline"
+                  >
                     <Identity
-                      name={agentNameById.get(comment.authorAgentId) ?? comment.authorAgentId.slice(0, 8)}
+                      name={
+                        agentNameById.get(comment.authorAgentId) ??
+                        comment.authorAgentId.slice(0, 8)
+                      }
                       size="sm"
                     />
                   </Link>
@@ -363,6 +518,18 @@ export function ApprovalDetail() {
           </Button>
         </div>
       </div>
+
+      <ApprovalDecisionDialog
+        open={decisionDialog.open}
+        onClose={() => setDecisionDialog({ open: false, action: "approve" })}
+        action={decisionDialog.action}
+        onSubmit={handleDecisionSubmit}
+        isLoading={
+          approveMutation.isPending ||
+          rejectMutation.isPending ||
+          revisionMutation.isPending
+        }
+      />
     </div>
   );
 }
