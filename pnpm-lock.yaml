@@ -145,6 +145,19 @@ importers:
         specifier: ^5.7.3
         version: 5.9.3
 
+  packages/adapters/devcontroller-gateway:
+    dependencies:
+      '@stapleai/adapter-utils':
+        specifier: workspace:*
+        version: link:../../adapter-utils
+    devDependencies:
+      '@types/node':
+        specifier: ^24.6.0
+        version: 24.12.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   packages/adapters/gemini-local:
     dependencies:
       '@stapleai/adapter-utils':
@@ -153,6 +166,19 @@ importers:
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
+    devDependencies:
+      '@types/node':
+        specifier: ^24.6.0
+        version: 24.12.0
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/adapters/libai-local:
+    dependencies:
+      '@stapleai/adapter-utils':
+        specifier: workspace:*
+        version: link:../../adapter-utils
     devDependencies:
       '@types/node':
         specifier: ^24.6.0
@@ -479,9 +505,15 @@ importers:
       '@stapleai/adapter-cursor-local':
         specifier: workspace:*
         version: link:../packages/adapters/cursor-local
+      '@stapleai/adapter-devcontroller-gateway':
+        specifier: workspace:*
+        version: link:../packages/adapters/devcontroller-gateway
       '@stapleai/adapter-gemini-local':
         specifier: workspace:*
         version: link:../packages/adapters/gemini-local
+      '@stapleai/adapter-libai-local':
+        specifier: workspace:*
+        version: link:../packages/adapters/libai-local
       '@stapleai/adapter-litellm-gateway':
         specifier: workspace:*
         version: link:../packages/adapters/litellm-gateway
@@ -9234,7 +9266,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.2.3
+      '@types/node': 22.19.11
 
   '@ungap/structured-clone@1.3.0': {}
 
