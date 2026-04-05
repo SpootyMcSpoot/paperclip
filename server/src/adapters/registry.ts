@@ -79,6 +79,23 @@ import {
   agentConfigurationDoc as litellmGatewayAgentConfigurationDoc,
   models as litellmGatewayModels,
 } from "@stapleai/adapter-litellm-gateway";
+import {
+  execute as devcontrollerExecute,
+  testEnvironment as devcontrollerTestEnvironment,
+} from "@stapleai/adapter-devcontroller-gateway/server";
+import {
+  agentConfigurationDoc as devcontrollerAgentConfigurationDoc,
+  models as devcontrollerModels,
+} from "@stapleai/adapter-devcontroller-gateway";
+import {
+  execute as libaiExecute,
+  testEnvironment as libaiTestEnvironment,
+  sessionCodec as libaiSessionCodec,
+} from "@stapleai/adapter-libai-local/server";
+import {
+  agentConfigurationDoc as libaiAgentConfigurationDoc,
+  models as libaiModels,
+} from "@stapleai/adapter-libai-local";
 import { listClaudeModels } from "./claude-models.js";
 import { processAdapter } from "./process/index.js";
 import { httpAdapter } from "./http/index.js";
@@ -184,6 +201,26 @@ const litellmGatewayAdapter: ServerAdapterModule = {
   agentConfigurationDoc: litellmGatewayAgentConfigurationDoc,
 };
 
+const devcontrollerGatewayAdapter: ServerAdapterModule = {
+  type: "devcontroller_gateway",
+  execute: devcontrollerExecute,
+  testEnvironment: devcontrollerTestEnvironment,
+  models: devcontrollerModels,
+  supportsLocalAgentJwt: false,
+  agentConfigurationDoc: devcontrollerAgentConfigurationDoc,
+};
+
+const libaiLocalAdapter: ServerAdapterModule = {
+  type: "libai_local",
+  execute: libaiExecute,
+  testEnvironment: libaiTestEnvironment,
+  sessionCodec: libaiSessionCodec,
+  sessionManagement: getAdapterSessionManagement("libai_local") ?? undefined,
+  models: libaiModels,
+  supportsLocalAgentJwt: true,
+  agentConfigurationDoc: libaiAgentConfigurationDoc,
+};
+
 const adaptersByType = new Map<string, ServerAdapterModule>(
   [
     claudeLocalAdapter,
@@ -195,6 +232,8 @@ const adaptersByType = new Map<string, ServerAdapterModule>(
     openclawGatewayAdapter,
     hermesLocalAdapter,
     litellmGatewayAdapter,
+    devcontrollerGatewayAdapter,
+    libaiLocalAdapter,
     processAdapter,
     httpAdapter,
   ].map((a) => [a.type, a]),
