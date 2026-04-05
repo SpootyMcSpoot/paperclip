@@ -80,6 +80,23 @@ import {
   agentConfigurationDoc as hermesAgentConfigurationDoc,
   models as hermesModels,
 } from "hermes-paperclip-adapter";
+import {
+  execute as devcontrollerExecute,
+  testEnvironment as devcontrollerTestEnvironment,
+} from "@paperclipai/adapter-devcontroller-gateway/server";
+import {
+  agentConfigurationDoc as devcontrollerAgentConfigurationDoc,
+  models as devcontrollerModels,
+} from "@paperclipai/adapter-devcontroller-gateway";
+import {
+  execute as libaiExecute,
+  testEnvironment as libaiTestEnvironment,
+  sessionCodec as libaiSessionCodec,
+} from "@paperclipai/adapter-libai-local/server";
+import {
+  agentConfigurationDoc as libaiAgentConfigurationDoc,
+  models as libaiModels,
+} from "@paperclipai/adapter-libai-local";
 import { BUILTIN_ADAPTER_TYPES } from "./builtin-adapter-types.js";
 import { buildExternalAdapters } from "./plugin-loader.js";
 import { getDisabledAdapterTypes } from "../services/adapter-plugin-store.js";
@@ -300,6 +317,26 @@ const hermesLocalAdapter: ServerAdapterModule = {
 
 const adaptersByType = new Map<string, ServerAdapterModule>();
 
+const devcontrollerGatewayAdapter: ServerAdapterModule = {
+  type: "devcontroller_gateway",
+  execute: devcontrollerExecute,
+  testEnvironment: devcontrollerTestEnvironment,
+  models: devcontrollerModels,
+  supportsLocalAgentJwt: false,
+  agentConfigurationDoc: devcontrollerAgentConfigurationDoc,
+};
+
+const libaiLocalAdapter: ServerAdapterModule = {
+  type: "libai_local",
+  execute: libaiExecute,
+  testEnvironment: libaiTestEnvironment,
+  sessionCodec: libaiSessionCodec,
+  sessionManagement: getAdapterSessionManagement("libai_local") ?? undefined,
+  models: libaiModels,
+  supportsLocalAgentJwt: true,
+  agentConfigurationDoc: libaiAgentConfigurationDoc,
+};
+
 // For builtin types that are overridden by an external adapter, we keep the
 // original builtin so it can be restored when the override is deactivated.
 const builtinFallbacks = new Map<string, ServerAdapterModule>();
@@ -319,6 +356,8 @@ function registerBuiltInAdapters() {
     geminiLocalAdapter,
     openclawGatewayAdapter,
     hermesLocalAdapter,
+    devcontrollerGatewayAdapter,
+    libaiLocalAdapter,
     processAdapter,
     httpAdapter,
   ]) {
