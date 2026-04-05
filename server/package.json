@@ -48,6 +48,8 @@
     "@stapleai/adapter-codex-local": "workspace:*",
     "@stapleai/adapter-cursor-local": "workspace:*",
     "@stapleai/adapter-gemini-local": "workspace:*",
+    "@stapleai/adapter-devcontroller-gateway": "workspace:*",
+    "@stapleai/adapter-libai-local": "workspace:*",
     "@stapleai/adapter-litellm-gateway": "workspace:*",
     "@stapleai/adapter-openclaw-gateway": "workspace:*",
     "@stapleai/adapter-opencode-local": "workspace:*",
