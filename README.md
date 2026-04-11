@@ -1,183 +1,116 @@
-<p align="center">
-  <img src="doc/assets/header.png" alt="Staple — runs your business" width="720" />
-</p>
+# staple-ai
 
-<p align="center">
-  <a href="#quickstart"><strong>Quickstart</strong></a> &middot;
-  <a href="https://staple.ing/docs"><strong>Docs</strong></a> &middot;
-  <a href="https://github.com/stapleai/staple"><strong>GitHub</strong></a> &middot;
-  <a href="https://discord.gg/m4HZY7xNG3"><strong>Discord</strong></a>
-</p>
+Open-source orchestration for zero-human companies.
 
-<p align="center">
-  <a href="https://github.com/stapleai/staple/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
-  <a href="https://github.com/stapleai/staple/stargazers"><img src="https://img.shields.io/github/stars/stapleai/staple?style=flat" alt="Stars" /></a>
-  <a href="https://discord.gg/m4HZY7xNG3"><img src="https://img.shields.io/discord/000000000?label=discord" alt="Discord" /></a>
-</p>
+## Table of Contents
 
-<br/>
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [Development](#development)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Sub-Modules](#sub-modules)
 
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/773bdfb2-6d1e-4e30-8c5f-3487d5b70c8f" width="600" controls></video>
-</div>
+## Overview
 
-<br/>
+Staple is a Node.js API server and React dashboard that orchestrates a team of heterogeneous AI agents into something that behaves like a company: org charts, goals, budgets, governance, tickets, and a full audit log.
 
-## What is Staple?
+You bring agents (Claude Code, Codex, Cursor, Gemini, OpenClaw, opencode, libai, pi, LiteLLM, or any HTTP runtime), assign them roles and goals, and Staple handles the hard parts of running them as a team:
 
-# Open-source orchestration for zero-human companies
+- **Atomic task checkout** and budget enforcement so agents don't double-work or run away with spend
+- **Persistent agent state** that survives heartbeats, restarts, and reboots
+- **Runtime skill injection** so agents learn Staple workflows without retraining
+- **Goal ancestry** so every task carries the "why," not just a title
+- **Governance with rollback** on approvals, config changes, and strategy
+- **True multi-company isolation** — one deployment, many companies, separate data and audit trails
+- **Portable company templates** — export and import whole orgs with secret scrubbing
 
-**If OpenClaw is an _employee_, Staple is the _company_**
+Staple is not a chatbot, not an agent framework, not a workflow builder. It models the organization your agents work in.
 
-Staple is a Node.js server and React UI that orchestrates a team of AI agents to run a business. Bring your own agents, assign goals, and track your agents' work and costs from one dashboard.
+## Architecture
 
-It looks like a task manager — but under the hood it has org charts, budgets, governance, goal alignment, and agent coordination.
+Staple is a pnpm monorepo. The server is the control plane and the single source of truth. The UI and CLI are thin clients over the server's HTTP API. Adapters translate the server's uniform agent contract into whatever each runtime expects. Plugins extend all of this without forking core.
 
-**Manage business goals, not pull requests.**
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'background':'#0f0524','primaryColor':'#2d1b69','primaryTextColor':'#f5f3ff','primaryBorderColor':'#a78bfa','lineColor':'#c4b5fd','secondaryColor':'#1e1b4b','tertiaryColor':'#312e81','clusterBkg':'#1e1b4b','clusterBorder':'#7c3aed','edgeLabelBackground':'#2d1b69','fontFamily':'ui-monospace,monospace'}}}%%
+flowchart LR
+    subgraph Clients
+        UI[ui<br/>React 19 + Vite]
+        CLI[cli<br/>stapleai]
+        Mobile[Mobile browser]
+    end
 
-|        | Step            | Example                                                            |
-| ------ | --------------- | ------------------------------------------------------------------ |
-| **01** | Define the goal | _"Build the #1 AI note-taking app to $1M MRR."_                    |
-| **02** | Hire the team   | CEO, CTO, engineers, designers, marketers — any bot, any provider. |
-| **03** | Approve and run | Review strategy. Set budgets. Hit go. Monitor from the dashboard.  |
+    subgraph Server["server (@stapleai/server)"]
+        Routes[HTTP routes<br/>companies - agents - goals<br/>issues - approvals - costs]
+        Services[Services<br/>heartbeats - activity log<br/>permissions - cost tracking]
+        Realtime[Realtime<br/>WS / SSE fan-out]
+        Adapters[Adapter registry]
+    end
 
-<br/>
+    subgraph Packages["packages/"]
+        Shared[shared<br/>types + zod]
+        DB[db<br/>Drizzle ORM]
+        AUtils[adapter-utils]
+        PluginSDK[plugins/sdk]
+    end
 
-> **COMING SOON: Clipmart** — Download and run entire companies with one click. Browse pre-built company templates — full org structures, agent configs, and skills — and import them into your Staple instance in seconds.
+    subgraph AdapterPkgs["packages/adapters/"]
+        Claude[claude-local]
+        Codex[codex-local]
+        Cursor[cursor-local]
+        Gemini[gemini-local]
+        Opencode[opencode-local]
+        OpenClaw[openclaw-gateway]
+        LiteLLM[litellm-gateway]
+        Stax[stax-orchestrator]
+        Etc[...]
+    end
 
-<br/>
+    subgraph Runtimes["Agent runtimes"]
+        Local[Local CLIs]
+        Remote[HTTP gateways]
+        Providers[LLM providers]
+    end
 
-<div align="center">
-<table>
-  <tr>
-    <td align="center"><strong>Works<br/>with</strong></td>
-    <td align="center"><img src="doc/assets/logos/openclaw.svg" width="32" alt="OpenClaw" /><br/><sub>OpenClaw</sub></td>
-    <td align="center"><img src="doc/assets/logos/claude.svg" width="32" alt="Claude" /><br/><sub>Claude Code</sub></td>
-    <td align="center"><img src="doc/assets/logos/codex.svg" width="32" alt="Codex" /><br/><sub>Codex</sub></td>
-    <td align="center"><img src="doc/assets/logos/cursor.svg" width="32" alt="Cursor" /><br/><sub>Cursor</sub></td>
-    <td align="center"><img src="doc/assets/logos/bash.svg" width="32" alt="Bash" /><br/><sub>Bash</sub></td>
-    <td align="center"><img src="doc/assets/logos/http.svg" width="32" alt="HTTP" /><br/><sub>HTTP</sub></td>
-  </tr>
-</table>
+    Postgres[(Postgres<br/>embedded or external)]
 
-<em>If it can receive a heartbeat, it's hired.</em>
+    UI -->|REST + WS| Routes
+    CLI -->|REST| Routes
+    Mobile --> UI
 
-</div>
+    Routes --> Services
+    Services --> Realtime
+    Routes --> DB
+    Services --> DB
+    Routes --> Adapters
+    Adapters --> AdapterPkgs
 
-<br/>
+    Server --> Shared
+    Server --> AUtils
+    Server --> PluginSDK
 
-## Staple is right for you if
+    Claude --> Local
+    Codex --> Local
+    Cursor --> Local
+    Gemini --> Local
+    Opencode --> Local
+    OpenClaw --> Remote
+    Stax --> Remote
+    LiteLLM --> Providers
 
-- ✅ You want to build **autonomous AI companies**
-- ✅ You **coordinate many different agents** (OpenClaw, Codex, Claude, Cursor) toward a common goal
-- ✅ You have **20 simultaneous Claude Code terminals** open and lose track of what everyone is doing
-- ✅ You want agents running **autonomously 24/7**, but still want to audit work and chime in when needed
-- ✅ You want to **monitor costs** and enforce budgets
-- ✅ You want a process for managing agents that **feels like using a task manager**
-- ✅ You want to manage your autonomous businesses **from your phone**
+    DB --> Postgres
+```
 
-<br/>
+## Quick Start
 
-## Features
-
-<table>
-<tr>
-<td align="center" width="33%">
-<h3>🔌 Bring Your Own Agent</h3>
-Any agent, any runtime, one org chart. If it can receive a heartbeat, it's hired.
-</td>
-<td align="center" width="33%">
-<h3>🎯 Goal Alignment</h3>
-Every task traces back to the company mission. Agents know <em>what</em> to do and <em>why</em>.
-</td>
-<td align="center" width="33%">
-<h3>💓 Heartbeats</h3>
-Agents wake on a schedule, check work, and act. Delegation flows up and down the org chart.
-</td>
-</tr>
-<tr>
-<td align="center">
-<h3>💰 Cost Control</h3>
-Monthly budgets per agent. When they hit the limit, they stop. No runaway costs.
-</td>
-<td align="center">
-<h3>🏢 Multi-Company</h3>
-One deployment, many companies. Complete data isolation. One control plane for your portfolio.
-</td>
-<td align="center">
-<h3>🎫 Ticket System</h3>
-Every conversation traced. Every decision explained. Full tool-call tracing and immutable audit log.
-</td>
-</tr>
-<tr>
-<td align="center">
-<h3>🛡️ Governance</h3>
-You're the board. Approve hires, override strategy, pause or terminate any agent — at any time.
-</td>
-<td align="center">
-<h3>📊 Org Chart</h3>
-Hierarchies, roles, reporting lines. Your agents have a boss, a title, and a job description.
-</td>
-<td align="center">
-<h3>📱 Mobile Ready</h3>
-Monitor and manage your autonomous businesses from anywhere.
-</td>
-</tr>
-</table>
-
-<br/>
-
-## Problems Staple solves
-
-| Without Staple                                                                                                                     | With Staple                                                                                                                         |
-| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ❌ You have 20 Claude Code tabs open and can't track which one does what. On reboot you lose everything.                              | ✅ Tasks are ticket-based, conversations are threaded, sessions persist across reboots.                                                |
-| ❌ You manually gather context from several places to remind your bot what you're actually doing.                                     | ✅ Context flows from the task up through the project and company goals — your agent always knows what to do and why.                  |
-| ❌ Folders of agent configs are disorganized and you're re-inventing task management, communication, and coordination between agents. | ✅ Staple gives you org charts, ticketing, delegation, and governance out of the box — so you run a company, not a pile of scripts. |
-| ❌ Runaway loops waste hundreds of dollars of tokens and max your quota before you even know what happened.                           | ✅ Cost tracking surfaces token budgets and throttles agents when they're out. Management prioritizes with budgets.                    |
-| ❌ You have recurring jobs (customer support, social, reports) and have to remember to manually kick them off.                        | ✅ Heartbeats handle regular work on a schedule. Management supervises.                                                                |
-| ❌ You have an idea, you have to find your repo, fire up Claude Code, keep a tab open, and babysit it.                                | ✅ Add a task in Staple. Your coding agent works on it until it's done. Management reviews their work.                              |
-
-<br/>
-
-## Why Staple is special
-
-Staple handles the hard orchestration details correctly.
-
-|                                   |                                                                                                               |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| **Atomic execution.**             | Task checkout and budget enforcement are atomic, so no double-work and no runaway spend.                      |
-| **Persistent agent state.**       | Agents resume the same task context across heartbeats instead of restarting from scratch.                     |
-| **Runtime skill injection.**      | Agents can learn Staple workflows and project context at runtime, without retraining.                      |
-| **Governance with rollback.**     | Approval gates are enforced, config changes are revisioned, and bad changes can be rolled back safely.        |
-| **Goal-aware execution.**         | Tasks carry full goal ancestry so agents consistently see the "why," not just a title.                        |
-| **Portable company templates.**   | Export/import orgs, agents, and skills with secret scrubbing and collision handling.                          |
-| **True multi-company isolation.** | Every entity is company-scoped, so one deployment can run many companies with separate data and audit trails. |
-
-<br/>
-
-## What Staple is not
-
-|                              |                                                                                                                      |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Not a chatbot.**           | Agents have jobs, not chat windows.                                                                                  |
-| **Not an agent framework.**  | We don't tell you how to build agents. We tell you how to run a company made of them.                                |
-| **Not a workflow builder.**  | No drag-and-drop pipelines. Staple models companies — with org charts, goals, budgets, and governance.            |
-| **Not a prompt manager.**    | Agents bring their own prompts, models, and runtimes. Staple manages the organization they work in.               |
-| **Not a single-agent tool.** | This is for teams. If you have one agent, you probably don't need Staple. If you have twenty — you definitely do. |
-| **Not a code review tool.**  | Staple orchestrates work, not pull requests. Bring your own review process.                                       |
-
-<br/>
-
-## Quickstart
-
-Open source. Self-hosted. No Staple account required.
+Open source. Self-hosted. No account required.
 
 ```bash
 npx stapleai onboard --yes
 ```
 
-Or manually:
+Or from source:
 
 ```bash
 git clone https://github.com/stapleai/staple.git
@@ -186,94 +119,76 @@ pnpm install
 pnpm dev
 ```
 
-This starts the API server at `http://localhost:3100`. An embedded PostgreSQL database is created automatically — no setup required.
+The API and UI are served at `http://localhost:3100`. Embedded Postgres is provisioned automatically on first run.
 
-> **Requirements:** Node.js 20+, pnpm 9.15+
-
-<br/>
-
-## FAQ
-
-**What does a typical setup look like?**
-Locally, a single Node.js process manages an embedded Postgres and local file storage. For production, point it at your own Postgres and deploy however you like. Configure projects, agents, and goals — the agents take care of the rest.
-
-If you're a solo-entreprenuer you can use Tailscale to access Staple on the go. Then later you can deploy to e.g. Vercel when you need it.
-
-**Can I run multiple companies?**
-Yes. A single deployment can run an unlimited number of companies with complete data isolation.
-
-**How is Staple different from agents like OpenClaw or Claude Code?**
-Staple _uses_ those agents. It orchestrates them into a company — with org charts, budgets, goals, governance, and accountability.
-
-**Why should I use Staple instead of just pointing my OpenClaw to Asana or Trello?**
-Agent orchestration has subtleties in how you coordinate who has work checked out, how to maintain sessions, monitoring costs, establishing governance - Staple does this for you.
-
-(Bring-your-own-ticket-system is on the Roadmap)
-
-**Do agents run continuously?**
-By default, agents run on scheduled heartbeats and event-based triggers (task assignment, @-mentions). You can also hook in continuous agents like OpenClaw. You bring your agent and Staple coordinates.
-
-<br/>
+Requirements: Node.js 20+, pnpm 9.15+.
 
 ## Development
 
 ```bash
-pnpm dev              # Full dev (API + UI, watch mode)
-pnpm dev:once         # Full dev without file watching
-pnpm dev:server       # Server only
-pnpm build            # Build all
-pnpm typecheck        # Type checking
-pnpm test:run         # Run tests
-pnpm db:generate      # Generate DB migration
-pnpm db:migrate       # Apply migrations
+pnpm dev              # server + UI, watch mode
+pnpm dev:once         # server + UI, no watch
+pnpm dev:server       # server only
+pnpm dev:ui           # UI only
+pnpm build            # build all workspaces
+pnpm typecheck        # type-check all workspaces
+pnpm db:generate      # generate a Drizzle migration
+pnpm db:migrate       # apply migrations
+pnpm check:tokens     # forbidden-token guard
 ```
 
-See [doc/DEVELOPING.md](doc/DEVELOPING.md) for the full development guide.
+Full contributor guide: [`doc/DEVELOPING.md`](doc/DEVELOPING.md).
 
-<br/>
+## Testing
 
-## Roadmap
+Unit and integration tests live next to code (vitest). E2E tests live in [`tests/e2e/`](tests/README.md) (Playwright).
 
-- ⚪ Get OpenClaw onboarding easier
-- ⚪ Get cloud agents working e.g. Cursor / e2b agents
-- ⚪ ClipMart - buy and sell entire agent companies
-- ⚪ Easy agent configurations / easier to understand
-- ⚪ Better support for harness engineering
-- 🟢 Plugin system (e.g. if you want to add a knowledgebase, custom tracing, queues, etc)
-- ⚪ Better docs
+```bash
+pnpm test:run         # all vitest suites
+pnpm test:e2e         # Playwright headless
+pnpm test:e2e:headed  # Playwright with browser
+```
 
-<br/>
+Smoke tests for agent runtimes:
 
-## Contributing
+```bash
+pnpm smoke:openclaw-join
+pnpm smoke:openclaw-docker-ui
+pnpm smoke:openclaw-sse-standalone
+```
 
-We welcome contributions. See the [contributing guide](CONTRIBUTING.md) for details.
+## Deployment
 
-<br/>
+Supported targets:
 
-## Community
+- **Local single-process** — embedded Postgres, file storage, best for solo use
+- **Docker Compose** — `docker-compose.yml` (Postgres + server) or `docker-compose.quickstart.yml`
+- **Self-hosted** — build the image, point `DATABASE_URL` at external Postgres, deploy anywhere Node runs (Vercel, Fly, Render, bare metal)
+- **Untrusted PR review sandbox** — `docker-compose.untrusted-review.yml` (see `doc/UNTRUSTED-PR-REVIEW.md`)
 
-- [Discord](https://discord.gg/m4HZY7xNG3) — Join the community
-- [GitHub Issues](https://github.com/stapleai/staple/issues) — bugs and feature requests
-- [GitHub Discussions](https://github.com/stapleai/staple/discussions) — ideas and RFC
+Deployment modes, auth modes, and exposure settings: `doc/DEPLOYMENT-MODES.md` and `docs/DEPLOYMENT-WORKFLOW.md`. Release process: `doc/RELEASING.md`.
 
-<br/>
+## Sub-Modules
+
+- [`server/`](server/README.md) — `@stapleai/server`, the API and realtime control plane
+- [`ui/`](ui/README.md) — `@stapleai/ui`, the React dashboard
+- [`cli/`](cli/README.md) — `stapleai`, the installable CLI
+- [`packages/`](packages/README.md) — shared libraries, adapters, and plugin SDK
+  - [`packages/shared/`](packages/shared/README.md) — cross-cutting types and zod schemas
+  - [`packages/db/`](packages/db/README.md) — Drizzle schema and migrations
+  - [`packages/adapter-utils/`](packages/adapter-utils/README.md) — shared adapter helpers
+  - [`packages/adapters/`](packages/adapters/README.md) — agent runtime adapters
+  - [`packages/plugins/`](packages/plugins/README.md) — plugin SDK, scaffolder, examples
+- [`skills/`](skills/README.md) — runtime-injected skill bundles
+- [`scripts/`](scripts/README.md) — dev, release, smoke, and guard scripts
+- [`docker/`](docker/README.md) — ancillary Docker build contexts
+- [`docs/`](docs/README.md) — public documentation site (Mintlify)
+- [`doc/`](doc/README.md) — internal specs, plans, and release notes
+- [`sdlc/`](sdlc/README.md) — built-in SDLC role prompts
+- [`tests/`](tests/README.md) — top-level E2E suites
+- [`releases/`](releases/README.md) — per-version release notes
+- [`report/`](report/README.md) — dated engineering reports
 
 ## License
 
-MIT &copy; 2026 Staple
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/image?repos=stapleai/staple&type=date&legend=top-left)](https://www.star-history.com/?repos=stapleai%2Fstaple&type=date&legend=top-left)
-
-<br/>
-
----
-
-<p align="center">
-  <img src="doc/assets/footer.jpg" alt="" width="720" />
-</p>
-
-<p align="center">
-  <sub>Open source under MIT. Built for people who want to run companies, not babysit agents.</sub>
-</p>
+MIT. See [`LICENSE`](LICENSE).
