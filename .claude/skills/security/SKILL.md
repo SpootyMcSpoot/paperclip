@@ -1,6 +1,6 @@
 ---
 name: security
-description: Run security scans on staple-ai (PaperclipAI) pnpm monorepo. npm audit, secrets detection, build integrity.
+description: Run security scans on staple-ai (StapleAI) pnpm monorepo. npm audit, secrets detection, build integrity.
 allowed-tools:
   - Bash
   - Read

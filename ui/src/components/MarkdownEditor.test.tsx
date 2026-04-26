@@ -3,7 +3,7 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { buildProjectMentionHref, buildSkillMentionHref } from "@paperclipai/shared";
+import { buildProjectMentionHref, buildSkillMentionHref } from "@stapleai/shared";
 import {
   computeMentionMenuPosition,
   findClosestAutocompleteAnchor,
@@ -516,12 +516,12 @@ describe("MarkdownEditor", () => {
   });
 
   it("keeps mention queries active across spaces", () => {
-    expect(findMentionMatch("Ping @Paperclip App", "Ping @Paperclip App".length)).toEqual({
+    expect(findMentionMatch("Ping @Staple App", "Ping @Staple App".length)).toEqual({
       trigger: "mention",
       marker: "@",
-      query: "Paperclip App",
+      query: "Staple App",
       atPos: 5,
-      endPos: "Ping @Paperclip App".length,
+      endPos: "Ping @Staple App".length,
     });
   });
 
@@ -632,7 +632,7 @@ describe("MarkdownEditor", () => {
             {
               id: "project:project-123",
               kind: "project",
-              name: "Paperclip App",
+              name: "Staple App",
               projectId: "project-123",
               projectColor: "#336699",
             },
@@ -663,7 +663,7 @@ describe("MarkdownEditor", () => {
     await flush();
 
     const option = Array.from(document.body.querySelectorAll('button[type="button"]'))
-      .find((node) => node.textContent?.includes("Paperclip App"));
+      .find((node) => node.textContent?.includes("Staple App"));
     expect(option).toBeTruthy();
 
     act(() => {
@@ -671,7 +671,7 @@ describe("MarkdownEditor", () => {
     });
 
     expect(handleChange).toHaveBeenCalledWith(
-      `[@Paperclip App](${buildProjectMentionHref("project-123", "#336699")}) `,
+      `[@Staple App](${buildProjectMentionHref("project-123", "#336699")}) `,
     );
 
     await act(async () => {

@@ -18,7 +18,7 @@ import type {
   PreviewIssueTreeControl,
   ReleaseIssueTreeHold,
   UpsertIssueDocument,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import { api } from "./client";
 
 export type IssueUpdateResponse = Issue & {

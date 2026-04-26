@@ -1,5 +1,5 @@
 {
-  "name": "@paperclipai/adapter-libai-local",
+  "name": "@stapleai/adapter-libai-local",
   "version": "0.1.0",
   "license": "MIT",
   "homepage": "https://github.com/stapleai/staple",
@@ -50,7 +50,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@paperclipai/adapter-utils": "workspace:*"
+    "@stapleai/adapter-utils": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.6.0",

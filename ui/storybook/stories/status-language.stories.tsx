@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AGENT_STATUSES, ISSUE_PRIORITIES, ISSUE_STATUSES } from "@paperclipai/shared";
-import type { IssueBlockerAttention } from "@paperclipai/shared";
+import { AGENT_STATUSES, ISSUE_PRIORITIES, ISSUE_STATUSES } from "@stapleai/shared";
+import type { IssueBlockerAttention } from "@stapleai/shared";
 import { Bot, CheckCircle2, Clock3, DollarSign, FolderKanban, Inbox, MessageSquare, Users } from "lucide-react";
 import { CopyText } from "@/components/CopyText";
 import { EmptyState } from "@/components/EmptyState";
@@ -13,7 +13,7 @@ import { QuotaBar } from "@/components/QuotaBar";
 import { StatusBadge } from "@/components/StatusBadge";
 import { StatusIcon } from "@/components/StatusIcon";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { createIssue } from "../fixtures/paperclipData";
+import { createIssue } from "../fixtures/stapleData";
 
 function Section({
   eyebrow,
@@ -25,9 +25,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="paperclip-story__frame overflow-hidden">
+    <section className="staple-story__frame overflow-hidden">
       <div className="border-b border-border px-5 py-4">
-        <div className="paperclip-story__label">{eyebrow}</div>
+        <div className="staple-story__label">{eyebrow}</div>
         <h2 className="mt-1 text-xl font-semibold">{title}</h2>
       </div>
       <div className="p-5">{children}</div>
@@ -189,10 +189,10 @@ function StatusLanguage() {
   const [priority, setPriority] = useState("high");
 
   return (
-    <div className="paperclip-story">
-      <main className="paperclip-story__inner space-y-6">
-        <section className="paperclip-story__frame p-6">
-          <div className="paperclip-story__label">Language</div>
+    <div className="staple-story">
+      <main className="staple-story__inner space-y-6">
+        <section className="staple-story__frame p-6">
+          <div className="staple-story__label">Language</div>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Status, priority, identity, and metrics</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             These components carry the operational vocabulary of the board: who is acting, what state work is in,

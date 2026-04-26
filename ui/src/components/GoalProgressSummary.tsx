@@ -1,4 +1,4 @@
-import type { GoalProgress } from "@paperclipai/shared";
+import type { GoalProgress } from "@stapleai/shared";
 import { Progress } from "@/components/ui/progress";
 
 interface GoalProgressSummaryProps {

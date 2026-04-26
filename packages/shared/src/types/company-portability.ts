@@ -172,7 +172,7 @@ export interface CompanyPortabilityExportResult {
   manifest: CompanyPortabilityManifest;
   files: Record<string, CompanyPortabilityFileEntry>;
   warnings: string[];
-  paperclipExtensionPath: string;
+  stapleExtensionPath: string;
 }
 
 export interface CompanyPortabilityExportPreviewFile {
@@ -193,7 +193,7 @@ export interface CompanyPortabilityExportPreviewResult {
     issues: number;
   };
   warnings: string[];
-  paperclipExtensionPath: string;
+  stapleExtensionPath: string;
 }
 
 export type CompanyPortabilitySource =

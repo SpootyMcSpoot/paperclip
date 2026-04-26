@@ -1,12 +1,12 @@
-import type { PaperclipPluginManifestV1 } from "@paperclipai/plugin-sdk";
+import type { StaplePluginManifestV1 } from "@stapleai/plugin-sdk";
 
-const manifest: PaperclipPluginManifestV1 = {
-  id: "paperclipai.plugin-orchestration-smoke-example",
+const manifest: StaplePluginManifestV1 = {
+  id: "stapleai.plugin-orchestration-smoke-example",
   apiVersion: 1,
   version: "0.1.0",
   displayName: "Plugin Orchestration Smoke Example",
-  description: "First-party smoke plugin that exercises Paperclip orchestration-grade plugin APIs.",
-  author: "Paperclip",
+  description: "First-party smoke plugin that exercises Staple orchestration-grade plugin APIs.",
+  author: "Staple",
   categories: ["automation", "ui"],
   capabilities: [
     "api.routes.register",

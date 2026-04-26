@@ -10,7 +10,7 @@ import {
   buildProjectMentionHref,
   buildSkillMentionHref,
   buildUserMentionHref,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import { ThemeProvider } from "../context/ThemeContext";
 import { MarkdownBody } from "./MarkdownBody";
 import { queryKeys } from "../lib/queryKeys";
@@ -93,7 +93,7 @@ describe("MarkdownBody", () => {
       <QueryClientProvider client={new QueryClient()}>
         <ThemeProvider>
           <MarkdownBody>
-            {`[@Taylor](${buildUserMentionHref("user-123")}) [@CodexCoder](${buildAgentMentionHref("agent-123", "code")}) [@Paperclip App](${buildProjectMentionHref("project-456", "#336699")}) [/release-changelog](${buildSkillMentionHref("skill-789", "release-changelog")})`}
+            {`[@Taylor](${buildUserMentionHref("user-123")}) [@CodexCoder](${buildAgentMentionHref("agent-123", "code")}) [@Staple App](${buildProjectMentionHref("project-456", "#336699")}) [/release-changelog](${buildSkillMentionHref("skill-789", "release-changelog")})`}
           </MarkdownBody>
         </ThemeProvider>
       </QueryClientProvider>,
@@ -103,10 +103,10 @@ describe("MarkdownBody", () => {
     expect(html).toContain('data-mention-kind="user"');
     expect(html).toContain('href="/agents/agent-123"');
     expect(html).toContain('data-mention-kind="agent"');
-    expect(html).toContain("--paperclip-mention-icon-mask");
+    expect(html).toContain("--staple-mention-icon-mask");
     expect(html).toContain('href="/projects/project-456"');
     expect(html).toContain('data-mention-kind="project"');
-    expect(html).toContain("--paperclip-mention-project-color:#336699");
+    expect(html).toContain("--staple-mention-project-color:#336699");
     expect(html).toContain('href="/skills/skill-789"');
     expect(html).toContain('data-mention-kind="skill"');
   });
@@ -172,8 +172,8 @@ describe("MarkdownBody", () => {
     expect(html).toContain("text-green-600");
     expect(html).toContain(">PAP-1271<");
     expect(html).toContain('data-mention-kind="issue"');
-    expect(html).toContain("paperclip-markdown-issue-ref");
-    expect(html).not.toContain("paperclip-mention-chip--issue");
+    expect(html).toContain("staple-markdown-issue-ref");
+    expect(html).not.toContain("staple-mention-chip--issue");
   });
 
   it("uses concise issue aria labels until a distinct title is available", () => {
@@ -196,7 +196,7 @@ describe("MarkdownBody", () => {
     expect(html).toContain("text-red-600");
     expect(html).toContain(">http://localhost:3100/PAP/issues/PAP-1179<");
     expect(html).toContain('data-mention-kind="issue"');
-    expect(html).not.toContain("paperclip-mention-chip--issue");
+    expect(html).not.toContain("staple-mention-chip--issue");
   });
 
   it("linkifies plain internal issue paths in markdown text", () => {
@@ -244,7 +244,7 @@ describe("MarkdownBody", () => {
     expect(html).toContain('href="/issues/PAP-1271"');
     expect(html).toContain('<code style="overflow-wrap:anywhere;word-break:break-word">PAP-1271</code>');
     expect(html).toContain("text-green-600");
-    expect(html).toContain("paperclip-markdown-issue-ref");
+    expect(html).toContain("staple-markdown-issue-ref");
   });
 
   it("keeps trailing punctuation outside auto-linked issue references", () => {
@@ -281,7 +281,7 @@ describe("MarkdownBody", () => {
   it("applies wrap-friendly styles to long inline content", () => {
     const html = renderMarkdown("averyveryveryveryveryveryveryveryveryverylongtoken");
 
-    expect(html).toContain('class="paperclip-markdown prose prose-sm min-w-0 max-w-full break-words overflow-hidden');
+    expect(html).toContain('class="staple-markdown prose prose-sm min-w-0 max-w-full break-words overflow-hidden');
     expect(html).toContain('style="overflow-wrap:anywhere;word-break:break-word"');
     expect(html).toContain("<p");
   });
@@ -302,7 +302,7 @@ describe("MarkdownBody", () => {
   });
 
   it("opens GitHub links in a new tab", () => {
-    const html = renderMarkdown("[pr](https://github.com/paperclipai/paperclip/pull/4099)");
+    const html = renderMarkdown("[pr](https://github.com/stapleai/staple/pull/4099)");
 
     expect(html).toContain('target="_blank"');
     expect(html).toContain('rel="noopener noreferrer"');
@@ -317,21 +317,21 @@ describe("MarkdownBody", () => {
   });
 
   it("prefixes GitHub markdown links with the GitHub icon glued to the first character", () => {
-    const html = renderMarkdown("[https://github.com/paperclipai/paperclip/pull/4099](https://github.com/paperclipai/paperclip/pull/4099)");
+    const html = renderMarkdown("[https://github.com/stapleai/staple/pull/4099](https://github.com/stapleai/staple/pull/4099)");
 
-    expect(html).toContain('<a href="https://github.com/paperclipai/paperclip/pull/4099"');
+    expect(html).toContain('<a href="https://github.com/stapleai/staple/pull/4099"');
     expect(html).toContain('class="lucide lucide-github mr-1 inline h-3.5 w-3.5 align-[-0.125em]"');
     // The icon and first character "h" must sit in a no-wrap span so the
     // icon can never be orphaned on the previous line from the URL text.
     expect(html).toMatch(/<span style="white-space:nowrap">.*lucide-github.*?<\/svg>h<\/span>/);
-    expect(html).toContain("ttps://github.com/paperclipai/paperclip/pull/4099");
+    expect(html).toContain("ttps://github.com/stapleai/staple/pull/4099");
     expect(html).not.toContain("lucide-external-link");
   });
 
   it("prefixes GitHub autolinks with the GitHub icon", () => {
-    const html = renderMarkdown("See https://github.com/paperclipai/paperclip/issues/1778");
+    const html = renderMarkdown("See https://github.com/stapleai/staple/issues/1778");
 
-    expect(html).toContain('<a href="https://github.com/paperclipai/paperclip/issues/1778"');
+    expect(html).toContain('<a href="https://github.com/stapleai/staple/issues/1778"');
     expect(html).toContain('class="lucide lucide-github mr-1 inline h-3.5 w-3.5 align-[-0.125em]"');
   });
 
@@ -374,7 +374,7 @@ describe("MarkdownBody", () => {
     expect(html).toContain('href="/issues/PAP-42"');
     expect(html).toContain('href="/issues/PAP-77"');
     expect(html).toContain('data-mention-kind="issue"');
-    expect(html).toContain("paperclip-markdown-issue-ref");
-    expect(html).not.toContain("paperclip-mention-chip--issue");
+    expect(html).toContain("staple-markdown-issue-ref");
+    expect(html).not.toContain("staple-mention-chip--issue");
   });
 });

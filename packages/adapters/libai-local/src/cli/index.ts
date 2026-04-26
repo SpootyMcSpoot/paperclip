@@ -1,4 +1,4 @@
-import type { CLIAdapterModule } from "@paperclipai/adapter-utils";
+import type { CLIAdapterModule } from "@stapleai/adapter-utils";
 
 export const adapter: CLIAdapterModule = {
   type: "libai_local",

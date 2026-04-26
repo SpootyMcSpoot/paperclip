@@ -1,12 +1,12 @@
 import { Router } from "express";
-import type { Db } from "@paperclipai/db";
+import type { Db } from "@stapleai/db";
 import {
   createGoalSchema,
   updateGoalSchema,
   createKeyResultSchema,
   updateKeyResultSchema,
-} from "@paperclipai/shared";
-import { trackGoalCreated } from "@paperclipai/shared/telemetry";
+} from "@stapleai/shared";
+import { trackGoalCreated } from "@stapleai/shared/telemetry";
 import { validate } from "../middleware/validate.js";
 import { goalService, logActivity } from "../services/index.js";
 import { assertCompanyAccess, getActorInfo } from "./authz.js";

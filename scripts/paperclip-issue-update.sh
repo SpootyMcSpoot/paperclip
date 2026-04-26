@@ -5,20 +5,20 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/paperclip-issue-update.sh [--issue-id ID] [--status STATUS] [--comment TEXT] [--dry-run]
+  scripts/staple-issue-update.sh [--issue-id ID] [--status STATUS] [--comment TEXT] [--dry-run]
 
 Reads a multiline markdown comment from stdin when stdin is piped. This preserves
 newlines when building the JSON payload for PATCH /api/issues/{issueId}.
 
 Examples:
-  scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status in_progress <<'MD'
+  scripts/staple-issue-update.sh --issue-id "$STAPLE_TASK_ID" --status in_progress <<'MD'
   Investigating formatting
 
   - Pulled the raw comment body
   - Comparing it with the run transcript
   MD
 
-  scripts/paperclip-issue-update.sh --issue-id "$PAPERCLIP_TASK_ID" --status done --dry-run <<'MD'
+  scripts/staple-issue-update.sh --issue-id "$STAPLE_TASK_ID" --status done --dry-run <<'MD'
   Done
 
   - Fixed the issue update helper
@@ -33,7 +33,7 @@ require_command() {
   fi
 }
 
-issue_id="${PAPERCLIP_TASK_ID:-}"
+issue_id="${STAPLE_TASK_ID:-}"
 status=""
 comment_arg=""
 dry_run=0
@@ -69,7 +69,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$issue_id" ]]; then
-  printf 'Missing issue id. Pass --issue-id or set PAPERCLIP_TASK_ID.\n' >&2
+  printf 'Missing issue id. Pass --issue-id or set STAPLE_TASK_ID.\n' >&2
   exit 1
 fi
 
@@ -97,14 +97,14 @@ if [[ "$dry_run" == "1" ]]; then
   exit 0
 fi
 
-if [[ -z "${PAPERCLIP_API_URL:-}" || -z "${PAPERCLIP_API_KEY:-}" || -z "${PAPERCLIP_RUN_ID:-}" ]]; then
-  printf 'Missing PAPERCLIP_API_URL, PAPERCLIP_API_KEY, or PAPERCLIP_RUN_ID.\n' >&2
+if [[ -z "${STAPLE_API_URL:-}" || -z "${STAPLE_API_KEY:-}" || -z "${STAPLE_RUN_ID:-}" ]]; then
+  printf 'Missing STAPLE_API_URL, STAPLE_API_KEY, or STAPLE_RUN_ID.\n' >&2
   exit 1
 fi
 
 curl -sS -X PATCH \
-  "$PAPERCLIP_API_URL/api/issues/$issue_id" \
-  -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
-  -H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID" \
+  "$STAPLE_API_URL/api/issues/$issue_id" \
+  -H "Authorization: Bearer $STAPLE_API_KEY" \
+  -H "X-Staple-Run-Id: $STAPLE_RUN_ID" \
   -H 'Content-Type: application/json' \
   --data-binary "$payload"

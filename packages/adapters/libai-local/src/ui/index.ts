@@ -1,4 +1,4 @@
-import type { TranscriptEntry } from "@paperclipai/adapter-utils";
+import type { TranscriptEntry } from "@stapleai/adapter-utils";
 
 export const parseStdoutEvent = (
   line: string,

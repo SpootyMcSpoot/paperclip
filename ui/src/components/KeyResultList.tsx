@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { GoalKeyResult, GoalProgress } from "@paperclipai/shared";
-import { KEY_RESULT_METRIC_TYPES, KEY_RESULT_STATUSES } from "@paperclipai/shared";
+import type { GoalKeyResult, GoalProgress } from "@stapleai/shared";
+import { KEY_RESULT_METRIC_TYPES, KEY_RESULT_STATUSES } from "@stapleai/shared";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,4 +1,4 @@
-import type { Goal, GoalKeyResult, GoalProgress } from "@paperclipai/shared";
+import type { Goal, GoalKeyResult, GoalProgress } from "@stapleai/shared";
 import { api } from "./client";
 
 export const goalsApi = {

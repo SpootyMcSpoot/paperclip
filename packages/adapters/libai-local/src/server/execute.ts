@@ -2,7 +2,7 @@ import type {
   AdapterExecutionContext,
   AdapterExecutionResult,
   AdapterSessionCodec,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import {
   asString,
   asNumber,
@@ -15,7 +15,7 @@ import {
   ensureAbsoluteDirectory,
   ensureCommandResolvable,
   ensurePathInEnv,
-} from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils/server-utils";
 
 function nonEmpty(value: unknown): string | null {
   return typeof value === "string" && value.trim().length > 0

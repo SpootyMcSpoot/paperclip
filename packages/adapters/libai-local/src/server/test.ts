@@ -2,14 +2,14 @@ import type {
   AdapterEnvironmentCheck,
   AdapterEnvironmentTestContext,
   AdapterEnvironmentTestResult,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import {
   asString,
   parseObject,
   ensureCommandResolvable,
   ensureAbsoluteDirectory,
   runChildProcess,
-} from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils/server-utils";
 
 function summarizeStatus(
   checks: AdapterEnvironmentCheck[]

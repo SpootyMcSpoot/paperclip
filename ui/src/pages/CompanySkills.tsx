@@ -10,7 +10,7 @@ import type {
   CompanySkillProjectScanResult,
   CompanySkillSourceBadge,
   CompanySkillUpdateStatus,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import { companySkillsApi } from "../api/companySkills";
 import { useCompany } from "../context/CompanyContext";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
@@ -46,7 +46,7 @@ import {
   Github,
   Link2,
   ExternalLink,
-  Paperclip,
+  Staple,
   Pencil,
   Plus,
   RefreshCw,
@@ -159,8 +159,8 @@ function sourceMeta(sourceBadge: CompanySkillSourceBadge, sourceLabel: string | 
       return { icon: Link2, label: sourceLabel ?? "URL", managedLabel: "URL managed" };
     case "local":
       return { icon: Folder, label: sourceLabel ?? "Folder", managedLabel: "Folder managed" };
-    case "paperclip":
-      return { icon: Paperclip, label: sourceLabel ?? "Paperclip", managedLabel: "Paperclip managed" };
+    case "staple":
+      return { icon: Staple, label: sourceLabel ?? "Staple", managedLabel: "Staple managed" };
     default:
       return { icon: Boxes, label: sourceLabel ?? "Catalog", managedLabel: "Catalog managed" };
   }
@@ -919,7 +919,7 @@ export function CompanySkills() {
       pushToast({
         tone: "success",
         title: "Skill created",
-        body: `${skill.name} is now editable in the Paperclip workspace.`,
+        body: `${skill.name} is now editable in the Staple workspace.`,
       });
     },
     onError: (error) => {

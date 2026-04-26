@@ -1,19 +1,19 @@
 [Unit]
-Description=Paperclip AI Agent Orchestrator
-Requires=paperclip-db.service
-After=paperclip-db.service
+Description=Staple AI Agent Orchestrator
+Requires=staple-db.service
+After=staple-db.service
 
 [Container]
-Image=paperclip-local
-ContainerName=paperclip
-Pod=paperclip.pod
-Volume=%h/.local/share/paperclip:/paperclip:Z
+Image=staple-local
+ContainerName=staple
+Pod=staple.pod
+Volume=%h/.local/share/staple:/staple:Z
 Environment=HOST=0.0.0.0
-Environment=PAPERCLIP_HOME=/paperclip
-Environment=PAPERCLIP_DEPLOYMENT_MODE=authenticated
-Environment=PAPERCLIP_DEPLOYMENT_EXPOSURE=private
-Environment=PAPERCLIP_PUBLIC_URL=http://localhost:3100
-EnvironmentFile=%h/.config/containers/systemd/paperclip.env
+Environment=STAPLE_HOME=/staple
+Environment=STAPLE_DEPLOYMENT_MODE=authenticated
+Environment=STAPLE_DEPLOYMENT_EXPOSURE=private
+Environment=STAPLE_PUBLIC_URL=http://localhost:3100
+EnvironmentFile=%h/.config/containers/systemd/staple.env
 
 [Service]
 Restart=on-failure

@@ -1,13 +1,13 @@
 import type {
   AdapterExecutionContext,
   AdapterExecutionResult,
-} from "@paperclipai/adapter-utils";
+} from "@stapleai/adapter-utils";
 import {
   asNumber,
   asString,
   parseObject,
   renderTemplate,
-} from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils/server-utils";
 
 interface DevControllerLoopStatus {
   status: string;

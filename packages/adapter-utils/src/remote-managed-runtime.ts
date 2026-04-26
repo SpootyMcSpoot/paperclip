@@ -44,7 +44,7 @@ export function buildRemoteExecutionSessionIdentity(spec: SshRemoteExecutionSpec
     port: spec.port,
     username: spec.username,
     remoteCwd: spec.remoteCwd,
-    ...(spec.paperclipApiUrl ? { paperclipApiUrl: spec.paperclipApiUrl } : {}),
+    ...(spec.stapleApiUrl ? { stapleApiUrl: spec.stapleApiUrl } : {}),
   } as const;
 }
 
@@ -59,7 +59,7 @@ export function remoteExecutionSessionMatches(saved: unknown, current: SshRemote
     asNumber(parsedSaved.port) === currentIdentity.port &&
     asString(parsedSaved.username) === currentIdentity.username &&
     asString(parsedSaved.remoteCwd) === currentIdentity.remoteCwd &&
-    asString(parsedSaved.paperclipApiUrl) === asString(currentIdentity.paperclipApiUrl)
+    asString(parsedSaved.stapleApiUrl) === asString(currentIdentity.stapleApiUrl)
   );
 }
 
@@ -71,7 +71,7 @@ export async function prepareRemoteManagedRuntime(input: {
   assets?: RemoteManagedRuntimeAsset[];
 }): Promise<PreparedRemoteManagedRuntime> {
   const workspaceRemoteDir = input.workspaceRemoteDir ?? input.spec.remoteCwd;
-  const runtimeRootDir = path.posix.join(workspaceRemoteDir, ".paperclip-runtime", input.adapterKey);
+  const runtimeRootDir = path.posix.join(workspaceRemoteDir, ".staple-runtime", input.adapterKey);
 
   await prepareWorkspaceForSshExecution({
     spec: input.spec,

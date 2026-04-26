@@ -8,13 +8,13 @@ const repoRoot = process.cwd();
 const serverRoot = path.join(repoRoot, "server");
 const serverTestsDir = path.join(repoRoot, "server", "src", "__tests__");
 const nonServerProjects = [
-  "@paperclipai/shared",
-  "@paperclipai/db",
-  "@paperclipai/adapter-utils",
-  "@paperclipai/adapter-codex-local",
-  "@paperclipai/adapter-opencode-local",
-  "@paperclipai/ui",
-  "paperclipai",
+  "@stapleai/shared",
+  "@stapleai/db",
+  "@stapleai/adapter-utils",
+  "@stapleai/adapter-codex-local",
+  "@stapleai/adapter-opencode-local",
+  "@stapleai/ui",
+  "stapleai",
 ];
 const routeTestPattern = /[^/]*(?:route|routes|authz)[^/]*\.test\.ts$/;
 const additionalSerializedServerTests = new Set([
@@ -79,14 +79,14 @@ function isRouteOrAuthzTest(file) {
 function runVitest(args, label) {
   console.log(`\n[test:run] ${label}`);
   invocationIndex += 1;
-  const testRoot = mkdtempSync(path.join(os.tmpdir(), `paperclip-vitest-${process.pid}-${invocationIndex}-`));
+  const testRoot = mkdtempSync(path.join(os.tmpdir(), `staple-vitest-${process.pid}-${invocationIndex}-`));
   const env = {
     ...process.env,
-    PAPERCLIP_HOME: path.join(testRoot, "home"),
-    PAPERCLIP_INSTANCE_ID: `vitest-${process.pid}-${invocationIndex}`,
+    STAPLE_HOME: path.join(testRoot, "home"),
+    STAPLE_INSTANCE_ID: `vitest-${process.pid}-${invocationIndex}`,
     TMPDIR: path.join(testRoot, "tmp"),
   };
-  mkdirSync(env.PAPERCLIP_HOME, { recursive: true });
+  mkdirSync(env.STAPLE_HOME, { recursive: true });
   mkdirSync(env.TMPDIR, { recursive: true });
   const result = spawnSync("pnpm", ["exec", "vitest", "run", ...args], {
     cwd: repoRoot,
@@ -116,7 +116,7 @@ for (const project of nonServerProjects) {
 }
 
 runVitest(
-  ["--project", "@paperclipai/server", ...excludeRouteArgs],
+  ["--project", "@stapleai/server", ...excludeRouteArgs],
   `server suites excluding ${routeTests.length} serialized suites`,
 );
 
@@ -124,7 +124,7 @@ for (const routeTest of routeTests) {
   runVitest(
     [
       "--project",
-      "@paperclipai/server",
+      "@stapleai/server",
       routeTest.repoPath,
       "--pool=forks",
       "--poolOptions.forks.isolate=true",

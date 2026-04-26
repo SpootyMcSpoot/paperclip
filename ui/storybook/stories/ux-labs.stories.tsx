@@ -5,8 +5,8 @@ import { RunTranscriptUxLab } from "@/pages/RunTranscriptUxLab";
 
 function StoryFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="paperclip-story">
-      <main className="paperclip-story__inner">{children}</main>
+    <div className="staple-story">
+      <main className="staple-story__inner">{children}</main>
     </div>
   );
 }

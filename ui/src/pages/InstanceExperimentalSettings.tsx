@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FlaskConical } from "lucide-react";
-import type { PatchInstanceExperimentalSettings } from "@paperclipai/shared";
+import type { PatchInstanceExperimentalSettings } from "@stapleai/shared";
 import { instanceSettingsApi } from "@/api/instanceSettings";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { queryKeys } from "../lib/queryKeys";

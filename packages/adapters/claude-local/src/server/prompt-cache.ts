@@ -3,12 +3,12 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createHash, type Hash } from "node:crypto";
-import type { AdapterExecutionContext } from "@paperclipai/adapter-utils";
-import { ensurePaperclipSkillSymlink, type PaperclipSkillEntry } from "@paperclipai/adapter-utils/server-utils";
+import type { AdapterExecutionContext } from "@stapleai/adapter-utils";
+import { ensureStapleSkillSymlink, type StapleSkillEntry } from "@stapleai/adapter-utils/server-utils";
 
-const DEFAULT_PAPERCLIP_INSTANCE_ID = "default";
+const DEFAULT_STAPLE_INSTANCE_ID = "default";
 
-type SkillEntry = PaperclipSkillEntry;
+type SkillEntry = StapleSkillEntry;
 
 export interface ClaudePromptBundle {
   bundleKey: string;
@@ -25,10 +25,10 @@ function resolveManagedClaudePromptCacheRoot(
   env: NodeJS.ProcessEnv,
   companyId: string,
 ): string {
-  const paperclipHome = nonEmpty(env.PAPERCLIP_HOME) ?? path.resolve(os.homedir(), ".paperclip");
-  const instanceId = nonEmpty(env.PAPERCLIP_INSTANCE_ID) ?? DEFAULT_PAPERCLIP_INSTANCE_ID;
+  const stapleHome = nonEmpty(env.STAPLE_HOME) ?? path.resolve(os.homedir(), ".staple");
+  const instanceId = nonEmpty(env.STAPLE_INSTANCE_ID) ?? DEFAULT_STAPLE_INSTANCE_ID;
   return path.resolve(
-    paperclipHome,
+    stapleHome,
     "instances",
     instanceId,
     "companies",
@@ -88,7 +88,7 @@ async function buildClaudePromptBundleKey(input: {
   instructionsContents: string | null;
 }): Promise<string> {
   const hash = createHash("sha256");
-  hash.update("paperclip-claude-prompt-bundle:v1\n");
+  hash.update("staple-claude-prompt-bundle:v1\n");
   if (input.instructionsContents) {
     hash.update("instructions\n");
     hash.update(input.instructionsContents);
@@ -147,11 +147,11 @@ export async function prepareClaudePromptBundle(input: {
   for (const entry of skills) {
     const target = path.join(skillsHome, entry.runtimeName);
     try {
-      await ensurePaperclipSkillSymlink(entry.source, target);
+      await ensureStapleSkillSymlink(entry.source, target);
     } catch (err) {
       await onLog(
         "stderr",
-        `[paperclip] Failed to materialize Claude skill "${entry.key}" into ${skillsHome}: ${err instanceof Error ? err.message : String(err)}\n`,
+        `[staple] Failed to materialize Claude skill "${entry.key}" into ${skillsHome}: ${err instanceof Error ? err.message : String(err)}\n`,
       );
     }
   }

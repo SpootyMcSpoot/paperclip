@@ -1,7 +1,7 @@
 import { and, asc, eq, isNull, inArray } from "drizzle-orm";
-import type { Db } from "@paperclipai/db";
-import { goals, goalKeyResults, issues } from "@paperclipai/db";
-import type { GoalProgress, GoalKeyResultProgress } from "@paperclipai/shared";
+import type { Db } from "@stapleai/db";
+import { goals, goalKeyResults, issues } from "@stapleai/db";
+import type { GoalProgress, GoalKeyResultProgress } from "@stapleai/shared";
 
 type GoalReader = Pick<Db, "select">;
 

@@ -1,6 +1,6 @@
 import { and, eq, inArray } from "drizzle-orm";
-import type { Db } from "@paperclipai/db";
-import { environmentLeases } from "@paperclipai/db";
+import type { Db } from "@stapleai/db";
+import { environmentLeases } from "@stapleai/db";
 import type {
   Environment,
   EnvironmentLease,
@@ -8,13 +8,13 @@ import type {
   ExecutionWorkspace,
   PluginEnvironmentConfig,
   SandboxEnvironmentConfig,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import type {
   PluginEnvironmentExecuteResult,
   PluginEnvironmentLease,
   PluginEnvironmentRealizeWorkspaceResult,
-} from "@paperclipai/plugin-sdk";
-import { ensureSshWorkspaceReady, findReachablePaperclipApiUrlOverSsh } from "@paperclipai/adapter-utils/ssh";
+} from "@stapleai/plugin-sdk";
+import { ensureSshWorkspaceReady, findReachableStapleApiUrlOverSsh } from "@stapleai/adapter-utils/ssh";
 import { environmentService } from "./environments.js";
 import {
   parseEnvironmentDriverConfig,
@@ -220,7 +220,7 @@ function createSshEnvironmentDriver(db: Db): EnvironmentRuntimeDriver {
 
       const { remoteCwd } = await ensureSshWorkspaceReady(parsed.config);
       const candidateUrls = (() => {
-        const raw = process.env.PAPERCLIP_RUNTIME_API_CANDIDATES_JSON;
+        const raw = process.env.STAPLE_RUNTIME_API_CANDIDATES_JSON;
         if (!raw) return [];
         try {
           const parsed = JSON.parse(raw);
@@ -231,13 +231,13 @@ function createSshEnvironmentDriver(db: Db): EnvironmentRuntimeDriver {
           return [];
         }
       })();
-      const paperclipApiUrl = await findReachablePaperclipApiUrlOverSsh({
+      const stapleApiUrl = await findReachableStapleApiUrlOverSsh({
         config: parsed.config,
         candidates: candidateUrls,
       });
-      if (!paperclipApiUrl) {
+      if (!stapleApiUrl) {
         throw new Error(
-          `SSH environment ${parsed.config.username}@${parsed.config.host} could not reach any Paperclip API candidates.`,
+          `SSH environment ${parsed.config.username}@${parsed.config.host} could not reach any Staple API candidates.`,
         );
       }
       return await environmentsSvc.acquireLease({
@@ -257,7 +257,7 @@ function createSshEnvironmentDriver(db: Db): EnvironmentRuntimeDriver {
           username: parsed.config.username,
           remoteWorkspacePath: parsed.config.remoteWorkspacePath,
           remoteCwd,
-          paperclipApiUrl,
+          stapleApiUrl,
         },
       });
     },

@@ -2,8 +2,8 @@ import type {
   AdapterEnvironmentCheck,
   AdapterEnvironmentTestContext,
   AdapterEnvironmentTestResult,
-} from "@paperclipai/adapter-utils";
-import { asString, parseObject } from "@paperclipai/adapter-utils/server-utils";
+} from "@stapleai/adapter-utils";
+import { asString, parseObject } from "@stapleai/adapter-utils/server-utils";
 
 function summarizeStatus(
   checks: AdapterEnvironmentCheck[]

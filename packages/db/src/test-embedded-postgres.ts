@@ -33,13 +33,13 @@ export type EmbeddedPostgresTestDatabase = {
 
 let embeddedPostgresSupportPromise: Promise<EmbeddedPostgresTestSupport> | null = null;
 
-const DEFAULT_PAPERCLIP_EMBEDDED_POSTGRES_PORT = 54329;
+const DEFAULT_STAPLE_EMBEDDED_POSTGRES_PORT = 54329;
 
 function getReservedTestPorts(): Set<number> {
   const configuredPorts = [
-    DEFAULT_PAPERCLIP_EMBEDDED_POSTGRES_PORT,
-    Number.parseInt(process.env.PAPERCLIP_EMBEDDED_POSTGRES_PORT ?? "", 10),
-    ...String(process.env.PAPERCLIP_TEST_POSTGRES_RESERVED_PORTS ?? "")
+    DEFAULT_STAPLE_EMBEDDED_POSTGRES_PORT,
+    Number.parseInt(process.env.STAPLE_EMBEDDED_POSTGRES_PORT ?? "", 10),
+    ...String(process.env.STAPLE_TEST_POSTGRES_RESERVED_PORTS ?? "")
       .split(",")
       .map((value) => Number.parseInt(value.trim(), 10)),
   ];
@@ -76,7 +76,7 @@ async function getAvailablePort(): Promise<number> {
   }
 
   throw new Error(
-    `Failed to allocate embedded Postgres test port outside reserved Paperclip ports: ${[
+    `Failed to allocate embedded Postgres test port outside reserved Staple ports: ${[
       ...reservedPorts,
     ].join(", ")}`,
   );
@@ -88,8 +88,8 @@ async function createEmbeddedPostgresTestInstance(tempDirPrefix: string) {
   const EmbeddedPostgres = await getEmbeddedPostgresCtor();
   const instance = new EmbeddedPostgres({
     databaseDir: dataDir,
-    user: "paperclip",
-    password: "paperclip",
+    user: "staple",
+    password: "staple",
     port,
     persistent: true,
     initdbFlags: ["--encoding=UTF8", "--locale=C", "--lc-messages=C"],
@@ -112,7 +112,7 @@ function formatEmbeddedPostgresError(error: unknown): string {
 
 async function probeEmbeddedPostgresSupport(): Promise<EmbeddedPostgresTestSupport> {
   const { dataDir, instance } = await createEmbeddedPostgresTestInstance(
-    "paperclip-embedded-postgres-probe-",
+    "staple-embedded-postgres-probe-",
   );
 
   try {
@@ -146,9 +146,9 @@ export async function startEmbeddedPostgresTestDatabase(
     await instance.initialise();
     await instance.start();
 
-    const adminConnectionString = `postgres://paperclip:paperclip@127.0.0.1:${port}/postgres`;
-    await ensurePostgresDatabase(adminConnectionString, "paperclip");
-    const connectionString = `postgres://paperclip:paperclip@127.0.0.1:${port}/paperclip`;
+    const adminConnectionString = `postgres://staple:staple@127.0.0.1:${port}/postgres`;
+    await ensurePostgresDatabase(adminConnectionString, "staple");
+    const connectionString = `postgres://staple:staple@127.0.0.1:${port}/staple`;
     await applyPendingMigrations(connectionString);
 
     return {

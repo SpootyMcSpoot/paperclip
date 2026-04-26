@@ -5,7 +5,7 @@ import type {
   InboxDismissal,
   Issue,
   JoinRequest,
-} from "@paperclipai/shared";
+} from "@stapleai/shared";
 import {
   applyIssueFilters,
   defaultIssueFilterState,
@@ -16,14 +16,14 @@ import {
 export const RECENT_ISSUES_LIMIT = 100;
 export const FAILED_RUN_STATUSES = new Set(["failed", "timed_out"]);
 export const ACTIONABLE_APPROVAL_STATUSES = new Set(["pending", "revision_requested"]);
-export const DISMISSED_KEY = "paperclip:inbox:dismissed";
-export const READ_ITEMS_KEY = "paperclip:inbox:read-items";
-export const INBOX_LAST_TAB_KEY = "paperclip:inbox:last-tab";
-export const INBOX_ISSUE_COLUMNS_KEY = "paperclip:inbox:issue-columns";
-export const INBOX_NESTING_KEY = "paperclip:inbox:nesting";
-export const INBOX_GROUP_BY_KEY = "paperclip:inbox:group-by";
-export const INBOX_FILTER_PREFERENCES_KEY_PREFIX = "paperclip:inbox:filters";
-export const INBOX_COLLAPSED_GROUPS_KEY_PREFIX = "paperclip:inbox:collapsed-groups";
+export const DISMISSED_KEY = "staple:inbox:dismissed";
+export const READ_ITEMS_KEY = "staple:inbox:read-items";
+export const INBOX_LAST_TAB_KEY = "staple:inbox:last-tab";
+export const INBOX_ISSUE_COLUMNS_KEY = "staple:inbox:issue-columns";
+export const INBOX_NESTING_KEY = "staple:inbox:nesting";
+export const INBOX_GROUP_BY_KEY = "staple:inbox:group-by";
+export const INBOX_FILTER_PREFERENCES_KEY_PREFIX = "staple:inbox:filters";
+export const INBOX_COLLAPSED_GROUPS_KEY_PREFIX = "staple:inbox:collapsed-groups";
 export type InboxTab = "mine" | "recent" | "unread" | "all";
 export type InboxCategoryFilter =
   | "everything"

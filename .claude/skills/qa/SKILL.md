@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Run QA checks on staple-ai (PaperclipAI) monorepo. Type-checks, lints, runs vitest unit tests, and reports coverage across all packages.
+description: Run QA checks on staple-ai (StapleAI) monorepo. Type-checks, lints, runs vitest unit tests, and reports coverage across all packages.
 allowed-tools:
   - Bash
   - Read

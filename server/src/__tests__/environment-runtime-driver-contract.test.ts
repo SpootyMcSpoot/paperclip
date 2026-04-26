@@ -11,7 +11,7 @@ import {
   startSshEnvLabFixture,
   stopSshEnvLabFixture,
   type SshEnvironmentConfig,
-} from "@paperclipai/adapter-utils/ssh";
+} from "@stapleai/adapter-utils/ssh";
 import {
   agents,
   companies,
@@ -21,8 +21,8 @@ import {
   environmentLeases,
   environments,
   heartbeatRuns,
-} from "@paperclipai/db";
-import type { Environment } from "@paperclipai/shared";
+} from "@stapleai/db";
+import type { Environment } from "@stapleai/shared";
 import {
   getEmbeddedPostgresTestSupport,
   startEmbeddedPostgresTestDatabase,
@@ -284,13 +284,13 @@ describeEmbeddedPostgres("environment runtime driver contract", () => {
       return;
     }
 
-    const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), "paperclip-env-runtime-contract-ssh-"));
+    const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), "staple-env-runtime-contract-ssh-"));
     fixtureRoots.push(fixtureRoot);
     const fixture = await startSshEnvLabFixture({ statePath: path.join(fixtureRoot, "state.json") });
     const sshConfig = await buildSshEnvLabFixtureConfig(fixture);
     const runtimeApiUrl = await startHealthServer();
-    const previousCandidates = process.env.PAPERCLIP_RUNTIME_API_CANDIDATES_JSON;
-    process.env.PAPERCLIP_RUNTIME_API_CANDIDATES_JSON = JSON.stringify([runtimeApiUrl]);
+    const previousCandidates = process.env.STAPLE_RUNTIME_API_CANDIDATES_JSON;
+    process.env.STAPLE_RUNTIME_API_CANDIDATES_JSON = JSON.stringify([runtimeApiUrl]);
 
     await runContract({
       name: "ssh",
@@ -304,14 +304,14 @@ describeEmbeddedPostgres("environment runtime driver contract", () => {
           username: sshConfig.username,
           remoteWorkspacePath: sshConfig.remoteWorkspacePath,
           remoteCwd: sshConfig.remoteWorkspacePath,
-          paperclipApiUrl: runtimeApiUrl,
+          stapleApiUrl: runtimeApiUrl,
         });
       },
       setup: async () => async () => {
         if (previousCandidates === undefined) {
-          delete process.env.PAPERCLIP_RUNTIME_API_CANDIDATES_JSON;
+          delete process.env.STAPLE_RUNTIME_API_CANDIDATES_JSON;
         } else {
-          process.env.PAPERCLIP_RUNTIME_API_CANDIDATES_JSON = previousCandidates;
+          process.env.STAPLE_RUNTIME_API_CANDIDATES_JSON = previousCandidates;
         }
       },
     });

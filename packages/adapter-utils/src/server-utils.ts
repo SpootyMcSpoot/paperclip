@@ -76,13 +76,13 @@ export const MAX_CAPTURE_BYTES = 4 * 1024 * 1024;
 export const MAX_EXCERPT_BYTES = 32 * 1024;
 const TERMINAL_RESULT_SCAN_OVERLAP_CHARS = 64 * 1024;
 const SENSITIVE_ENV_KEY = /(key|token|secret|password|passwd|authorization|cookie)/i;
-const PAPERCLIP_SKILL_ROOT_RELATIVE_CANDIDATES = [
+const STAPLE_SKILL_ROOT_RELATIVE_CANDIDATES = [
   "../../skills",
   "../../../../../skills",
 ];
 
-export const DEFAULT_PAPERCLIP_AGENT_PROMPT_TEMPLATE = [
-  "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.",
+export const DEFAULT_STAPLE_AGENT_PROMPT_TEMPLATE = [
+  "You are agent {{agent.id}} ({{agent.name}}). Continue your Staple work.",
   "",
   "Execution contract:",
   "- Start actionable work in this heartbeat; do not stop at a plan unless the issue asks for planning.",
@@ -98,7 +98,7 @@ export const DEFAULT_PAPERCLIP_AGENT_PROMPT_TEMPLATE = [
   "- Respect budget, pause/cancel, approval gates, and company boundaries.",
 ].join("\n");
 
-export interface PaperclipSkillEntry {
+export interface StapleSkillEntry {
   key: string;
   runtimeName: string;
   source: string;
@@ -113,7 +113,7 @@ export interface InstalledSkillTarget {
 
 interface PersistentSkillSnapshotOptions {
   adapterType: string;
-  availableEntries: PaperclipSkillEntry[];
+  availableEntries: StapleSkillEntry[];
   desiredSkills: string[];
   installed: Map<string, InstalledSkillTarget>;
   skillsHome: string;
@@ -145,14 +145,14 @@ function buildManagedSkillOrigin(entry: { required?: boolean }): Pick<
 > {
   if (entry.required) {
     return {
-      origin: "paperclip_required",
-      originLabel: "Required by Paperclip",
+      origin: "staple_required",
+      originLabel: "Required by Staple",
       readOnly: false,
     };
   }
   return {
     origin: "company_managed",
-    originLabel: "Managed by Paperclip",
+    originLabel: "Managed by Staple",
     readOnly: false,
   };
 }
@@ -264,7 +264,7 @@ export function joinPromptSections(
     .join(separator);
 }
 
-type PaperclipWakeIssue = {
+type StapleWakeIssue = {
   id: string | null;
   identifier: string | null;
   title: string | null;
@@ -272,18 +272,18 @@ type PaperclipWakeIssue = {
   priority: string | null;
 };
 
-type PaperclipWakeExecutionPrincipal = {
+type StapleWakeExecutionPrincipal = {
   type: "agent" | "user" | null;
   agentId: string | null;
   userId: string | null;
 };
 
-type PaperclipWakeExecutionStage = {
+type StapleWakeExecutionStage = {
   wakeRole: "reviewer" | "approver" | "executor" | null;
   stageId: string | null;
   stageType: string | null;
-  currentParticipant: PaperclipWakeExecutionPrincipal | null;
-  returnAssignee: PaperclipWakeExecutionPrincipal | null;
+  currentParticipant: StapleWakeExecutionPrincipal | null;
+  returnAssignee: StapleWakeExecutionPrincipal | null;
   reviewRequest: {
     instructions: string;
   } | null;
@@ -291,7 +291,7 @@ type PaperclipWakeExecutionStage = {
   allowedActions: string[];
 };
 
-type PaperclipWakeComment = {
+type StapleWakeComment = {
   id: string | null;
   issueId: string | null;
   body: string;
@@ -301,7 +301,7 @@ type PaperclipWakeComment = {
   authorId: string | null;
 };
 
-type PaperclipWakeContinuationSummary = {
+type StapleWakeContinuationSummary = {
   key: string | null;
   title: string | null;
   body: string;
@@ -309,7 +309,7 @@ type PaperclipWakeContinuationSummary = {
   updatedAt: string | null;
 };
 
-type PaperclipWakeLivenessContinuation = {
+type StapleWakeLivenessContinuation = {
   attempt: number | null;
   maxAttempts: number | null;
   sourceRunId: string | null;
@@ -318,7 +318,7 @@ type PaperclipWakeLivenessContinuation = {
   instruction: string | null;
 };
 
-type PaperclipWakeChildIssueSummary = {
+type StapleWakeChildIssueSummary = {
   id: string | null;
   identifier: string | null;
   title: string | null;
@@ -327,7 +327,7 @@ type PaperclipWakeChildIssueSummary = {
   summary: string | null;
 };
 
-type PaperclipWakeBlockerSummary = {
+type StapleWakeBlockerSummary = {
   id: string | null;
   identifier: string | null;
   title: string | null;
@@ -335,30 +335,30 @@ type PaperclipWakeBlockerSummary = {
   priority: string | null;
 };
 
-type PaperclipWakeTreeHoldSummary = {
+type StapleWakeTreeHoldSummary = {
   holdId: string | null;
   rootIssueId: string | null;
   mode: string | null;
   reason: string | null;
 };
 
-type PaperclipWakePayload = {
+type StapleWakePayload = {
   reason: string | null;
-  issue: PaperclipWakeIssue | null;
+  issue: StapleWakeIssue | null;
   checkedOutByHarness: boolean;
   dependencyBlockedInteraction: boolean;
   treeHoldInteraction: boolean;
-  activeTreeHold: PaperclipWakeTreeHoldSummary | null;
+  activeTreeHold: StapleWakeTreeHoldSummary | null;
   unresolvedBlockerIssueIds: string[];
-  unresolvedBlockerSummaries: PaperclipWakeBlockerSummary[];
-  executionStage: PaperclipWakeExecutionStage | null;
-  continuationSummary: PaperclipWakeContinuationSummary | null;
-  livenessContinuation: PaperclipWakeLivenessContinuation | null;
-  childIssueSummaries: PaperclipWakeChildIssueSummary[];
+  unresolvedBlockerSummaries: StapleWakeBlockerSummary[];
+  executionStage: StapleWakeExecutionStage | null;
+  continuationSummary: StapleWakeContinuationSummary | null;
+  livenessContinuation: StapleWakeLivenessContinuation | null;
+  childIssueSummaries: StapleWakeChildIssueSummary[];
   childIssueSummaryTruncated: boolean;
   commentIds: string[];
   latestCommentId: string | null;
-  comments: PaperclipWakeComment[];
+  comments: StapleWakeComment[];
   requestedCount: number;
   includedCount: number;
   missingCount: number;
@@ -366,7 +366,7 @@ type PaperclipWakePayload = {
   fallbackFetchNeeded: boolean;
 };
 
-function normalizePaperclipWakeIssue(value: unknown): PaperclipWakeIssue | null {
+function normalizeStapleWakeIssue(value: unknown): StapleWakeIssue | null {
   const issue = parseObject(value);
   const id = asString(issue.id, "").trim() || null;
   const identifier = asString(issue.identifier, "").trim() || null;
@@ -383,7 +383,7 @@ function normalizePaperclipWakeIssue(value: unknown): PaperclipWakeIssue | null 
   };
 }
 
-function normalizePaperclipWakeComment(value: unknown): PaperclipWakeComment | null {
+function normalizeStapleWakeComment(value: unknown): StapleWakeComment | null {
   const comment = parseObject(value);
   const author = parseObject(comment.author);
   const body = asString(comment.body, "");
@@ -399,7 +399,7 @@ function normalizePaperclipWakeComment(value: unknown): PaperclipWakeComment | n
   };
 }
 
-function normalizePaperclipWakeContinuationSummary(value: unknown): PaperclipWakeContinuationSummary | null {
+function normalizeStapleWakeContinuationSummary(value: unknown): StapleWakeContinuationSummary | null {
   const summary = parseObject(value);
   const body = asString(summary.body, "").trim();
   if (!body) return null;
@@ -412,7 +412,7 @@ function normalizePaperclipWakeContinuationSummary(value: unknown): PaperclipWak
   };
 }
 
-function normalizePaperclipWakeLivenessContinuation(value: unknown): PaperclipWakeLivenessContinuation | null {
+function normalizeStapleWakeLivenessContinuation(value: unknown): StapleWakeLivenessContinuation | null {
   const continuation = parseObject(value);
   const attempt = asNumber(continuation.attempt, 0);
   const maxAttempts = asNumber(continuation.maxAttempts, 0);
@@ -431,7 +431,7 @@ function normalizePaperclipWakeLivenessContinuation(value: unknown): PaperclipWa
   };
 }
 
-function normalizePaperclipWakeChildIssueSummary(value: unknown): PaperclipWakeChildIssueSummary | null {
+function normalizeStapleWakeChildIssueSummary(value: unknown): StapleWakeChildIssueSummary | null {
   const child = parseObject(value);
   const id = asString(child.id, "").trim() || null;
   const identifier = asString(child.identifier, "").trim() || null;
@@ -443,7 +443,7 @@ function normalizePaperclipWakeChildIssueSummary(value: unknown): PaperclipWakeC
   return { id, identifier, title, status, priority, summary };
 }
 
-function normalizePaperclipWakeBlockerSummary(value: unknown): PaperclipWakeBlockerSummary | null {
+function normalizeStapleWakeBlockerSummary(value: unknown): StapleWakeBlockerSummary | null {
   const blocker = parseObject(value);
   const id = asString(blocker.id, "").trim() || null;
   const identifier = asString(blocker.identifier, "").trim() || null;
@@ -454,7 +454,7 @@ function normalizePaperclipWakeBlockerSummary(value: unknown): PaperclipWakeBloc
   return { id, identifier, title, status, priority };
 }
 
-function normalizePaperclipWakeTreeHoldSummary(value: unknown): PaperclipWakeTreeHoldSummary | null {
+function normalizeStapleWakeTreeHoldSummary(value: unknown): StapleWakeTreeHoldSummary | null {
   const hold = parseObject(value);
   const holdId = asString(hold.holdId, "").trim() || null;
   const rootIssueId = asString(hold.rootIssueId, "").trim() || null;
@@ -464,7 +464,7 @@ function normalizePaperclipWakeTreeHoldSummary(value: unknown): PaperclipWakeTre
   return { holdId, rootIssueId, mode, reason };
 }
 
-function normalizePaperclipWakeExecutionPrincipal(value: unknown): PaperclipWakeExecutionPrincipal | null {
+function normalizeStapleWakeExecutionPrincipal(value: unknown): StapleWakeExecutionPrincipal | null {
   const principal = parseObject(value);
   const typeRaw = asString(principal.type, "").trim().toLowerCase();
   if (typeRaw !== "agent" && typeRaw !== "user") return null;
@@ -475,7 +475,7 @@ function normalizePaperclipWakeExecutionPrincipal(value: unknown): PaperclipWake
   };
 }
 
-function normalizePaperclipWakeExecutionStage(value: unknown): PaperclipWakeExecutionStage | null {
+function normalizeStapleWakeExecutionStage(value: unknown): StapleWakeExecutionStage | null {
   const stage = parseObject(value);
   const wakeRoleRaw = asString(stage.wakeRole, "").trim().toLowerCase();
   const wakeRole =
@@ -487,8 +487,8 @@ function normalizePaperclipWakeExecutionStage(value: unknown): PaperclipWakeExec
         .filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0)
         .map((entry) => entry.trim())
     : [];
-  const currentParticipant = normalizePaperclipWakeExecutionPrincipal(stage.currentParticipant);
-  const returnAssignee = normalizePaperclipWakeExecutionPrincipal(stage.returnAssignee);
+  const currentParticipant = normalizeStapleWakeExecutionPrincipal(stage.currentParticipant);
+  const returnAssignee = normalizeStapleWakeExecutionPrincipal(stage.returnAssignee);
   const reviewRequestRaw = parseObject(stage.reviewRequest);
   const reviewInstructions = asString(reviewRequestRaw.instructions, "").trim();
   const reviewRequest = reviewInstructions ? { instructions: reviewInstructions } : null;
@@ -512,12 +512,12 @@ function normalizePaperclipWakeExecutionStage(value: unknown): PaperclipWakeExec
   };
 }
 
-export function normalizePaperclipWakePayload(value: unknown): PaperclipWakePayload | null {
+export function normalizeStapleWakePayload(value: unknown): StapleWakePayload | null {
   const payload = parseObject(value);
   const comments = Array.isArray(payload.comments)
     ? payload.comments
-        .map((entry) => normalizePaperclipWakeComment(entry))
-        .filter((entry): entry is PaperclipWakeComment => Boolean(entry))
+        .map((entry) => normalizeStapleWakeComment(entry))
+        .filter((entry): entry is StapleWakeComment => Boolean(entry))
     : [];
   const commentWindow = parseObject(payload.commentWindow);
   const commentIds = Array.isArray(payload.commentIds)
@@ -525,13 +525,13 @@ export function normalizePaperclipWakePayload(value: unknown): PaperclipWakePayl
         .filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0)
         .map((entry) => entry.trim())
     : [];
-  const executionStage = normalizePaperclipWakeExecutionStage(payload.executionStage);
-  const continuationSummary = normalizePaperclipWakeContinuationSummary(payload.continuationSummary);
-  const livenessContinuation = normalizePaperclipWakeLivenessContinuation(payload.livenessContinuation);
+  const executionStage = normalizeStapleWakeExecutionStage(payload.executionStage);
+  const continuationSummary = normalizeStapleWakeContinuationSummary(payload.continuationSummary);
+  const livenessContinuation = normalizeStapleWakeLivenessContinuation(payload.livenessContinuation);
   const childIssueSummaries = Array.isArray(payload.childIssueSummaries)
     ? payload.childIssueSummaries
-        .map((entry) => normalizePaperclipWakeChildIssueSummary(entry))
-        .filter((entry): entry is PaperclipWakeChildIssueSummary => Boolean(entry))
+        .map((entry) => normalizeStapleWakeChildIssueSummary(entry))
+        .filter((entry): entry is StapleWakeChildIssueSummary => Boolean(entry))
     : [];
   const unresolvedBlockerIssueIds = Array.isArray(payload.unresolvedBlockerIssueIds)
     ? payload.unresolvedBlockerIssueIds
@@ -540,18 +540,18 @@ export function normalizePaperclipWakePayload(value: unknown): PaperclipWakePayl
     : [];
   const unresolvedBlockerSummaries = Array.isArray(payload.unresolvedBlockerSummaries)
     ? payload.unresolvedBlockerSummaries
-        .map((entry) => normalizePaperclipWakeBlockerSummary(entry))
-        .filter((entry): entry is PaperclipWakeBlockerSummary => Boolean(entry))
+        .map((entry) => normalizeStapleWakeBlockerSummary(entry))
+        .filter((entry): entry is StapleWakeBlockerSummary => Boolean(entry))
     : [];
 
-  const activeTreeHold = normalizePaperclipWakeTreeHoldSummary(payload.activeTreeHold);
-  if (comments.length === 0 && commentIds.length === 0 && childIssueSummaries.length === 0 && unresolvedBlockerIssueIds.length === 0 && unresolvedBlockerSummaries.length === 0 && !activeTreeHold && !executionStage && !continuationSummary && !livenessContinuation && !normalizePaperclipWakeIssue(payload.issue)) {
+  const activeTreeHold = normalizeStapleWakeTreeHoldSummary(payload.activeTreeHold);
+  if (comments.length === 0 && commentIds.length === 0 && childIssueSummaries.length === 0 && unresolvedBlockerIssueIds.length === 0 && unresolvedBlockerSummaries.length === 0 && !activeTreeHold && !executionStage && !continuationSummary && !livenessContinuation && !normalizeStapleWakeIssue(payload.issue)) {
     return null;
   }
 
   return {
     reason: asString(payload.reason, "").trim() || null,
-    issue: normalizePaperclipWakeIssue(payload.issue),
+    issue: normalizeStapleWakeIssue(payload.issue),
     checkedOutByHarness: asBoolean(payload.checkedOutByHarness, false),
     dependencyBlockedInteraction: asBoolean(payload.dependencyBlockedInteraction, false),
     treeHoldInteraction: asBoolean(payload.treeHoldInteraction, false),
@@ -574,21 +574,21 @@ export function normalizePaperclipWakePayload(value: unknown): PaperclipWakePayl
   };
 }
 
-export function stringifyPaperclipWakePayload(value: unknown): string | null {
-  const normalized = normalizePaperclipWakePayload(value);
+export function stringifyStapleWakePayload(value: unknown): string | null {
+  const normalized = normalizeStapleWakePayload(value);
   if (!normalized) return null;
   return JSON.stringify(normalized);
 }
 
-export function renderPaperclipWakePrompt(
+export function renderStapleWakePrompt(
   value: unknown,
   options: { resumedSession?: boolean } = {},
 ): string {
-  const normalized = normalizePaperclipWakePayload(value);
+  const normalized = normalizeStapleWakePayload(value);
   if (!normalized) return "";
   const resumedSession = options.resumedSession === true;
   const executionStage = normalized.executionStage;
-  const principalLabel = (principal: PaperclipWakeExecutionPrincipal | null) => {
+  const principalLabel = (principal: StapleWakeExecutionPrincipal | null) => {
     if (!principal || !principal.type) return "unknown";
     if (principal.type === "agent") return principal.agentId ? `agent ${principal.agentId}` : "agent";
     return principal.userId ? `user ${principal.userId}` : "user";
@@ -596,9 +596,9 @@ export function renderPaperclipWakePrompt(
 
   const lines = resumedSession
       ? [
-        "## Paperclip Resume Delta",
+        "## Staple Resume Delta",
         "",
-        "You are resuming an existing Paperclip session.",
+        "You are resuming an existing Staple session.",
         "This heartbeat is scoped to the issue below. Do not switch to another issue until you have handled this wake.",
         "Focus on the new wake delta below and continue the current task without restating the full heartbeat boilerplate.",
         "Fetch the API thread only when `fallbackFetchNeeded` is true or you need broader history than this batch.",
@@ -612,7 +612,7 @@ export function renderPaperclipWakePrompt(
         `- fallback fetch needed: ${normalized.fallbackFetchNeeded ? "yes" : "no"}`,
       ]
     : [
-        "## Paperclip Wake Payload",
+        "## Staple Wake Payload",
         "",
         "Treat this wake payload as the highest-priority change for the current heartbeat.",
         "This heartbeat is scoped to the issue below. Do not switch to another issue until you have handled this wake.",
@@ -806,13 +806,13 @@ export function buildInvocationEnvForLogs(
 
   const resolvedCommand = options.resolvedCommand?.trim();
   if (resolvedCommand) {
-    merged[options.resolvedCommandEnvKey ?? "PAPERCLIP_RESOLVED_COMMAND"] = resolvedCommand;
+    merged[options.resolvedCommandEnvKey ?? "STAPLE_RESOLVED_COMMAND"] = resolvedCommand;
   }
 
   return redactEnvForLogs(merged);
 }
 
-export function buildPaperclipEnv(agent: { id: string; companyId: string }): Record<string, string> {
+export function buildStapleEnv(agent: { id: string; companyId: string }): Record<string, string> {
   const resolveHostForUrl = (rawHost: string): string => {
     const host = rawHost.trim();
     if (!host || host === "0.0.0.0" || host === "::") return "localhost";
@@ -820,28 +820,28 @@ export function buildPaperclipEnv(agent: { id: string; companyId: string }): Rec
     return host;
   };
   const vars: Record<string, string> = {
-    PAPERCLIP_AGENT_ID: agent.id,
-    PAPERCLIP_COMPANY_ID: agent.companyId,
+    STAPLE_AGENT_ID: agent.id,
+    STAPLE_COMPANY_ID: agent.companyId,
   };
   const runtimeHost = resolveHostForUrl(
-    process.env.PAPERCLIP_LISTEN_HOST ?? process.env.HOST ?? "localhost",
+    process.env.STAPLE_LISTEN_HOST ?? process.env.HOST ?? "localhost",
   );
-  const runtimePort = process.env.PAPERCLIP_LISTEN_PORT ?? process.env.PORT ?? "3100";
+  const runtimePort = process.env.STAPLE_LISTEN_PORT ?? process.env.PORT ?? "3100";
   const apiUrl =
-    process.env.PAPERCLIP_RUNTIME_API_URL ??
-    process.env.PAPERCLIP_API_URL ??
+    process.env.STAPLE_RUNTIME_API_URL ??
+    process.env.STAPLE_API_URL ??
     `http://${runtimeHost}:${runtimePort}`;
-  vars.PAPERCLIP_API_URL = apiUrl;
+  vars.STAPLE_API_URL = apiUrl;
   return vars;
 }
 
-export function sanitizeInheritedPaperclipEnv(baseEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+export function sanitizeInheritedStapleEnv(baseEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...baseEnv };
   for (const key of Object.keys(env)) {
-    if (!key.startsWith("PAPERCLIP_")) continue;
-    if (key === "PAPERCLIP_RUNTIME_API_URL") continue;
-    if (key === "PAPERCLIP_LISTEN_HOST") continue;
-    if (key === "PAPERCLIP_LISTEN_PORT") continue;
+    if (!key.startsWith("STAPLE_")) continue;
+    if (key === "STAPLE_RUNTIME_API_URL") continue;
+    if (key === "STAPLE_LISTEN_HOST") continue;
+    if (key === "STAPLE_LISTEN_PORT") continue;
     delete env[key];
   }
   return env;
@@ -1017,12 +1017,12 @@ export async function ensureAbsoluteDirectory(
   }
 }
 
-export async function resolvePaperclipSkillsDir(
+export async function resolveStapleSkillsDir(
   moduleDir: string,
   additionalCandidates: string[] = [],
 ): Promise<string | null> {
   const candidates = [
-    ...PAPERCLIP_SKILL_ROOT_RELATIVE_CANDIDATES.map((relativePath) => path.resolve(moduleDir, relativePath)),
+    ...STAPLE_SKILL_ROOT_RELATIVE_CANDIDATES.map((relativePath) => path.resolve(moduleDir, relativePath)),
     ...additionalCandidates.map((candidate) => path.resolve(candidate)),
   ];
   const seenRoots = new Set<string>();
@@ -1037,11 +1037,11 @@ export async function resolvePaperclipSkillsDir(
   return null;
 }
 
-export async function listPaperclipSkillEntries(
+export async function listStapleSkillEntries(
   moduleDir: string,
   additionalCandidates: string[] = [],
-): Promise<PaperclipSkillEntry[]> {
-  const root = await resolvePaperclipSkillsDir(moduleDir, additionalCandidates);
+): Promise<StapleSkillEntry[]> {
+  const root = await resolveStapleSkillsDir(moduleDir, additionalCandidates);
   if (!root) return [];
 
   try {
@@ -1049,11 +1049,11 @@ export async function listPaperclipSkillEntries(
     return entries
       .filter((entry) => entry.isDirectory())
       .map((entry) => ({
-        key: `paperclipai/paperclip/${entry.name}`,
+        key: `stapleai/staple/${entry.name}`,
         runtimeName: entry.name,
         source: path.join(root, entry.name),
         required: true,
-        requiredReason: "Bundled Paperclip skills are always available for local adapters.",
+        requiredReason: "Bundled Staple skills are always available for local adapters.",
       }));
   } catch {
     return [];
@@ -1127,7 +1127,7 @@ export function buildPersistentSkillSnapshot(
 
   for (const desiredSkill of desiredSkills) {
     if (availableByKey.has(desiredSkill)) continue;
-    warnings.push(`Desired skill "${desiredSkill}" is not available from the Paperclip skills directory.`);
+    warnings.push(`Desired skill "${desiredSkill}" is not available from the Staple skills directory.`);
     entries.push({
       key: desiredSkill,
       runtimeName: null,
@@ -1136,7 +1136,7 @@ export function buildPersistentSkillSnapshot(
       state: "missing",
       sourcePath: null,
       targetPath: null,
-      detail: "Paperclip cannot find this skill in the local runtime skills directory.",
+      detail: "Staple cannot find this skill in the local runtime skills directory.",
       origin: "external_unknown",
       originLabel: "External or unavailable",
       readOnly: false,
@@ -1173,9 +1173,9 @@ export function buildPersistentSkillSnapshot(
   };
 }
 
-function normalizeConfiguredPaperclipRuntimeSkills(value: unknown): PaperclipSkillEntry[] {
+function normalizeConfiguredStapleRuntimeSkills(value: unknown): StapleSkillEntry[] {
   if (!Array.isArray(value)) return [];
-  const out: PaperclipSkillEntry[] = [];
+  const out: StapleSkillEntry[] = [];
   for (const rawEntry of value) {
     const entry = parseObject(rawEntry);
     const key = asString(entry.key, asString(entry.name, "")).trim();
@@ -1196,24 +1196,24 @@ function normalizeConfiguredPaperclipRuntimeSkills(value: unknown): PaperclipSki
   return out;
 }
 
-export async function readPaperclipRuntimeSkillEntries(
+export async function readStapleRuntimeSkillEntries(
   config: Record<string, unknown>,
   moduleDir: string,
   additionalCandidates: string[] = [],
-): Promise<PaperclipSkillEntry[]> {
-  const configuredEntries = normalizeConfiguredPaperclipRuntimeSkills(config.paperclipRuntimeSkills);
+): Promise<StapleSkillEntry[]> {
+  const configuredEntries = normalizeConfiguredStapleRuntimeSkills(config.stapleRuntimeSkills);
   if (configuredEntries.length > 0) return configuredEntries;
-  return listPaperclipSkillEntries(moduleDir, additionalCandidates);
+  return listStapleSkillEntries(moduleDir, additionalCandidates);
 }
 
-export async function readPaperclipSkillMarkdown(
+export async function readStapleSkillMarkdown(
   moduleDir: string,
   skillKey: string,
 ): Promise<string | null> {
   const normalized = skillKey.trim().toLowerCase();
   if (!normalized) return null;
 
-  const entries = await listPaperclipSkillEntries(moduleDir);
+  const entries = await listStapleSkillEntries(moduleDir);
   const match = entries.find((entry) => entry.key === normalized);
   if (!match) return null;
 
@@ -1224,11 +1224,11 @@ export async function readPaperclipSkillMarkdown(
   }
 }
 
-export function readPaperclipSkillSyncPreference(config: Record<string, unknown>): {
+export function readStapleSkillSyncPreference(config: Record<string, unknown>): {
   explicit: boolean;
   desiredSkills: string[];
 } {
-  const raw = config.paperclipSkillSync;
+  const raw = config.stapleSkillSync;
   if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
     return { explicit: false, desiredSkills: [] };
   }
@@ -1246,7 +1246,7 @@ export function readPaperclipSkillSyncPreference(config: Record<string, unknown>
   };
 }
 
-function canonicalizeDesiredPaperclipSkillReference(
+function canonicalizeDesiredStapleSkillReference(
   reference: string,
   availableEntries: Array<{ key: string; runtimeName?: string | null }>,
 ): string {
@@ -1269,11 +1269,11 @@ function canonicalizeDesiredPaperclipSkillReference(
   return normalizedReference;
 }
 
-export function resolvePaperclipDesiredSkillNames(
+export function resolveStapleDesiredSkillNames(
   config: Record<string, unknown>,
   availableEntries: Array<{ key: string; runtimeName?: string | null; required?: boolean }>,
 ): string[] {
-  const preference = readPaperclipSkillSyncPreference(config);
+  const preference = readStapleSkillSyncPreference(config);
   const requiredSkills = availableEntries
     .filter((entry) => entry.required)
     .map((entry) => entry.key);
@@ -1281,17 +1281,17 @@ export function resolvePaperclipDesiredSkillNames(
     return Array.from(new Set(requiredSkills));
   }
   const desiredSkills = preference.desiredSkills
-    .map((reference) => canonicalizeDesiredPaperclipSkillReference(reference, availableEntries))
+    .map((reference) => canonicalizeDesiredStapleSkillReference(reference, availableEntries))
     .filter(Boolean);
   return Array.from(new Set([...requiredSkills, ...desiredSkills]));
 }
 
-export function writePaperclipSkillSyncPreference(
+export function writeStapleSkillSyncPreference(
   config: Record<string, unknown>,
   desiredSkills: string[],
 ): Record<string, unknown> {
   const next = { ...config };
-  const raw = next.paperclipSkillSync;
+  const raw = next.stapleSkillSync;
   const current =
     typeof raw === "object" && raw !== null && !Array.isArray(raw)
       ? { ...(raw as Record<string, unknown>) }
@@ -1303,11 +1303,11 @@ export function writePaperclipSkillSyncPreference(
         .filter(Boolean),
     ),
   );
-  next.paperclipSkillSync = current;
+  next.stapleSkillSync = current;
   return next;
 }
 
-export async function ensurePaperclipSkillSymlink(
+export async function ensureStapleSkillSymlink(
   source: string,
   target: string,
   linkSkill: (source: string, target: string) => Promise<void> = (linkSource, linkTarget) =>
@@ -1421,14 +1421,14 @@ export async function runChildProcess(
   const onLogError = opts.onLogError ?? ((err, id, msg) => console.warn({ err, runId: id }, msg));
   return new Promise<RunProcessResult>((resolve, reject) => {
     const rawMerged: NodeJS.ProcessEnv = {
-      ...sanitizeInheritedPaperclipEnv(process.env),
+      ...sanitizeInheritedStapleEnv(process.env),
       ...opts.env,
     };
 
     // Strip Claude Code nesting-guard env vars so spawned `claude` processes
     // don't refuse to start with "cannot be launched inside another session".
-    // These vars leak in when the Paperclip server itself is started from
-    // within a Claude Code session (e.g. `npx paperclipai run` in a terminal
+    // These vars leak in when the Staple server itself is started from
+    // within a Claude Code session (e.g. `npx stapleai run` in a terminal
     // owned by Claude Code) or when cron inherits a contaminated shell env.
     const CLAUDE_CODE_NESTING_VARS = [
       "CLAUDECODE",
