@@ -82,19 +82,25 @@ function KeyResultRow({
                 }}
               />
               <button
+                type="button"
                 onClick={handleSaveValue}
                 className="p-0.5 hover:text-foreground"
+                aria-label="Save value"
+                title="Save"
               >
-                <Check className="h-3 w-3" />
+                <Check className="h-3 w-3" aria-hidden="true" />
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setCurrentValue(kr.currentValue);
                   setEditing(false);
                 }}
                 className="p-0.5 hover:text-foreground"
+                aria-label="Cancel edit"
+                title="Cancel"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ) : (
