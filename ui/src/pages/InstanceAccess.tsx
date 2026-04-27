@@ -101,7 +101,7 @@ export function InstanceAccess() {
     <div className="max-w-6xl space-y-6">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-muted-foreground" />
+          <Shield className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">Instance Access</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
