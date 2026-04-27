@@ -414,7 +414,7 @@ export function AdapterManager() {
         <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" aria-hidden="true" />
               Install Adapter
             </Button>
           </DialogTrigger>

@@ -242,7 +242,7 @@ export function CompanyInvites() {
                 <div className="text-sm font-medium">Latest invite link</div>
                 {latestInviteCopied ? (
                   <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
-                    <Check className="h-3.5 w-3.5" />
+                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     Copied
                   </div>
                 ) : null}

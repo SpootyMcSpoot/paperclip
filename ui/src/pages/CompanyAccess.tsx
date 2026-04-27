@@ -385,7 +385,7 @@ export function CompanyAccess() {
                         disabled={!canArchive}
                         title={removalReason ?? undefined}
                       >
-                        <Trash2 className="mr-1 h-3.5 w-3.5" />
+                        <Trash2 className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
                         Remove
                       </Button>
                     </div>

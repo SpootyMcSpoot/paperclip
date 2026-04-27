@@ -225,7 +225,7 @@ export function ApprovalDetail() {
             className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-2"
             onClick={() => setShowRawPayload((v) => !v)}
           >
-            <ChevronRight className={`h-3 w-3 transition-transform ${showRawPayload ? "rotate-90" : ""}`} />
+            <ChevronRight className={`h-3 w-3 transition-transform ${showRawPayload ? "rotate-90" : ""}`} aria-hidden="true" />
             See full request
           </button>
           {showRawPayload && (
