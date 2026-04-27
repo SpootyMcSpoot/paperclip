@@ -951,7 +951,7 @@ export function CompanyExport() {
             onClick={handleDownload}
             disabled={selectedCount === 0 || downloadMutation.isPending}
           >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
+            <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             {downloadMutation.isPending
               ? "Building export..."
               : `Export ${selectedCount} file${selectedCount === 1 ? "" : "s"}`}
@@ -976,7 +976,7 @@ export function CompanyExport() {
           </div>
           <div className="border-b border-border px-3 py-2 shrink-0">
             <div className="flex items-center gap-2 rounded-md border border-border px-2 py-1">
-              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
               <input
                 type="text"
                 value={treeSearch}

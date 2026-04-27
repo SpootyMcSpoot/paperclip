@@ -1110,7 +1110,7 @@ function AdapterTypeDropdown({
             {value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" /> : null}
             <span>{adapterLabels[value] ?? getAdapterLabel(value)}</span>
           </span>
-          <ChevronDown className="h-3 w-3 text-muted-foreground" />
+          <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-1" align="start">
@@ -1268,7 +1268,7 @@ function ModelDropdown({
                 ? selected.label
                 : value || (allowDefault ? "Default" : required ? "Select model (required)" : "Select model")}
             </span>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-1" align="start">
@@ -1485,7 +1485,7 @@ function ThinkingEffortDropdown({
         <PopoverTrigger asChild>
           <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm hover:bg-accent/50 transition-colors w-full justify-between">
             <span className={cn(!value && "text-muted-foreground")}>{selected?.label ?? "Auto"}</span>
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-1" align="start">
