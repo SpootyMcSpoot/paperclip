@@ -120,7 +120,7 @@ export function CommandPalette() {
               openNewIssue();
             }}
           >
-            <SquarePen className="mr-2 h-4 w-4" />
+            <SquarePen className="mr-2 h-4 w-4" aria-hidden="true" />
             Create new issue
             <span className="ml-auto text-xs text-muted-foreground">C</span>
           </CommandItem>
@@ -143,35 +143,35 @@ export function CommandPalette() {
 
         <CommandGroup heading="Pages">
           <CommandItem onSelect={() => go("/dashboard")}>
-            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <LayoutDashboard className="mr-2 h-4 w-4" aria-hidden="true" />
             Dashboard
           </CommandItem>
           <CommandItem onSelect={() => go("/inbox")}>
-            <Inbox className="mr-2 h-4 w-4" />
+            <Inbox className="mr-2 h-4 w-4" aria-hidden="true" />
             Inbox
           </CommandItem>
           <CommandItem onSelect={() => go("/issues")}>
-            <CircleDot className="mr-2 h-4 w-4" />
+            <CircleDot className="mr-2 h-4 w-4" aria-hidden="true" />
             Issues
           </CommandItem>
           <CommandItem onSelect={() => go("/projects")}>
-            <Hexagon className="mr-2 h-4 w-4" />
+            <Hexagon className="mr-2 h-4 w-4" aria-hidden="true" />
             Projects
           </CommandItem>
           <CommandItem onSelect={() => go("/goals")}>
-            <Target className="mr-2 h-4 w-4" />
+            <Target className="mr-2 h-4 w-4" aria-hidden="true" />
             Goals
           </CommandItem>
           <CommandItem onSelect={() => go("/agents")}>
-            <Bot className="mr-2 h-4 w-4" />
+            <Bot className="mr-2 h-4 w-4" aria-hidden="true" />
             Agents
           </CommandItem>
           <CommandItem onSelect={() => go("/costs")}>
-            <DollarSign className="mr-2 h-4 w-4" />
+            <DollarSign className="mr-2 h-4 w-4" aria-hidden="true" />
             Costs
           </CommandItem>
           <CommandItem onSelect={() => go("/activity")}>
-            <History className="mr-2 h-4 w-4" />
+            <History className="mr-2 h-4 w-4" aria-hidden="true" />
             Activity
           </CommandItem>
         </CommandGroup>
@@ -190,7 +190,7 @@ export function CommandPalette() {
                   }
                   onSelect={() => go(`/issues/${issue.identifier ?? issue.id}`)}
                 >
-                  <CircleDot className="mr-2 h-4 w-4" />
+                  <CircleDot className="mr-2 h-4 w-4" aria-hidden="true" />
                   <span className="text-muted-foreground mr-2 font-mono text-xs">
                     {issue.identifier ?? issue.id.slice(0, 8)}
                   </span>
@@ -211,7 +211,7 @@ export function CommandPalette() {
             <CommandGroup heading="Agents">
               {agents.slice(0, 10).map((agent) => (
                 <CommandItem key={agent.id} onSelect={() => go(agentUrl(agent))}>
-                  <Bot className="mr-2 h-4 w-4" />
+                  <Bot className="mr-2 h-4 w-4" aria-hidden="true" />
                   {agent.name}
                   <span className="text-xs text-muted-foreground ml-2">{agent.role}</span>
                 </CommandItem>
@@ -226,7 +226,7 @@ export function CommandPalette() {
             <CommandGroup heading="Projects">
               {projects.slice(0, 10).map((project) => (
                 <CommandItem key={project.id} onSelect={() => go(projectUrl(project))}>
-                  <Hexagon className="mr-2 h-4 w-4" />
+                  <Hexagon className="mr-2 h-4 w-4" aria-hidden="true" />
                   {project.name}
                 </CommandItem>
               ))}
