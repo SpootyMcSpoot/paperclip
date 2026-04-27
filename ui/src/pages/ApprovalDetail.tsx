@@ -177,8 +177,8 @@ export function ApprovalDetail() {
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-2">
               <div className="relative mt-0.5">
-                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-300" />
-                <Sparkles className="h-3 w-3 text-green-500 dark:text-green-200 absolute -right-2 -top-1 animate-pulse" />
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-300" aria-hidden="true" />
+                <Sparkles className="h-3 w-3 text-green-500 dark:text-green-200 absolute -right-2 -top-1 animate-pulse" aria-hidden="true" />
               </div>
               <div>
                 <p className="text-sm text-green-800 dark:text-green-100 font-medium">Approval confirmed</p>
@@ -201,7 +201,7 @@ export function ApprovalDetail() {
       <div className="border border-border rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <TypeIcon className="h-5 w-5 text-muted-foreground shrink-0" />
+            <TypeIcon className="h-5 w-5 text-muted-foreground shrink-0" aria-hidden="true" />
             <div>
               <h2 className="text-lg font-semibold">{approvalLabel(approval.type, approval.payload as Record<string, unknown> | null)}</h2>
               <p className="text-xs text-muted-foreground font-mono">{approval.id}</p>
