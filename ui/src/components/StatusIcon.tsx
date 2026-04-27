@@ -4,11 +4,34 @@ import { cn } from "../lib/utils";
 import { issueStatusIcon, issueStatusIconDefault } from "../lib/status-colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { Check, X, Clock, Loader2, Pause, Minus, Eye } from "lucide-react";
 
 const allStatuses = ["backlog", "todo", "in_progress", "in_review", "done", "cancelled", "blocked"];
 
 function statusLabel(status: string): string {
   return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function StatusShapeIcon({ status }: { status: string }) {
+  const cls = "absolute inset-0 m-auto h-2.5 w-2.5";
+  switch (status) {
+    case "done":
+      return <Check className={cls} strokeWidth={3} aria-hidden />;
+    case "cancelled":
+      return <X className={cls} strokeWidth={3} aria-hidden />;
+    case "backlog":
+      return <Minus className={cls} strokeWidth={3} aria-hidden />;
+    case "todo":
+      return <Clock className={cls} strokeWidth={3} aria-hidden />;
+    case "in_progress":
+      return <Loader2 className={cls} strokeWidth={3} aria-hidden />;
+    case "in_review":
+      return <Eye className={cls} strokeWidth={3} aria-hidden />;
+    case "blocked":
+      return <Pause className={cls} strokeWidth={3} aria-hidden />;
+    default:
+      return null;
+  }
 }
 
 interface StatusIconProps {
@@ -54,7 +77,6 @@ export function StatusIcon({ status, blockerAttention, onChange, className, show
   const colorClass = isCoveredBlocked
     ? "text-cyan-600 border-cyan-600 dark:text-cyan-400 dark:border-cyan-400"
     : issueStatusIcon[status] ?? issueStatusIconDefault;
-  const isDone = status === "done";
   const ariaLabel = status === "blocked" ? blockedAttentionLabel(blockerAttention) : statusLabel(status);
 
   const circle = (
@@ -69,9 +91,7 @@ export function StatusIcon({ status, blockerAttention, onChange, className, show
       aria-label={ariaLabel}
       title={ariaLabel}
     >
-      {isDone && (
-        <span className="absolute inset-0 m-auto h-2 w-2 rounded-full bg-current" />
-      )}
+      <StatusShapeIcon status={status} />
       {isCoveredBlocked && (
         <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background bg-current" />
       )}
