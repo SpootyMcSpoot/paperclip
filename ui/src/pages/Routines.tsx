@@ -571,7 +571,7 @@ export function Routines() {
           </p>
         </div>
         <Button onClick={() => setComposerOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
           Create routine
         </Button>
       </div>
@@ -823,7 +823,7 @@ export function Routines() {
                     <p className="text-sm font-medium">Advanced delivery settings</p>
                     <p className="text-sm text-muted-foreground">Keep policy controls secondary to the work definition.</p>
                   </div>
-                  {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                  {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-3">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -879,7 +879,7 @@ export function Routines() {
                   !draft.title.trim()
                 }
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                 {createRoutine.isPending ? "Creating..." : "Create routine"}
               </Button>
               {createRoutine.isError ? (

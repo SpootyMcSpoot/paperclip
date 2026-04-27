@@ -736,8 +736,8 @@ export function Costs() {
                               <div className="flex min-w-0 items-center gap-2">
                                 {hasBreakdown ? (
                                   isExpanded
-                                    ? <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
-                                    : <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                                    ? <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
+                                    : <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
                                 ) : (
                                   <span className="h-3 w-3 shrink-0" />
                                 )}
