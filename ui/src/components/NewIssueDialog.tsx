@@ -1038,8 +1038,9 @@ export function NewIssueDialog() {
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
               disabled={createIssue.isPending}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
@@ -1047,8 +1048,9 @@ export function NewIssueDialog() {
               className="text-muted-foreground"
               onClick={() => closeNewIssue()}
               disabled={createIssue.isPending}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
@@ -1509,8 +1511,9 @@ export function NewIssueDialog() {
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
                           title="Remove document"
+                          aria-label="Remove document"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className="h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       </div>
                     ))}
@@ -1526,7 +1529,7 @@ export function NewIssueDialog() {
                       <div key={file.id} className="flex items-start justify-between gap-3 rounded-md border border-border/70 px-3 py-2">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                            <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                             <span className="truncate text-sm">{file.file.name}</span>
                           </div>
                           <div className="mt-1 text-[11px] text-muted-foreground">
@@ -1540,8 +1543,9 @@ export function NewIssueDialog() {
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
                           title="Remove attachment"
+                          aria-label="Remove attachment"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className="h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       </div>
                     ))}
