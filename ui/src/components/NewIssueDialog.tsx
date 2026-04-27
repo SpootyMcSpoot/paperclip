@@ -1201,9 +1201,10 @@ export function NewIssueDialog() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-accent/50 transition-colors"
+                    aria-label="Add reviewer or approver"
                     title="Add reviewer or approver"
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-44 p-1" align="start">
@@ -1644,8 +1645,13 @@ export function NewIssueDialog() {
           {/* More (dates) */}
           <Popover open={moreOpen} onOpenChange={setMoreOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center justify-center rounded-md border border-border p-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground">
-                <MoreHorizontal className="h-3 w-3" />
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-border p-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground"
+                aria-label="More options"
+                title="More options"
+              >
+                <MoreHorizontal className="h-3 w-3" aria-hidden="true" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="start">
