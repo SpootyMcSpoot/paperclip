@@ -303,7 +303,7 @@ function CopyMarkdownButton({ text }: { text: string }) {
         }, 1500);
       }}
     >
-      {status === "copied" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+      {status === "copied" ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
       <span className="sm:hidden">{label}</span>
       <span className="sr-only" aria-live="polite">
         {label}
@@ -514,7 +514,7 @@ function TimelineEventCard({
             <span className="text-muted-foreground">
               {humanizeValue(event.statusChange.from)}
             </span>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">
               {humanizeValue(event.statusChange.to)}
             </span>
@@ -529,7 +529,7 @@ function TimelineEventCard({
             <span className="text-muted-foreground">
               {formatTimelineAssigneeLabel(event.assigneeChange.from, agentMap, currentUserId)}
             </span>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">
               {formatTimelineAssigneeLabel(event.assigneeChange.to, agentMap, currentUserId)}
             </span>
@@ -1015,8 +1015,9 @@ export function CommentThread({
                   onClick={() => attachInputRef.current?.click()}
                   disabled={attaching}
                   title="Attach image"
+                  aria-label="Attach image"
                 >
-                  <Paperclip className="h-4 w-4" />
+                  <Paperclip className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             )}
