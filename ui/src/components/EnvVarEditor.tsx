@@ -234,8 +234,10 @@ export function EnvVarEditor({
                 type="button"
                 className="shrink-0 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
                 onClick={() => removeRow(index)}
+                aria-label="Remove environment variable"
+                title="Remove"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             ) : (
               <div className="w-[26px] shrink-0" />

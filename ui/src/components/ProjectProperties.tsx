@@ -576,7 +576,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={() => removeGoal(goal.id)}
                       aria-label={`Remove goal ${goal.title}`}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   )}
                 </span>
