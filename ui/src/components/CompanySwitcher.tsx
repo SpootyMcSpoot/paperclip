@@ -80,7 +80,7 @@ export function CompanySwitcher({ open: controlledOpen, onOpenChange }: CompanyS
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/companies" className="no-underline text-inherit">
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
             Manage Companies
           </Link>
         </DropdownMenuItem>

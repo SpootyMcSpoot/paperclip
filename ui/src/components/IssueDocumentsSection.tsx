@@ -694,7 +694,7 @@ export function IssueDocumentsSection({
         <div className="flex flex-wrap items-center justify-end gap-2 min-w-0">
           {extraActions}
           <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">New document</span>
             <span className="sm:hidden">New</span>
           </Button>
@@ -705,7 +705,7 @@ export function IssueDocumentsSection({
           <div className="flex flex-wrap items-center gap-2 min-w-0 sm:ml-auto">
             {extraActions}
             <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">New document</span>
               <span className="sm:hidden">New</span>
             </Button>
@@ -756,7 +756,7 @@ export function IssueDocumentsSection({
           />
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" size="sm" onClick={cancelDraft}>
-              <X className="mr-1.5 h-3.5 w-3.5" />
+              <X className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               Cancel
             </Button>
             <Button
@@ -956,7 +956,7 @@ export function IssueDocumentsSection({
                           variant="destructive"
                           onClick={() => setConfirmDeleteKey(doc.key)}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                           Delete document
                         </DropdownMenuItem>
                       ) : null}
