@@ -7,6 +7,7 @@ import { accessApi } from "../api/access";
 import { issuesApi } from "../api/issues";
 import { agentsApi } from "../api/agents";
 import { projectsApi } from "../api/projects";
+import { goalsApi } from "../api/goals";
 import { buildCompanyUserProfileMap } from "../lib/company-members";
 import { useCompany } from "../context/CompanyContext";
 import { useDialog } from "../context/DialogContext";
@@ -20,7 +21,7 @@ import { ActivityRow } from "../components/ActivityRow";
 import { Identity } from "../components/Identity";
 import { timeAgo } from "../lib/timeAgo";
 import { cn, formatCents } from "../lib/utils";
-import { Bot, CircleDot, DollarSign, ShieldCheck, LayoutDashboard, PauseCircle } from "lucide-react";
+import { Bot, CircleDot, DollarSign, ShieldCheck, LayoutDashboard, PauseCircle, Target } from "lucide-react";
 import { ActiveAgentsPanel } from "../components/ActiveAgentsPanel";
 import { ChartCard, RunActivityChart, PriorityChart, IssueStatusChart, SuccessRateChart } from "../components/ActivityCharts";
 import { PageSkeleton } from "../components/PageSkeleton";
@@ -74,6 +75,12 @@ export function Dashboard() {
   const { data: projects } = useQuery({
     queryKey: queryKeys.projects.list(selectedCompanyId!),
     queryFn: () => projectsApi.list(selectedCompanyId!),
+    enabled: !!selectedCompanyId,
+  });
+
+  const { data: goals } = useQuery({
+    queryKey: queryKeys.goals.list(selectedCompanyId!),
+    queryFn: () => goalsApi.list(selectedCompanyId!),
     enabled: !!selectedCompanyId,
   });
 
@@ -237,7 +244,7 @@ export function Dashboard() {
             </div>
           ) : null}
 
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-1 sm:gap-2">
+          <div className="grid grid-cols-2 xl:grid-cols-5 gap-1 sm:gap-2">
             <MetricCard
               icon={Bot}
               value={data.agents.active + data.agents.running + data.agents.paused + data.agents.error}
@@ -286,6 +293,19 @@ export function Dashboard() {
                   {data.budgets.pendingApprovals > 0
                     ? `${data.budgets.pendingApprovals} budget overrides awaiting board review`
                     : "Awaiting board review"}
+                </span>
+              }
+            />
+            <MetricCard
+              icon={Target}
+              value={goals?.filter((g) => g.status === "active").length ?? 0}
+              label="Active Goals"
+              to="/goals"
+              description={
+                <span>
+                  {goals?.filter((g) => g.status === "achieved").length ?? 0} achieved
+                  {", "}
+                  {goals?.filter((g) => g.status === "planned").length ?? 0} planned
                 </span>
               }
             />
