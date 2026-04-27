@@ -329,7 +329,7 @@ function SkillTree({
                   onClick={() => node.path && onToggleDir(node.path)}
                 >
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                    {expanded ? <FolderOpen className="h-3.5 w-3.5" /> : <Folder className="h-3.5 w-3.5" />}
+                    {expanded ? <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" /> : <Folder className="h-3.5 w-3.5" aria-hidden="true" />}
                   </span>
                   <span className="truncate">{node.name}</span>
                 </button>
@@ -458,7 +458,7 @@ function SkillList({
                 onClick={() => onToggleSkill(skill.id)}
                 aria-label={expanded ? `Collapse ${skill.name}` : `Expand ${skill.name}`}
               >
-                {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                {expanded ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
               </button>
             </div>
             <div
@@ -576,7 +576,7 @@ function SkillPane({
               disabled={deletePending}
               title={removeDisabledReason ?? undefined}
             >
-              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               {deletePending ? "Removing..." : "Remove"}
             </Button>
             {detail.editable ? (
@@ -584,7 +584,7 @@ function SkillPane({
                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                 onClick={() => setEditMode(!editMode)}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                 {editMode ? "Stop editing" : "Edit"}
               </button>
             ) : (
@@ -627,7 +627,7 @@ function SkillPane({
                   onClick={onCheckUpdates}
                   disabled={checkUpdatesPending || updateStatusLoading}
                 >
-                  <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", (checkUpdatesPending || updateStatusLoading) && "animate-spin")} />
+                  <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", (checkUpdatesPending || updateStatusLoading) && "animate-spin")} aria-hidden="true" />
                   Check for updates
                 </Button>
                 {updateStatus?.supported && updateStatus.hasUpdate && (
@@ -636,7 +636,7 @@ function SkillPane({
                     onClick={onInstallUpdate}
                     disabled={installUpdatePending}
                   >
-                    <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", installUpdatePending && "animate-spin")} />
+                    <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", installUpdatePending && "animate-spin")} aria-hidden="true" />
                     Install update{latestPin ? ` ${latestPin}` : ""}
                   </Button>
                 )}
@@ -1147,7 +1147,7 @@ export function CompanySkills() {
                   Find install commands and paste one here.
                 </span>
               </span>
-              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </a>
             <a
               href="https://github.com/search?q=SKILL.md&type=code"
@@ -1161,7 +1161,7 @@ export function CompanySkills() {
                   Look for repositories with `SKILL.md`, then paste the repo URL here.
                 </span>
               </span>
-              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </a>
           </div>
           <DialogFooter showCloseButton />
@@ -1201,7 +1201,7 @@ export function CompanySkills() {
             </div>
 
             <div className="mt-3 flex items-center gap-2 border-b border-border pb-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
+              <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <input
                 value={skillFilter}
                 onChange={(event) => setSkillFilter(event.target.value)}

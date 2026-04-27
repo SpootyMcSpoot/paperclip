@@ -169,7 +169,7 @@ export function PluginManager() {
         <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" aria-hidden="true" />
               Install Plugin
             </Button>
           </DialogTrigger>
@@ -206,7 +206,7 @@ export function PluginManager() {
 
       <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" />
           <div className="space-y-1 text-sm">
             <p className="font-medium text-foreground">Plugins are alpha.</p>
             <p className="text-muted-foreground">
@@ -350,7 +350,7 @@ export function PluginManager() {
                         <div className="flex flex-wrap items-start gap-3">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2 text-sm font-medium text-red-700 dark:text-red-300">
-                              <AlertTriangle className="h-4 w-4 shrink-0" />
+                              <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
                               <span>Plugin error</span>
                             </div>
                             <p
@@ -425,7 +425,7 @@ export function PluginManager() {
                       </div>
                       <Button variant="outline" size="sm" className="mt-2 h-8" asChild>
                         <Link to={`/instance/settings/plugins/${plugin.id}`}>
-                          <Settings className="h-4 w-4" />
+                          <Settings className="h-4 w-4" aria-hidden="true" />
                           Configure
                         </Link>
                       </Button>
@@ -482,7 +482,7 @@ export function PluginManager() {
           <div className="space-y-4">
             <div className="rounded-md border border-red-500/25 bg-red-500/[0.06] px-4 py-3">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" />
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" aria-hidden="true" />
                 <div className="space-y-1 text-sm">
                   <p className="font-medium text-red-700 dark:text-red-300">
                     What errored

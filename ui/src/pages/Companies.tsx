@@ -91,7 +91,7 @@ export function Companies() {
     <div className="space-y-6">
       <div className="flex items-center justify-end">
         <Button size="sm" onClick={() => openOnboarding()}>
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
+          <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
           New Company
         </Button>
       </div>
@@ -257,7 +257,7 @@ export function Companies() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 ml-auto">
-                  <Calendar className="h-3.5 w-3.5" />
+                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>Created {relativeTime(company.createdAt)}</span>
                 </div>
               </div>
