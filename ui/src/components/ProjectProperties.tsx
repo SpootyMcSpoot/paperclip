@@ -711,7 +711,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={clearRepoWorkspace}
                       aria-label="Clear repo"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -765,7 +765,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={clearLocalWorkspace}
                       aria-label="Clear local folder"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
                     </Button>
                   ) : null}
                 </div>
