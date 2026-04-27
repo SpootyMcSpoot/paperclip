@@ -2678,7 +2678,7 @@ function AgentSkillsTab({
         </Link>
         {saveStatusLabel ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {syncSkills.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {syncSkills.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
             <span>{saveStatusLabel}</span>
           </div>
         ) : null}
@@ -4116,7 +4116,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
               onClick={() => setTokenVisible((v) => !v)}
               title={tokenVisible ? "Hide" : "Show"}
             >
-              {tokenVisible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              {tokenVisible ? <EyeOff className="h-3.5 w-3.5" aria-hidden="true" /> : <Eye className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
@@ -4124,7 +4124,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
               onClick={copyToken}
               title="Copy"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
             {copied && <span className="text-xs text-green-400">Copied!</span>}
           </div>
