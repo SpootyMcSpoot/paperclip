@@ -68,7 +68,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               {selectedCompany?.name ?? "Select company"}
             </span>
           </span>
-          <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+          <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">

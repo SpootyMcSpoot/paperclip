@@ -133,9 +133,9 @@ export function FoldCurtain({
           >
             {expanded ? lessLabel : moreLabel}
             {expanded ? (
-              <ChevronUp className="h-3.5 w-3.5" />
+              <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5" />
+              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
             )}
           </Button>
         </div>
