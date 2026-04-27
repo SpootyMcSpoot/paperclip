@@ -395,6 +395,8 @@ export function PluginManager() {
                           size="icon-sm"
                           className="h-8 w-8"
                           title={plugin.status === "ready" ? "Disable" : "Enable"}
+                          aria-label={plugin.status === "ready" ? "Disable plugin" : "Enable plugin"}
+                          aria-pressed={plugin.status === "ready"}
                           onClick={() => {
                             if (plugin.status === "ready") {
                               disableMutation.mutate(plugin.id);
@@ -404,20 +406,21 @@ export function PluginManager() {
                           }}
                           disabled={enableMutation.isPending || disableMutation.isPending}
                         >
-                          <Power className={cn("h-4 w-4", plugin.status === "ready" ? "text-green-600" : "")} />
+                          <Power className={cn("h-4 w-4", plugin.status === "ready" ? "text-green-600" : "")} aria-hidden="true" />
                         </Button>
                         <Button
                           variant="outline"
                           size="icon-sm"
                           className="h-8 w-8 text-destructive hover:text-destructive"
                           title="Uninstall"
+                          aria-label="Uninstall plugin"
                           onClick={() => {
                             setUninstallPluginId(plugin.id);
                             setUninstallPluginName(plugin.manifestJson.displayName ?? plugin.packageName);
                           }}
                           disabled={uninstallMutation.isPending}
                         >
-                          <Trash className="h-4 w-4" />
+                          <Trash className="h-4 w-4" aria-hidden="true" />
                         </Button>
                       </div>
                       <Button variant="outline" size="sm" className="mt-2 h-8" asChild>
