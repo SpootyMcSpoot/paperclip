@@ -833,7 +833,7 @@ export function IssuesList({
       <div className="flex items-center justify-between gap-2 sm:gap-3">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Button size="sm" variant="outline" onClick={() => openCreateIssueDialog()}>
-            <Plus className="h-4 w-4 sm:mr-1" />
+            <Plus className="h-4 w-4 sm:mr-1" aria-hidden="true" />
             <span className="hidden sm:inline">{createButtonLabel}</span>
           </Button>
           <IssueSearchInput
