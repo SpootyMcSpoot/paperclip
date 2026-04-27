@@ -363,7 +363,7 @@ export function NewProjectDialog() {
               key={goal.id}
               className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs"
             >
-              <Target className="h-3 w-3 text-muted-foreground" />
+              <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
               <span className="max-w-[160px] truncate">{goal.title}</span>
               <button
                 className="text-muted-foreground hover:text-foreground"
@@ -371,7 +371,7 @@ export function NewProjectDialog() {
                 aria-label={`Remove goal ${goal.title}`}
                 type="button"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ))}
@@ -382,7 +382,7 @@ export function NewProjectDialog() {
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors disabled:opacity-60"
                 disabled={selectedGoals.length > 0 && availableGoals.length === 0}
               >
-                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" /> : <Target className="h-3 w-3 text-muted-foreground" />}
+                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" aria-hidden="true" /> : <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />}
                 {selectedGoals.length > 0 ? "+ Goal" : "Goal"}
               </button>
             </PopoverTrigger>
