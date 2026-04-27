@@ -156,7 +156,7 @@ export function IssueRow({
               className="inline-flex h-4 w-4 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-30"
               aria-label="Dismiss from inbox"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           ) : (
             <span className="inline-flex h-4 w-4" aria-hidden="true" />

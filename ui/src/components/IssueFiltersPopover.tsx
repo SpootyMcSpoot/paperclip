@@ -250,7 +250,7 @@ export function IssueFiltersPopover({
                             onClick={() => onChange({ creators: state.creators.filter((value) => value !== creator.id) })}
                             aria-label={`Remove creator ${creator.label}`}
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3 w-3" aria-hidden="true" />
                           </button>
                         </Badge>
                       ))}
