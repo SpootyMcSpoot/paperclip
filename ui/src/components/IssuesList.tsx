@@ -1049,8 +1049,10 @@ export function IssuesList({
                     size="icon-xs"
                     className="text-muted-foreground"
                     onClick={() => openCreateIssueDialog(group.key)}
+                    aria-label={`Add issue to ${group.label}`}
+                    title="Add issue"
                   >
-                    <Plus className="h-3 w-3" />
+                    <Plus className="h-3 w-3" aria-hidden="true" />
                   </Button>
                 )}
               />
