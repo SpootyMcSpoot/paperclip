@@ -592,7 +592,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                   className={cn("h-6 w-fit px-2", linkedGoals.length > 0 && "ml-1")}
                   disabled={availableGoals.length === 0}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
+                  <Plus className="h-3 w-3 mr-1" aria-hidden="true" />
                   Goal
                 </Button>
               </PopoverTrigger>

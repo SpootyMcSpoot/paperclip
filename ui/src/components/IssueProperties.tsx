@@ -567,7 +567,7 @@ export function IssueProperties({
             })
           }
         >
-          <Plus className="h-3 w-3" />
+          <Plus className="h-3 w-3" aria-hidden="true" />
           {createLabel.isPending ? "Creating…" : "Create label"}
         </button>
       </div>
@@ -1033,7 +1033,7 @@ export function IssueProperties({
       className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
       onClick={onClick}
     >
-      <Plus className="h-3 w-3" />
+      <Plus className="h-3 w-3" aria-hidden="true" />
       Add blocker
     </button>
   );
@@ -1187,7 +1187,7 @@ export function IssueProperties({
                 className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
                 onClick={onAddSubIssue}
               >
-                <Plus className="h-3 w-3" />
+                <Plus className="h-3 w-3" aria-hidden="true" />
               Add sub-issue
               </button>
             ) : null}
