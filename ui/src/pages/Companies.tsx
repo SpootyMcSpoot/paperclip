@@ -236,19 +236,19 @@ export function Companies() {
               {/* Stats row */}
               <div className="flex items-center gap-3 sm:gap-5 mt-4 text-sm text-muted-foreground flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <Users className="h-3.5 w-3.5" />
+                  <Users className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {agentCount} {agentCount === 1 ? "agent" : "agents"}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CircleDot className="h-3.5 w-3.5" />
+                  <CircleDot className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {issueCount} {issueCount === 1 ? "issue" : "issues"}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 tabular-nums">
-                  <DollarSign className="h-3.5 w-3.5" />
+                  <DollarSign className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {formatCents(company.spentMonthlyCents)}
                     {company.budgetMonthlyCents > 0

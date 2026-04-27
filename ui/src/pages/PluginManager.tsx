@@ -162,7 +162,7 @@ export function PluginManager() {
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Puzzle className="h-6 w-6 text-muted-foreground" />
+          <Puzzle className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">Plugin Manager</h1>
         </div>
         
@@ -218,7 +218,7 @@ export function PluginManager() {
 
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <FlaskConical className="h-5 w-5 text-muted-foreground" />
+          <FlaskConical className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">Available Plugins</h2>
           <Badge variant="outline">Examples</Badge>
         </div>
@@ -305,14 +305,14 @@ export function PluginManager() {
 
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Puzzle className="h-5 w-5 text-muted-foreground" />
+          <Puzzle className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">Installed Plugins</h2>
         </div>
 
         {!installedPlugins.length ? (
           <Card className="bg-muted/30">
             <CardContent className="flex flex-col items-center justify-center py-10">
-              <Puzzle className="h-10 w-10 text-muted-foreground mb-4" />
+              <Puzzle className="h-10 w-10 text-muted-foreground mb-4" aria-hidden="true" />
               <p className="text-sm font-medium">No plugins installed</p>
               <p className="text-xs text-muted-foreground mt-1">
                 Install a plugin to extend functionality.
