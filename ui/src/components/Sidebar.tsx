@@ -12,6 +12,7 @@ import {
   Repeat,
   GitBranch,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { SidebarSection } from "./SidebarSection";
@@ -22,6 +23,7 @@ import { useDialog } from "../context/DialogContext";
 import { useCompany } from "../context/CompanyContext";
 import { heartbeatsApi } from "../api/heartbeats";
 import { instanceSettingsApi } from "../api/instanceSettings";
+import { dashboardApi } from "../api/dashboard";
 import { queryKeys } from "../lib/queryKeys";
 import { useInboxBadge } from "../hooks/useInboxBadge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +46,14 @@ export function Sidebar() {
   });
   const liveRunCount = liveRuns?.length ?? 0;
   const showWorkspacesLink = experimentalSettings?.enableIsolatedWorkspaces === true;
+  const { data: dashboard } = useQuery({
+    queryKey: queryKeys.dashboard(selectedCompanyId!),
+    queryFn: () => dashboardApi.summary(selectedCompanyId!),
+    enabled: !!selectedCompanyId,
+  });
+  const pendingApprovals = dashboard
+    ? dashboard.pendingApprovals + dashboard.budgets.pendingApprovals
+    : 0;
 
   function openSearch() {
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
@@ -112,6 +122,12 @@ export function Sidebar() {
 
         <SidebarSection label="Company">
           <SidebarNavItem to="/org" label="Org" icon={Network} />
+          <SidebarNavItem
+            to="/approvals"
+            label="Approvals"
+            icon={ShieldCheck}
+            badge={pendingApprovals > 0 ? pendingApprovals : undefined}
+          />
           <SidebarNavItem to="/skills" label="Skills" icon={Boxes} />
           <SidebarNavItem to="/costs" label="Costs" icon={DollarSign} />
           <SidebarNavItem to="/activity" label="Activity" icon={History} />
