@@ -105,7 +105,7 @@ function RotatingReasoningDemo({ intervalMs = 2200 }: { intervalMs?: number }) {
   return (
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-0.5">
-        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
       </div>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
         {ticker.exiting !== null && (
@@ -140,7 +140,7 @@ export function IssueChatUxLab() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_320px]">
           <div className="p-6 sm:p-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-300">
-              <FlaskConical className="h-3.5 w-3.5" />
+              <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
               Chat UX Lab
             </div>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight">Issue chat review surface</h1>
@@ -170,7 +170,7 @@ export function IssueChatUxLab() {
                 href="#live-execution"
                 className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Route className="h-3.5 w-3.5" />
+                <Route className="h-3.5 w-3.5" aria-hidden="true" />
                 Jump to live execution preview
               </a>
             </div>
@@ -178,7 +178,7 @@ export function IssueChatUxLab() {
 
           <aside className="border-t border-border/60 bg-background/70 p-6 lg:border-l lg:border-t-0">
             <div className="mb-4 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              <WandSparkles className="h-4 w-4 text-cyan-700 dark:text-cyan-300" />
+              <WandSparkles className="h-4 w-4 text-cyan-700 dark:text-cyan-300" aria-hidden="true" />
               Covered states
             </div>
             <div className="space-y-3">
@@ -232,7 +232,7 @@ export function IssueChatUxLab() {
             </div>
             <div className="flex items-center gap-2.5 rounded-lg px-1 py-2">
               <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80">
-                <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+                <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
                 <span className="shimmer-text">Working</span>
               </span>
               <span className="text-xs text-muted-foreground/60">for 12s</span>
@@ -355,7 +355,7 @@ export function IssueChatUxLab() {
           <Card className="gap-4 border-border/70 bg-background/85 py-0">
             <CardHeader className="px-5 pt-5 pb-0">
               <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                <MessagesSquare className="h-4 w-4 text-cyan-700 dark:text-cyan-300" />
+                <MessagesSquare className="h-4 w-4 text-cyan-700 dark:text-cyan-300" aria-hidden="true" />
                 Review checklist
               </div>
               <CardTitle className="text-lg">What to evaluate on this page</CardTitle>
@@ -366,14 +366,14 @@ export function IssueChatUxLab() {
             <CardContent className="space-y-3 px-5 pb-5 pt-0 text-sm text-muted-foreground">
               <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2 font-medium text-foreground">
-                  <Bot className="h-4 w-4 text-cyan-700 dark:text-cyan-300" />
+                  <Bot className="h-4 w-4 text-cyan-700 dark:text-cyan-300" aria-hidden="true" />
                   Message hierarchy
                 </div>
                 Check that user, assistant, and system rows scan differently without feeling like separate products.
               </div>
               <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
                 <div className="mb-1 flex items-center gap-2 font-medium text-foreground">
-                  <Sparkles className="h-4 w-4 text-cyan-700 dark:text-cyan-300" />
+                  <Sparkles className="h-4 w-4 text-cyan-700 dark:text-cyan-300" aria-hidden="true" />
                   Stream polish
                 </div>
                 Watch the live preview for reasoning density, tool expansion behavior, and queued follow-up readability.
