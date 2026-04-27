@@ -505,7 +505,7 @@ export function IssueProperties({
       aria-label="Add label"
       title="Add label"
     >
-      <Plus className="h-3 w-3" />
+      <Plus className="h-3 w-3" aria-hidden="true" />
     </button>
   ) : undefined;
 
