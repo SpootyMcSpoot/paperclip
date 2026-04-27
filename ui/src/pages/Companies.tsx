@@ -157,11 +157,12 @@ export function Companies() {
                         size="icon-xs"
                         onClick={saveEdit}
                         disabled={editMutation.isPending}
+                        aria-label="Save name"
                       >
-                        <Check className="h-3.5 w-3.5 text-green-500" />
+                        <Check className="h-3.5 w-3.5 text-green-500" aria-hidden="true" />
                       </Button>
-                      <Button variant="ghost" size="icon-xs" onClick={cancelEdit}>
-                        <X className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Button variant="ghost" size="icon-xs" onClick={cancelEdit} aria-label="Cancel edit">
+                        <X className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                       </Button>
                     </div>
                   ) : (
@@ -186,8 +187,9 @@ export function Companies() {
                           e.stopPropagation();
                           startEdit(company.id, company.name);
                         }}
+                        aria-label={`Rename ${company.name}`}
                       >
-                        <Pencil className="h-3 w-3" />
+                        <Pencil className="h-3 w-3" aria-hidden="true" />
                       </Button>
                     </div>
                   )}
