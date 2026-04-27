@@ -1219,7 +1219,7 @@ export function NewIssueDialog() {
                       setParticipantMenuOpen(false);
                     }}
                   >
-                    <Eye className="h-3 w-3" />
+                    <Eye className="h-3 w-3" aria-hidden="true" />
                     Reviewer
                   </button>
                   <button
@@ -1233,7 +1233,7 @@ export function NewIssueDialog() {
                       setParticipantMenuOpen(false);
                     }}
                   >
-                    <ShieldCheck className="h-3 w-3" />
+                    <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                     Approver
                   </button>
                 </PopoverContent>
@@ -1244,7 +1244,7 @@ export function NewIssueDialog() {
             {/* Reviewer row */}
             {showReviewerRow && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <span className="w-6 shrink-0 flex items-center justify-center"><Eye className="h-3.5 w-3.5" /></span>
+                <span className="w-6 shrink-0 flex items-center justify-center"><Eye className="h-3.5 w-3.5" aria-hidden="true" /></span>
                 <InlineEntitySelector
                 value={reviewerValue}
                 options={assigneeOptions}
@@ -1289,7 +1289,7 @@ export function NewIssueDialog() {
             {/* Approver row */}
             {showApproverRow && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <span className="w-6 shrink-0 flex items-center justify-center"><ShieldCheck className="h-3.5 w-3.5" /></span>
+                <span className="w-6 shrink-0 flex items-center justify-center"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /></span>
                 <InlineEntitySelector
                 value={approverValue}
                 options={assigneeOptions}
@@ -1499,7 +1499,7 @@ export function NewIssueDialog() {
                             <span className="truncate text-sm">{file.file.name}</span>
                           </div>
                           <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                            <FileText className="h-3.5 w-3.5" />
+                            <FileText className="h-3.5 w-3.5" aria-hidden="true" />
                             <span>{file.title || file.file.name}</span>
                             <span>•</span>
                             <span>{formatFileSize(file.file)}</span>
@@ -1656,11 +1656,11 @@ export function NewIssueDialog() {
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="start">
               <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+                <Calendar className="h-3 w-3" aria-hidden="true" />
                 Start date
               </button>
               <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+                <Calendar className="h-3 w-3" aria-hidden="true" />
                 Due date
               </button>
             </PopoverContent>
@@ -1682,7 +1682,7 @@ export function NewIssueDialog() {
             <div className="min-h-5 text-right">
               {createIssue.isPending ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   Creating issue...
                 </span>
               ) : createIssue.isError ? (
@@ -1697,7 +1697,7 @@ export function NewIssueDialog() {
               aria-busy={createIssue.isPending}
             >
               <span className="inline-flex items-center justify-center gap-1.5">
-                {createIssue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                {createIssue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
                 <span>{createIssue.isPending ? "Creating..." : isSubIssueMode ? "Create Sub-Issue" : "Create Issue"}</span>
               </span>
             </Button>
