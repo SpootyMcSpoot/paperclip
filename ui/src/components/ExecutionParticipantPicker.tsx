@@ -103,7 +103,7 @@ export function ExecutionParticipantPicker({
               : "border-dashed border-border/60 text-muted-foreground hover:border-border hover:text-foreground",
           )}
         >
-          <Icon className="h-3 w-3" />
+          <Icon className="h-3 w-3" aria-hidden="true" />
           {values.length > 0 ? (
             <span className="truncate max-w-[100px]">
               {values.map(participantLabel).join(", ")}
@@ -139,7 +139,7 @@ export function ExecutionParticipantPicker({
               )}
               onClick={() => toggle(`user:${currentUserId}`)}
             >
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               Assign to me
             </button>
           )}
@@ -151,7 +151,7 @@ export function ExecutionParticipantPicker({
               )}
               onClick={() => toggle(`user:${issue.createdByUserId}`)}
             >
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               {creatorUserLabel ?? "Requester"}
             </button>
           )}
@@ -169,7 +169,7 @@ export function ExecutionParticipantPicker({
                 )}
                 onClick={() => toggle(option.id)}
               >
-                <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+                <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
                 {option.label}
               </button>
             ))}

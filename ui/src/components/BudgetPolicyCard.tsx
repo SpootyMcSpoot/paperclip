@@ -117,7 +117,7 @@ export function BudgetPolicyCard({
 
   const pausedPane = summary.paused ? (
     <div className="flex items-start gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-100">
-      <PauseCircle className="mt-0.5 h-4 w-4 shrink-0" />
+      <PauseCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
       <div>
         {summary.scopeType === "project"
           ? "Execution is paused for this project until the budget is raised or the incident is dismissed."
@@ -172,7 +172,7 @@ export function BudgetPolicyCard({
                   : "text-muted-foreground",
             )}
           >
-            <StatusIcon className="h-3.5 w-3.5" />
+            <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" />
             {summary.paused ? "Paused" : summary.status === "warning" ? "Warning" : summary.status === "hard_stop" ? "Hard stop" : "Healthy"}
           </div>
         </div>
@@ -200,7 +200,7 @@ export function BudgetPolicyCard({
             <CardDescription className="mt-1">{windowLabel(summary.windowKind)}</CardDescription>
           </div>
           <div className={cn("inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.18em]", statusTone(summary.status))}>
-            <StatusIcon className="h-3.5 w-3.5" />
+            <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" />
             {summary.paused ? "Paused" : summary.status === "warning" ? "Warning" : summary.status === "hard_stop" ? "Hard stop" : "Healthy"}
           </div>
         </div>
