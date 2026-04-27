@@ -635,7 +635,7 @@ export function OnboardingWizard() {
             onClick={handleClose}
             className="absolute top-4 left-4 z-10 rounded-sm p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
             <span className="sr-only">Close</span>
           </button>
 
@@ -661,6 +661,7 @@ export function OnboardingWizard() {
                     key={s}
                     type="button"
                     onClick={() => setStep(s)}
+                    aria-current={s === step ? "step" : undefined}
                     className={cn(
                       "flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors cursor-pointer",
                       s === step
@@ -668,7 +669,7 @@ export function OnboardingWizard() {
                         : "border-transparent text-muted-foreground hover:text-foreground/70 hover:border-border"
                     )}
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                     {label}
                   </button>
                 ))}
