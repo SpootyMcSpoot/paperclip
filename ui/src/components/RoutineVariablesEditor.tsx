@@ -73,7 +73,7 @@ export function RoutineVariablesEditor({
             Detected from `{"{{name}}"}` placeholders in the routine title and instructions.
           </p>
         </div>
-        {open ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+        {open ? <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-3 pt-3">
         {syncedVariables.map((variable) => (
