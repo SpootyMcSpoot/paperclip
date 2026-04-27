@@ -207,7 +207,7 @@ export function Dashboard() {
       {hasNoAgents && (
         <div className="flex items-center justify-between gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-500/25 dark:bg-amber-950/60">
           <div className="flex items-center gap-2.5">
-            <Bot className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <Bot className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
             <p className="text-sm text-amber-900 dark:text-amber-100">
               You have no agents.
             </p>
@@ -228,7 +228,7 @@ export function Dashboard() {
           {data.budgets.activeIncidents > 0 ? (
             <div className="flex items-start justify-between gap-3 rounded-xl border border-red-500/20 bg-[linear-gradient(180deg,rgba(255,80,80,0.12),rgba(255,255,255,0.02))] px-4 py-3">
               <div className="flex items-start gap-2.5">
-                <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-300" />
+                <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-300" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-red-50">
                     {data.budgets.activeIncidents} active budget incident{data.budgets.activeIncidents === 1 ? "" : "s"}
