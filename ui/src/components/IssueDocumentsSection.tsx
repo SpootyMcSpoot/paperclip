@@ -909,12 +909,13 @@ export function IssueDocumentsSection({
                       copiedDocumentKey === doc.key && "text-foreground",
                     )}
                     title={copiedDocumentKey === doc.key ? "Copied" : "Copy document"}
+                    aria-label={copiedDocumentKey === doc.key ? "Copied" : "Copy document"}
                     onClick={() => void copyDocumentBody(doc.key, displayedBody)}
                   >
                     {copiedDocumentKey === doc.key ? (
-                      <Check className="h-3.5 w-3.5" />
+                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     ) : (
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
                   </Button>
                   <DropdownMenu>
@@ -924,8 +925,9 @@ export function IssueDocumentsSection({
                         size="icon-xs"
                         className="text-muted-foreground"
                         title="Document actions"
+                        aria-label="Document actions"
                       >
-                        <MoreHorizontal className="h-3.5 w-3.5" />
+                        <MoreHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                       </Button>
                     </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
