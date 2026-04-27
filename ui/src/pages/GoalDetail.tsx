@@ -42,8 +42,9 @@ export function GoalPropertiesToggleButton({
       )}
       onClick={onShowProperties}
       title="Show properties"
+      aria-label="Show properties panel"
     >
-      <SlidersHorizontal className="h-4 w-4" />
+      <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
     </Button>
   );
 }
