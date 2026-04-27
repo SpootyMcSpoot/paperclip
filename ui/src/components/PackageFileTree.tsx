@@ -311,7 +311,7 @@ export function PackageFileTree({
               onClick={() => onSelectFile(node.path)}
             >
               <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                <FileIcon className="h-3.5 w-3.5" />
+                <FileIcon className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
               <span className={cn("min-w-0", wrapLabels ? "break-all leading-4" : "truncate")}>
                 {node.name}

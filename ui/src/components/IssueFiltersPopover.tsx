@@ -219,7 +219,7 @@ export function IssueFiltersPopover({
                         checked={state.assignees.includes("__me")}
                         onCheckedChange={() => onChange({ assignees: toggleIssueFilterValue(state.assignees, "__me") })}
                       />
-                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                       <span className="text-sm">Me</span>
                     </label>
                   ) : null}
@@ -242,7 +242,7 @@ export function IssueFiltersPopover({
                     <div className="flex flex-wrap gap-1">
                       {selectedCreatorOptions.map((creator) => (
                         <Badge key={creator.id} variant="secondary" className="gap-1 pr-1">
-                          {creator.kind === "agent" ? <Bot className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                          {creator.kind === "agent" ? <Bot className="h-3 w-3" aria-hidden="true" /> : <User className="h-3 w-3" aria-hidden="true" />}
                           <span>{creator.label}</span>
                           <button
                             type="button"
@@ -336,7 +336,7 @@ export function IssueFiltersPopover({
                           checked={state.workspaces.includes(workspace.id)}
                           onCheckedChange={() => onChange({ workspaces: toggleIssueFilterValue(state.workspaces, workspace.id) })}
                         />
-                        <HardDrive className="h-3.5 w-3.5 text-muted-foreground" />
+                        <HardDrive className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                         <span className="text-sm">{workspace.name}</span>
                       </label>
                     ))}
