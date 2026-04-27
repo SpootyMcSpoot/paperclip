@@ -594,7 +594,7 @@ export function Routines() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-xs">
-                  <Layers className="h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1" />
+                  <Layers className="h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1" aria-hidden="true" />
                   <span className="hidden sm:inline">Group</span>
                 </Button>
               </PopoverTrigger>
@@ -615,7 +615,7 @@ export function Routines() {
                       onClick={() => updateRoutineView({ groupBy: value, collapsedGroups: [] })}
                     >
                       <span>{label}</span>
-                      {routineViewState.groupBy === value ? <Check className="h-3.5 w-3.5" /> : null}
+                      {routineViewState.groupBy === value ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : null}
                     </button>
                   ))}
                 </div>
@@ -926,7 +926,7 @@ export function Routines() {
                   {group.label ? (
                     <div className="flex items-center gap-2 border-b border-border px-3 py-2">
                       <CollapsibleTrigger className="flex items-center gap-1.5">
-                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-90" />
+                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-90" aria-hidden="true" />
                         <span className="text-sm font-semibold uppercase tracking-wide">
                           {group.label}
                         </span>
