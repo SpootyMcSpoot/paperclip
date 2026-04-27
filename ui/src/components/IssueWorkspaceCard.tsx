@@ -86,9 +86,10 @@ function CopyableInline({ value, label, mono }: { value: string; label?: string;
         type="button"
         className="shrink-0 p-0.5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground opacity-0 group-hover/copy:opacity-100 focus:opacity-100"
         onClick={handleCopy}
+        aria-label={copied ? "Copied" : "Copy to clipboard"}
         title={copied ? "Copied!" : "Copy"}
       >
-        {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+        {copied ? <Check className="h-3 w-3 text-green-500" aria-hidden="true" /> : <Copy className="h-3 w-3" aria-hidden="true" />}
       </button>
     </span>
   );
