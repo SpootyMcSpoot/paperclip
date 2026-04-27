@@ -417,7 +417,7 @@ export function NewProjectDialog() {
 
           {/* Target date */}
           <div className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs">
-            <Calendar className="h-3 w-3 text-muted-foreground" />
+            <Calendar className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <input
               type="date"
               className="bg-transparent outline-none text-xs w-24"

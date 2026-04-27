@@ -87,7 +87,7 @@ export function ImageGalleryModal({
                 title="Download"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Download className="h-4.5 w-4.5" />
+                <Download className="h-4.5 w-4.5" aria-hidden="true" />
               </a>
               <button
                 type="button"
@@ -112,7 +112,7 @@ export function ImageGalleryModal({
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
                   title="Previous"
                 >
-                  <ChevronLeft className="h-7 w-7" />
+                  <ChevronLeft className="h-7 w-7" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -137,7 +137,7 @@ export function ImageGalleryModal({
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
                   title="Next"
                 >
-                  <ChevronRight className="h-7 w-7" />
+                  <ChevronRight className="h-7 w-7" aria-hidden="true" />
                 </button>
               )}
             </div>
