@@ -508,7 +508,7 @@ export function ExecutionWorkspaceDetail() {
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="ghost" size="sm" asChild>
             <Link to={project ? `/projects/${projectRef}/workspaces` : "/projects"}>
-              <ArrowLeft className="mr-1 h-4 w-4" />
+              <ArrowLeft className="mr-1 h-4 w-4" aria-hidden="true" />
               Back to all workspaces
             </Link>
           </Button>

@@ -369,7 +369,7 @@ export function ProjectWorkspaceDetail() {
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" size="sm" asChild>
           <Link to={`/projects/${canonicalProjectRef}/workspaces`}>
-            <ArrowLeft className="mr-1 h-4 w-4" />
+            <ArrowLeft className="mr-1 h-4 w-4" aria-hidden="true" />
             Back to workspaces
           </Link>
         </Button>
@@ -401,8 +401,8 @@ export function ProjectWorkspaceDetail() {
                   onClick={() => setPrimaryWorkspace.mutate()}
                 >
                   {setPrimaryWorkspace.isPending
-                    ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    : <Check className="mr-2 h-4 w-4" />}
+                    ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                    : <Check className="mr-2 h-4 w-4" aria-hidden="true" />}
                   Make primary
                 </Button>
               ) : (
