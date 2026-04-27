@@ -404,7 +404,7 @@ export function AdapterManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Cpu className="h-6 w-6 text-muted-foreground" />
+          <Cpu className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">Adapters</h1>
           <Badge variant="outline" className="text-amber-600 border-amber-400">
             Alpha

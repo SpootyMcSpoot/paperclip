@@ -370,7 +370,7 @@ function SkillTree({
             onClick={() => node.path && onSelectPath(node.path)}
           >
             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-              <FileIcon className="h-3.5 w-3.5" />
+              <FileIcon className="h-3.5 w-3.5" aria-hidden="true" />
             </span>
             <span className="truncate">{node.name}</span>
           </Link>
@@ -441,7 +441,7 @@ function SkillList({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground opacity-75 transition-opacity group-hover:opacity-100">
-                        <SourceIcon className="h-3.5 w-3.5" />
+                        <SourceIcon className="h-3.5 w-3.5" aria-hidden="true" />
                         <span className="sr-only">{source.managedLabel}</span>
                       </span>
                     </TooltipTrigger>
@@ -561,7 +561,7 @@ function SkillPane({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="flex items-center gap-2 truncate text-2xl font-semibold">
-              <SourceIcon className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <SourceIcon className="h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
               {detail.name}
             </h1>
             {detail.description && (
@@ -598,7 +598,7 @@ function SkillPane({
             <div className="flex items-center gap-2">
               <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Source</span>
               <span className="flex items-center gap-2">
-                <SourceIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                <SourceIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                 {detail.sourcePath ? (
                   <button
                     className="truncate hover:text-foreground text-muted-foreground transition-colors cursor-pointer"
@@ -691,7 +691,7 @@ function SkillPane({
                   onClick={() => setViewMode("preview")}
                 >
                   <span className="flex items-center gap-1.5">
-                    <Eye className="h-3.5 w-3.5" />
+                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                     View
                   </span>
                 </button>
@@ -700,7 +700,7 @@ function SkillPane({
                   onClick={() => setViewMode("code")}
                 >
                   <span className="flex items-center gap-1.5">
-                    <Code2 className="h-3.5 w-3.5" />
+                    <Code2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Code
                   </span>
                 </button>
@@ -712,7 +712,7 @@ function SkillPane({
                   Cancel
                 </Button>
                 <Button size="sm" onClick={onSave} disabled={savePending}>
-                  <Save className="mr-1.5 h-3.5 w-3.5" />
+                  <Save className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
                   {savePending ? "Saving..." : "Save"}
                 </Button>
               </>

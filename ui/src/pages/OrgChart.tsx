@@ -445,13 +445,13 @@ export function OrgChart() {
       <div className="mb-2 flex shrink-0 flex-wrap items-center justify-start gap-2">
         <Link to="/company/import">
           <Button variant="outline" size="sm">
-            <Upload className="mr-1.5 h-3.5 w-3.5" />
+            <Upload className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             Import company
           </Button>
         </Link>
         <Link to="/company/export">
           <Button variant="outline" size="sm">
-            <Download className="mr-1.5 h-3.5 w-3.5" />
+            <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             Export company
           </Button>
         </Link>
@@ -507,7 +507,7 @@ export function OrgChart() {
             title="Zoom out"
             aria-label="Zoom out"
           >
-            <Minus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Minus className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
           <button
             className="flex size-9 items-center justify-center rounded border border-border bg-background text-[10px] transition-colors hover:bg-accent sm:size-7"
@@ -515,7 +515,7 @@ export function OrgChart() {
             title="Fit to screen"
             aria-label="Fit chart to screen"
           >
-            <Maximize2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Maximize2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
         </div>
 
