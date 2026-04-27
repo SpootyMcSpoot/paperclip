@@ -519,7 +519,7 @@ function SuggestTasksCard({
               >
                 {working === "accept" ? (
                   <>
-                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                     Accepting...
                   </>
                 ) : (
@@ -564,7 +564,7 @@ function SuggestTasksCard({
                 >
                   {working === "reject" ? (
                     <>
-                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                       Saving...
                     </>
                   ) : (
@@ -776,7 +776,7 @@ function AskUserQuestionsCard({
             >
               {working ? (
                 <>
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                   Submitting...
                 </>
               ) : (
@@ -1070,7 +1070,7 @@ function RequestConfirmationCard({
             >
               {working === "accept" ? (
                 <>
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                   Confirming...
                 </>
               ) : (
@@ -1130,7 +1130,7 @@ function RequestConfirmationCard({
                 >
                   {working === "reject" ? (
                     <>
-                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                       Saving...
                     </>
                   ) : (

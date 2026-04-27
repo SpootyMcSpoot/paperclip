@@ -60,7 +60,7 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
       >
         {value}
       </button>
-      {copied && <Check className="h-3 w-3 text-green-500 shrink-0 mt-0.5" />}
+      {copied && <Check className="h-3 w-3 text-green-500 shrink-0 mt-0.5" aria-hidden="true" />}
     </div>
   );
 }
@@ -1268,7 +1268,7 @@ export function IssueProperties({
                   className="inline-flex min-w-0 items-start gap-1 text-sm font-mono text-emerald-700 hover:text-emerald-800 hover:underline dark:text-emerald-300 dark:hover:text-emerald-200"
                 >
                   <span className="min-w-0 break-all">{liveWorkspaceService.url}</span>
-                  <ExternalLink className="mt-1 h-3 w-3 shrink-0" />
+                  <ExternalLink className="mt-1 h-3 w-3 shrink-0" aria-hidden="true" />
                 </a>
               </PropertyRow>
             )}
@@ -1279,7 +1279,7 @@ export function IssueProperties({
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
                   View workspace
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </Link>
               </PropertyRow>
             )}
@@ -1290,7 +1290,7 @@ export function IssueProperties({
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
                   View workspace tasks
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </Link>
               </PropertyRow>
             )}

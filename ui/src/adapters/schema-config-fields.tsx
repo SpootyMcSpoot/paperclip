@@ -32,7 +32,7 @@ function SelectField({
           <span className={!value ? "text-muted-foreground" : ""}>
             {selectedOpt?.label ?? value ?? "Select..."}
           </span>
-          <ChevronDown className="h-3 w-3 text-muted-foreground" />
+          <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-1" align="start">

@@ -74,7 +74,7 @@ export function CompanySwitcher({ open: controlledOpen, onOpenChange }: CompanyS
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/company/settings" className="no-underline text-inherit">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="h-4 w-4 mr-2" aria-hidden="true" />
             Company Settings
           </Link>
         </DropdownMenuItem>

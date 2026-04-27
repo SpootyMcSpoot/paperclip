@@ -418,13 +418,13 @@ export function IssueWorkspaceCard({
         <div className="space-y-1.5 text-xs">
           {workspace?.branchName && (
             <div className="flex items-center gap-1.5">
-              <GitBranch className="h-3 w-3 text-muted-foreground shrink-0" />
+              <GitBranch className="h-3 w-3 text-muted-foreground shrink-0" aria-hidden="true" />
               <CopyableInline value={workspace.branchName} mono />
             </div>
           )}
           {workspace?.cwd && (
             <div className="flex items-center gap-1.5">
-              <FolderOpen className="h-3 w-3 text-muted-foreground shrink-0" />
+              <FolderOpen className="h-3 w-3 text-muted-foreground shrink-0" aria-hidden="true" />
               <CopyableInline value={workspace.cwd} mono />
             </div>
           )}
