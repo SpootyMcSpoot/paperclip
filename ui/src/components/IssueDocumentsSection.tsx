@@ -832,7 +832,7 @@ export function IssueDocumentsSection({
                       aria-label={isFolded ? `Expand ${doc.key} document` : `Collapse ${doc.key} document`}
                       aria-expanded={!isFolded}
                     >
-                      {isFolded ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      {isFolded ? <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />}
                     </button>
                     <span className="shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                       {doc.key}

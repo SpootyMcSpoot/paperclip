@@ -763,7 +763,7 @@ function TranscriptToolCard({
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? "Collapse tool details" : "Expand tool details"}
         >
-          {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
       </div>
       {open && (
@@ -889,7 +889,7 @@ function TranscriptCommandGroup({
           }}
           aria-label={open ? "Collapse command details" : "Expand command details"}
         >
-          {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
       </div>
       {open && (
@@ -1004,7 +1004,7 @@ function TranscriptToolGroup({
           onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
           aria-label={open ? "Collapse tool details" : "Expand tool details"}
         >
-          {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
       </div>
       {open && (
