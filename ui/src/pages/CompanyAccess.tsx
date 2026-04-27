@@ -270,7 +270,7 @@ export function CompanyAccess() {
     <div className="max-w-6xl space-y-8">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-muted-foreground" />
+          <ShieldCheck className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">Company Access</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
@@ -287,7 +287,7 @@ export function CompanyAccess() {
       <section className="space-y-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <h2 className="text-base font-semibold">Humans</h2>
           </div>
           <p className="max-w-3xl text-sm text-muted-foreground">

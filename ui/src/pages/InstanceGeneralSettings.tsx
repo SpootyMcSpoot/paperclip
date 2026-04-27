@@ -86,7 +86,7 @@ export function InstanceGeneralSettings() {
     <div className="max-w-4xl space-y-6">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
+          <SlidersHorizontal className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">General</h1>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -363,7 +363,7 @@ export function InstanceGeneralSettings() {
             disabled={signOutMutation.isPending}
             onClick={() => signOutMutation.mutate()}
           >
-            <LogOut className="size-4" />
+            <LogOut className="size-4" aria-hidden="true" />
             {signOutMutation.isPending ? "Signing out..." : "Sign out"}
           </Button>
         </div>
