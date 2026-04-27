@@ -117,11 +117,11 @@ export function ProjectWorkspaceSummaryCard({
                 }
               >
                 {runtimeActionKey === actionKey ? (
-                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                 ) : hasRunningServices ? (
-                  <Square className="mr-2 h-3.5 w-3.5" />
+                  <Square className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                 ) : (
-                  <Play className="mr-2 h-3.5 w-3.5" />
+                  <Play className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                 )}
                 {hasRunningServices ? "Stop services" : "Start services"}
               </Button>

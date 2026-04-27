@@ -245,7 +245,7 @@ export function KeyResultList({
           onClick={() => setShowForm(true)}
           disabled={showForm}
         >
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
+          <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
           Key Result
         </Button>
       </div>
