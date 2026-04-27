@@ -862,7 +862,7 @@ export function ExecutionWorkspaceDetail() {
                   <div className="inline-flex max-w-full items-start gap-2">
                     <a href={workspace.repoUrl} target="_blank" rel="noreferrer" className="inline-flex min-w-0 items-center gap-1 break-all hover:underline">
                       {workspace.repoUrl}
-                      <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </a>
                     <CopyText text={workspace.repoUrl} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied">
                       <Copy className="h-3.5 w-3.5" />
