@@ -37,7 +37,7 @@ export function NotFoundPage({ scope = "global", requestedPrefix }: NotFoundPage
       <div className="rounded-lg border border-border bg-card p-6">
         <div className="flex items-center gap-3">
           <div className="rounded-md border border-destructive/20 bg-destructive/10 p-2">
-            <AlertTriangle className="h-5 w-5 text-destructive" />
+            <AlertTriangle className="h-5 w-5 text-destructive" aria-hidden="true" />
           </div>
           <div>
             <h1 className="text-xl font-semibold">{title}</h1>

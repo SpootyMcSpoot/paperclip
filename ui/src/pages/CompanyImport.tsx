@@ -465,7 +465,7 @@ function ConflictResolutionList({
 
                 {!isSkipped && (
                   <>
-                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
                     {isConfirmed ? (
                       <span className="min-w-0 flex-1 font-mono text-xs text-emerald-500">
                         {currentName}
@@ -494,7 +494,7 @@ function ConflictResolutionList({
                   >
                     {isConfirmed ? (
                       <>
-                        <Check className="h-3 w-3" />
+                        <Check className="h-3 w-3" aria-hidden="true" />
                         confirmed
                       </>
                     ) : (
@@ -572,7 +572,7 @@ function AdapterPickerList({
                   <span className="shrink-0 font-mono text-xs text-muted-foreground">
                     {agent.name}
                   </span>
-                  <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <select
                     className="min-w-0 flex-1 rounded-md border border-border bg-transparent px-2 py-1 text-xs outline-none focus:border-foreground"
                     value={selectedType}
@@ -594,7 +594,7 @@ function AdapterPickerList({
                     )}
                     onClick={() => onToggleExpand(agent.slug)}
                   >
-                    <ChevronRight className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-90")} />
+                    <ChevronRight className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                     configure adapter
                   </button>
                 </div>
@@ -1293,7 +1293,7 @@ export function CompanyImport() {
               onClick={() => importMutation.mutate()}
               disabled={importMutation.isPending || hasErrors || selectedCount === 0}
             >
-              <Download className="mr-1.5 h-3.5 w-3.5" />
+              <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               {importMutation.isPending
                 ? "Importing..."
                 : `Import ${selectedCount} file${selectedCount === 1 ? "" : "s"}`}

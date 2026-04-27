@@ -161,7 +161,7 @@ function summarizeSandboxConfig(config: Record<string, unknown>): string | null 
 function SupportMark({ supported }: { supported: boolean }) {
   return supported ? (
     <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400">
-      <Check className="h-3 w-3" />
+      <Check className="h-3 w-3" aria-hidden="true" />
       Yes
     </span>
   ) : (
@@ -1183,7 +1183,7 @@ export function CompanySettings() {
                     key={snippetCopyDelightId}
                     className="flex items-center gap-1 text-xs text-green-600 animate-pulse"
                   >
-                    <Check className="h-3 w-3" />
+                    <Check className="h-3 w-3" aria-hidden="true" />
                     Copied
                   </span>
                 )}
@@ -1233,13 +1233,13 @@ export function CompanySettings() {
           <div className="mt-3 flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
               <a href="/company/export">
-                <Download className="mr-1.5 h-3.5 w-3.5" />
+                <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
                 Export
               </a>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="/company/import">
-                <Upload className="mr-1.5 h-3.5 w-3.5" />
+                <Upload className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
                 Import
               </a>
             </Button>

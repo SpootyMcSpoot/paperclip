@@ -120,7 +120,7 @@ function LiveWidgetPreview({
           </div>
           <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/70 px-2.5 py-1 text-[11px] text-muted-foreground">
             Open run
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3 w-3" aria-hidden="true" />
           </span>
         </div>
         <div className="max-h-[460px] overflow-y-auto pr-1">
