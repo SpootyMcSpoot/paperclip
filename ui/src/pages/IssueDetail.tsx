@@ -114,7 +114,7 @@ import {
   MoreHorizontal,
   MoreVertical,
   PauseCircle,
-  Staple,
+  Paperclip,
   PlayCircle,
   Plus,
   Repeat,

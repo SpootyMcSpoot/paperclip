@@ -47,7 +47,7 @@ import {
   AlertTriangle,
   Tag,
   Calendar,
-  Staple,
+  Paperclip,
   FileText,
   Loader2,
   ListTree,
