@@ -172,7 +172,7 @@ export function CompanyInvites() {
     <div className="max-w-5xl space-y-8">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <MailPlus className="h-5 w-5 text-muted-foreground" />
+          <MailPlus className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">Company Invites</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
@@ -264,7 +264,7 @@ export function CompanyInvites() {
             <div className="flex flex-wrap gap-2">
               <Button size="sm" variant="outline" asChild>
                 <a href={latestInviteUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
                   Open invite
                 </a>
               </Button>
