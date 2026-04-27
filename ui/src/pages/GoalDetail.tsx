@@ -242,7 +242,7 @@ export function GoalDetail() {
               variant="outline"
               onClick={() => openNewGoal({ parentId: goalId })}
             >
-              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
               Sub Goal
             </Button>
           </div>

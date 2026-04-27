@@ -491,7 +491,7 @@ export function OrgChart() {
             title="Zoom in"
             aria-label="Zoom in"
           >
-            <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
           <button
             className="flex size-9 items-center justify-center rounded border border-border bg-background text-sm transition-colors hover:bg-accent sm:size-7"
