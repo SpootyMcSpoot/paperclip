@@ -60,7 +60,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "saving") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-        <Loader2 className="h-3 w-3 animate-spin" />
+        <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
         Saving
       </span>
     );
@@ -68,7 +68,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "saved") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400">
-        <Check className="h-3 w-3" />
+        <Check className="h-3 w-3" aria-hidden="true" />
         Saved
       </span>
     );
@@ -178,7 +178,7 @@ function ArchiveDangerZone({
       </p>
       {archivePending ? (
         <Button size="sm" variant="destructive" disabled>
-          <Loader2 className="h-3 w-3 animate-spin mr-1" />
+          <Loader2 className="h-3 w-3 animate-spin mr-1" aria-hidden="true" />
           {isArchive ? "Archiving..." : "Unarchiving..."}
         </Button>
       ) : confirming ? (
@@ -682,9 +682,9 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       rel="noreferrer"
                       className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline"
                     >
-                      <Github className="h-3 w-3 shrink-0" />
+                      <Github className="h-3 w-3 shrink-0" aria-hidden="true" />
                       <span className="break-all min-w-0">{formatRepoUrl(codebase.repoUrl)}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
+                      <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
                     </a>
                   ) : (
                     <div className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">

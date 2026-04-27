@@ -258,7 +258,7 @@ function IssueSearchInput({
 
   return (
     <div className="relative w-48 sm:w-64 md:w-80">
-      <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+      <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
       <Input
         value={draftValue}
         onChange={(e) => {
@@ -977,7 +977,7 @@ export function IssuesList({
                       onClick={() => updateView({ groupBy: value })}
                     >
                       <span>{label}</span>
-                      {viewState.groupBy === value && <Check className="h-3.5 w-3.5" />}
+                      {viewState.groupBy === value && <Check className="h-3.5 w-3.5" aria-hidden="true" />}
                     </button>
                   ))}
                 </div>

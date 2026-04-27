@@ -86,7 +86,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/company/settings" onClick={closeNavigationChrome}>
-            <Settings className="size-4" />
+            <Settings className="size-4" aria-hidden="true" />
             <span>Company settings</span>
           </Link>
         </DropdownMenuItem>

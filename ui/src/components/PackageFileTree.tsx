@@ -237,9 +237,9 @@ export function PackageFileTree({
                 >
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                     {expanded ? (
-                      <FolderOpen className="h-3.5 w-3.5" />
+                      <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                     ) : (
-                      <Folder className="h-3.5 w-3.5" />
+                      <Folder className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
                   </span>
                   <span className={cn("min-w-0", wrapLabels ? "break-all leading-4" : "truncate")}>
