@@ -116,10 +116,11 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8"
               title="Reinstall adapter (pull latest from npm)"
+              aria-label="Reinstall adapter"
               disabled={isReinstalling}
               onClick={() => onReinstall(adapter.type)}
             >
-              <Download className={cn("h-4 w-4", isReinstalling && "animate-bounce")} />
+              <Download className={cn("h-4 w-4", isReinstalling && "animate-bounce")} aria-hidden="true" />
             </Button>
           )}
           {onReload && (
@@ -128,10 +129,11 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8"
               title="Reload adapter (hot-swap)"
+              aria-label="Reload adapter"
               disabled={isReloading}
               onClick={() => onReload(adapter.type)}
             >
-              <RefreshCw className={cn("h-4 w-4", isReloading && "animate-spin")} />
+              <RefreshCw className={cn("h-4 w-4", isReloading && "animate-spin")} aria-hidden="true" />
             </Button>
           )}
           <Button
@@ -141,10 +143,14 @@ function AdapterRow({
             title={adapter.disabled
               ? (toggleTitleEnabled ?? "Show in agent menus")
               : (toggleTitleDisabled ?? "Hide from agent menus")}
+            aria-label={adapter.disabled
+              ? (toggleTitleEnabled ?? "Show in agent menus")
+              : (toggleTitleDisabled ?? "Hide from agent menus")}
+            aria-pressed={!adapter.disabled}
             disabled={isToggling}
             onClick={() => onToggle(adapter.type, !adapter.disabled)}
           >
-            <Power className={cn("h-4 w-4", !adapter.disabled ? "text-green-600" : "text-muted-foreground")} />
+            <Power className={cn("h-4 w-4", !adapter.disabled ? "text-green-600" : "text-muted-foreground")} aria-hidden="true" />
           </Button>
           {canRemove && (
             <Button
@@ -152,9 +158,10 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8 text-destructive hover:text-destructive"
               title="Remove adapter"
+              aria-label="Remove adapter"
               onClick={() => onRemove(adapter.type)}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
         </div>
