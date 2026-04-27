@@ -2202,8 +2202,10 @@ function PromptsTab({
                   variant="outline"
                   className="h-7 w-7"
                   onClick={() => setShowNewFileInput(true)}
+                  aria-label="Add file"
+                  title="Add file"
                 >
-                  +
+                  <span aria-hidden="true">+</span>
                 </Button>
               )}
               {isMobile && (
@@ -2213,8 +2215,10 @@ function PromptsTab({
                   variant="ghost"
                   className="h-7 w-7"
                   onClick={() => setShowFilePanel(false)}
+                  aria-label="Close file panel"
+                  title="Close"
                 >
-                  ✕
+                  <span aria-hidden="true">✕</span>
                 </Button>
               )}
             </div>
@@ -2331,8 +2335,10 @@ function PromptsTab({
                   variant="outline"
                   className="h-7 w-7 shrink-0"
                   onClick={() => setShowFilePanel(true)}
+                  aria-label="Show file panel"
+                  title="Show files"
                 >
-                  <FolderOpen className="h-3.5 w-3.5" />
+                  <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               )}
               <div className="min-w-0">
