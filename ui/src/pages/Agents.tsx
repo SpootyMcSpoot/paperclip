@@ -193,7 +193,7 @@ export function Agents() {
             </div>
           )}
           <Button size="sm" variant="outline" onClick={openNewAgent}>
-            <Plus className="h-3.5 w-3.5 mr-1.5" />
+            <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
             New Agent
           </Button>
         </div>

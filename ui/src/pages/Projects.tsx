@@ -44,7 +44,7 @@ export function Projects() {
     <div className="space-y-4">
       <div className="flex items-center justify-end">
         <Button size="sm" variant="outline" onClick={openNewProject}>
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="h-4 w-4 mr-1" aria-hidden="true" />
           Add Project
         </Button>
       </div>
