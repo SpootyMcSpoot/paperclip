@@ -1,23 +1,20 @@
 # @stapleai/ui
 
-React 19 + Vite + Tailwind 4 dashboard for Staple. Org charts, ticket boards, agent configuration, cost dashboards, approvals, and plugin UIs.
+Published static assets for the Staple board UI.
 
-## Layout
+## What gets published
 
-- `src/pages/` — route-level views (dashboard, companies, agents, issues, costs, settings)
-- `src/components/` — shared components (radix-ui + shadcn style)
-- `src/api/` — typed API client against `@stapleai/server`
-- `src/hooks/` — TanStack Query hooks and local state
-- `src/context/` — auth, theme, company scope providers
-- `src/plugins/` — host for plugin-provided UI panels
-- `src/adapters/` — UI-side adapter metadata
+The npm package contains the production build under `dist/`. It does not ship the UI source tree or workspace-only dependencies.
 
-## Develop
+## Storybook
 
-```bash
-pnpm --filter @stapleai/ui dev        # Vite dev server
-pnpm --filter @stapleai/ui build      # tsc + vite build
-pnpm --filter @stapleai/ui typecheck
+Storybook config, stories, and fixtures live under `ui/storybook/`.
+
+```sh
+pnpm --filter @stapleai/ui storybook
+pnpm --filter @stapleai/ui build-storybook
 ```
 
-In full-stack mode the server serves the built UI from `ui-dist/`.
+## Typical use
+
+Install the package, then serve or copy the built files from `node_modules/@stapleai/ui/dist`.

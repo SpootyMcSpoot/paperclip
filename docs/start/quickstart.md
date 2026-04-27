@@ -13,9 +13,21 @@ npx stapleai onboard --yes
 
 This walks you through setup, configures your environment, and gets Staple running.
 
+If you already have a Staple install, rerunning `onboard` keeps your current config and data paths intact. Use `stapleai configure` if you want to edit settings.
+
+To start Staple again later:
+
+```sh
+npx stapleai run
+```
+
+> **Note:** If you used `npx` for setup, always use `npx stapleai` to run commands. The `pnpm stapleai` form only works inside a cloned copy of the Staple repository (see Local Development below).
+
 ## Local Development
 
-Prerequisites: Node.js 20+ and pnpm 9+.
+For contributors working on Staple itself. Prerequisites: Node.js 20+ and pnpm 9+.
+
+Clone the repository, then:
 
 ```sh
 pnpm install
@@ -26,7 +38,7 @@ This starts the API server and UI at [http://localhost:3100](http://localhost:31
 
 No external database required — Staple uses an embedded PostgreSQL instance by default.
 
-## One-Command Bootstrap
+When working from the cloned repo, you can also use:
 
 ```sh
 pnpm stapleai run

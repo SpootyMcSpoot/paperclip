@@ -1,0 +1,3 @@
+[Pod]
+PodName=staple
+PublishPort=3100:3100

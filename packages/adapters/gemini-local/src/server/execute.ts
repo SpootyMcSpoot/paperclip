@@ -5,21 +5,40 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { AdapterExecutionContext, AdapterExecutionResult } from "@stapleai/adapter-utils";
 import {
+  adapterExecutionTargetIsRemote,
+  adapterExecutionTargetStapleApiUrl,
+  adapterExecutionTargetRemoteCwd,
+  adapterExecutionTargetSessionIdentity,
+  adapterExecutionTargetSessionMatches,
+  adapterExecutionTargetUsesManagedHome,
+  describeAdapterExecutionTarget,
+  ensureAdapterExecutionTargetCommandResolvable,
+  prepareAdapterExecutionTargetRuntime,
+  readAdapterExecutionTarget,
+  readAdapterExecutionTargetHomeDir,
+  resolveAdapterExecutionTargetCommandForLogs,
+  runAdapterExecutionTargetProcess,
+  runAdapterExecutionTargetShellCommand,
+} from "@stapleai/adapter-utils/execution-target";
+import {
   asBoolean,
   asNumber,
   asString,
   asStringArray,
   buildStapleEnv,
+  buildInvocationEnvForLogs,
   ensureAbsoluteDirectory,
-  ensureCommandResolvable,
   ensureStapleSkillSymlink,
   joinPromptSections,
   ensurePathInEnv,
-  listStapleSkillEntries,
+  readStapleRuntimeSkillEntries,
+  resolveStapleDesiredSkillNames,
   removeMaintainerOnlySkillSymlinks,
   parseObject,
-  redactEnvForLogs,
   renderTemplate,
+  renderStapleWakePrompt,
+  stringifyStapleWakePayload,
+  DEFAULT_STAPLE_AGENT_PROMPT_TEMPLATE,
   runChildProcess,
 } from "@stapleai/adapter-utils/server-utils";
 import { DEFAULT_GEMINI_LOCAL_MODEL } from "../index.js";
@@ -84,9 +103,12 @@ function geminiSkillsHome(): string {
  */
 async function ensureGeminiSkillsInjected(
   onLog: AdapterExecutionContext["onLog"],
+  skillsEntries: Array<{ key: string; runtimeName: string; source: string }>,
+  desiredSkillNames?: string[],
 ): Promise<void> {
-  const skillsEntries = await listStapleSkillEntries(__moduleDir);
-  if (skillsEntries.length === 0) return;
+  const desiredSet = new Set(desiredSkillNames ?? skillsEntries.map((entry) => entry.key));
+  const selectedEntries = skillsEntries.filter((entry) => desiredSet.has(entry.key));
+  if (selectedEntries.length === 0) return;
 
   const skillsHome = geminiSkillsHome();
   try {
@@ -100,7 +122,7 @@ async function ensureGeminiSkillsInjected(
   }
   const removedSkills = await removeMaintainerOnlySkillSymlinks(
     skillsHome,
-    skillsEntries.map((entry) => entry.name),
+    selectedEntries.map((entry) => entry.runtimeName),
   );
   for (const skillName of removedSkills) {
     await onLog(
@@ -109,31 +131,51 @@ async function ensureGeminiSkillsInjected(
     );
   }
 
-  for (const entry of skillsEntries) {
-    const target = path.join(skillsHome, entry.name);
+  for (const entry of selectedEntries) {
+    const target = path.join(skillsHome, entry.runtimeName);
 
     try {
       const result = await ensureStapleSkillSymlink(entry.source, target);
       if (result === "skipped") continue;
       await onLog(
         "stderr",
-        `[staple] ${result === "repaired" ? "Repaired" : "Linked"} Gemini skill: ${entry.name}\n`,
+        `[staple] ${result === "repaired" ? "Repaired" : "Linked"} Gemini skill: ${entry.key}\n`,
       );
     } catch (err) {
       await onLog(
         "stderr",
-        `[staple] Failed to link Gemini skill "${entry.name}": ${err instanceof Error ? err.message : String(err)}\n`,
+        `[staple] Failed to link Gemini skill "${entry.key}": ${err instanceof Error ? err.message : String(err)}\n`,
       );
     }
   }
 }
 
+async function buildGeminiSkillsDir(
+  config: Record<string, unknown>,
+): Promise<string> {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "staple-gemini-skills-"));
+  const target = path.join(tmp, "skills");
+  await fs.mkdir(target, { recursive: true });
+  const availableEntries = await readStapleRuntimeSkillEntries(config, __moduleDir);
+  const desiredNames = new Set(resolveStapleDesiredSkillNames(config, availableEntries));
+  for (const entry of availableEntries) {
+    if (!desiredNames.has(entry.key)) continue;
+    await fs.symlink(entry.source, path.join(target, entry.runtimeName));
+  }
+  return target;
+}
+
 export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExecutionResult> {
-  const { runId, agent, runtime, config, context, onLog, onMeta, authToken } = ctx;
+  const { runId, agent, runtime, config, context, onLog, onMeta, onSpawn, authToken } = ctx;
+  const executionTarget = readAdapterExecutionTarget({
+    executionTarget: ctx.executionTarget,
+    legacyRemoteExecution: ctx.executionTransport?.remoteExecution,
+  });
+  const executionTargetIsRemote = adapterExecutionTargetIsRemote(executionTarget);
 
   const promptTemplate = asString(
     config.promptTemplate,
-    "You are agent {{agent.id}} ({{agent.name}}). Continue your Staple work.",
+    DEFAULT_STAPLE_AGENT_PROMPT_TEMPLATE,
   );
   const command = asString(config.command, "gemini");
   const model = asString(config.model, DEFAULT_GEMINI_LOCAL_MODEL).trim();
@@ -156,7 +198,11 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const effectiveWorkspaceCwd = useConfiguredInsteadOfAgentHome ? "" : workspaceCwd;
   const cwd = effectiveWorkspaceCwd || configuredCwd || process.cwd();
   await ensureAbsoluteDirectory(cwd, { createIfMissing: true });
-  await ensureGeminiSkillsInjected(onLog);
+  const geminiSkillEntries = await readStapleRuntimeSkillEntries(config, __moduleDir);
+  const desiredGeminiSkillNames = resolveStapleDesiredSkillNames(config, geminiSkillEntries);
+  if (!executionTargetIsRemote) {
+    await ensureGeminiSkillsInjected(onLog, geminiSkillEntries, desiredGeminiSkillNames);
+  }
 
   const envConfig = parseObject(config.env);
   const hasExplicitApiKey =
@@ -186,12 +232,14 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const linkedIssueIds = Array.isArray(context.issueIds)
     ? context.issueIds.filter((value): value is string => typeof value === "string" && value.trim().length > 0)
     : [];
+  const wakePayloadJson = stringifyStapleWakePayload(context.stapleWake);
   if (wakeTaskId) env.STAPLE_TASK_ID = wakeTaskId;
   if (wakeReason) env.STAPLE_WAKE_REASON = wakeReason;
   if (wakeCommentId) env.STAPLE_WAKE_COMMENT_ID = wakeCommentId;
   if (approvalId) env.STAPLE_APPROVAL_ID = approvalId;
   if (approvalStatus) env.STAPLE_APPROVAL_STATUS = approvalStatus;
   if (linkedIssueIds.length > 0) env.STAPLE_LINKED_ISSUE_IDS = linkedIssueIds.join(",");
+  if (wakePayloadJson) env.STAPLE_WAKE_PAYLOAD_JSON = wakePayloadJson;
   if (effectiveWorkspaceCwd) env.STAPLE_WORKSPACE_CWD = effectiveWorkspaceCwd;
   if (workspaceSource) env.STAPLE_WORKSPACE_SOURCE = workspaceSource;
   if (workspaceId) env.STAPLE_WORKSPACE_ID = workspaceId;
@@ -199,6 +247,8 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   if (workspaceRepoRef) env.STAPLE_WORKSPACE_REPO_REF = workspaceRepoRef;
   if (agentHome) env.AGENT_HOME = agentHome;
   if (workspaceHints.length > 0) env.STAPLE_WORKSPACES_JSON = JSON.stringify(workspaceHints);
+  const targetStapleApiUrl = adapterExecutionTargetStapleApiUrl(executionTarget);
+  if (targetStapleApiUrl) env.STAPLE_API_URL = targetStapleApiUrl;
 
   for (const [key, value] of Object.entries(envConfig)) {
     if (typeof value === "string") env[key] = value;
@@ -213,7 +263,13 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   );
   const billingType = resolveGeminiBillingType(effectiveEnv);
   const runtimeEnv = ensurePathInEnv(effectiveEnv);
-  await ensureCommandResolvable(command, cwd, runtimeEnv);
+  await ensureAdapterExecutionTargetCommandResolvable(command, executionTarget, cwd, runtimeEnv);
+  const resolvedCommand = await resolveAdapterExecutionTargetCommandForLogs(command, executionTarget, cwd, runtimeEnv);
+  const loggedEnv = buildInvocationEnvForLogs(env, {
+    runtimeEnv,
+    includeRuntimeKeys: ["HOME"],
+    resolvedCommand,
+  });
 
   const timeoutSec = asNumber(config.timeoutSec, 0);
   const graceSec = asNumber(config.graceSec, 20);
@@ -222,18 +278,78 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     if (fromExtraArgs.length > 0) return fromExtraArgs;
     return asStringArray(config.args);
   })();
+  const effectiveExecutionCwd = adapterExecutionTargetRemoteCwd(executionTarget, cwd);
+  let restoreRemoteWorkspace: (() => Promise<void>) | null = null;
+  let remoteSkillsDir: string | null = null;
+  let localSkillsDir: string | null = null;
+
+  if (executionTargetIsRemote) {
+    try {
+      localSkillsDir = await buildGeminiSkillsDir(config);
+      await onLog(
+        "stdout",
+        `[staple] Syncing workspace and Gemini runtime assets to ${describeAdapterExecutionTarget(executionTarget)}.\n`,
+      );
+      const preparedExecutionTargetRuntime = await prepareAdapterExecutionTargetRuntime({
+        target: executionTarget,
+        adapterKey: "gemini",
+        workspaceLocalDir: cwd,
+        assets: [{
+          key: "skills",
+          localDir: localSkillsDir,
+          followSymlinks: true,
+        }],
+      });
+      restoreRemoteWorkspace = () => preparedExecutionTargetRuntime.restoreWorkspace();
+      const managedHome = adapterExecutionTargetUsesManagedHome(executionTarget);
+      if (managedHome && preparedExecutionTargetRuntime.runtimeRootDir) {
+        env.HOME = preparedExecutionTargetRuntime.runtimeRootDir;
+      }
+      const remoteHomeDir = managedHome && preparedExecutionTargetRuntime.runtimeRootDir
+        ? preparedExecutionTargetRuntime.runtimeRootDir
+        : await readAdapterExecutionTargetHomeDir(runId, executionTarget, {
+            cwd,
+            env,
+            timeoutSec,
+            graceSec,
+            onLog,
+          });
+      if (remoteHomeDir && preparedExecutionTargetRuntime.assetDirs.skills) {
+        remoteSkillsDir = path.posix.join(remoteHomeDir, ".gemini", "skills");
+        await runAdapterExecutionTargetShellCommand(
+          runId,
+          executionTarget,
+          `mkdir -p ${JSON.stringify(path.posix.dirname(remoteSkillsDir))} && rm -rf ${JSON.stringify(remoteSkillsDir)} && cp -a ${JSON.stringify(preparedExecutionTargetRuntime.assetDirs.skills)} ${JSON.stringify(remoteSkillsDir)}`,
+          { cwd, env, timeoutSec, graceSec, onLog },
+        );
+      }
+    } catch (error) {
+      await Promise.allSettled([
+        restoreRemoteWorkspace?.(),
+        localSkillsDir ? fs.rm(path.dirname(localSkillsDir), { recursive: true, force: true }).catch(() => undefined) : Promise.resolve(),
+      ]);
+      throw error;
+    }
+  }
 
   const runtimeSessionParams = parseObject(runtime.sessionParams);
   const runtimeSessionId = asString(runtimeSessionParams.sessionId, runtime.sessionId ?? "");
   const runtimeSessionCwd = asString(runtimeSessionParams.cwd, "");
+  const runtimeRemoteExecution = parseObject(runtimeSessionParams.remoteExecution);
   const canResumeSession =
     runtimeSessionId.length > 0 &&
-    (runtimeSessionCwd.length === 0 || path.resolve(runtimeSessionCwd) === path.resolve(cwd));
+    (runtimeSessionCwd.length === 0 || path.resolve(runtimeSessionCwd) === path.resolve(effectiveExecutionCwd)) &&
+    adapterExecutionTargetSessionMatches(runtimeRemoteExecution, executionTarget);
   const sessionId = canResumeSession ? runtimeSessionId : null;
-  if (runtimeSessionId && !canResumeSession) {
+  if (executionTargetIsRemote && runtimeSessionId && !canResumeSession) {
     await onLog(
-      "stderr",
-      `[staple] Gemini session "${runtimeSessionId}" was saved for cwd "${runtimeSessionCwd}" and will not be resumed in "${cwd}".\n`,
+      "stdout",
+      `[staple] Gemini session "${runtimeSessionId}" does not match the current remote execution identity and will not be resumed in "${effectiveExecutionCwd}". Starting a fresh remote session.\n`,
+    );
+  } else if (runtimeSessionId && !canResumeSession) {
+    await onLog(
+      "stdout",
+      `[staple] Gemini session "${runtimeSessionId}" was saved for cwd "${runtimeSessionCwd}" and will not be resumed in "${effectiveExecutionCwd}".\n`,
     );
   }
 
@@ -247,20 +363,16 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
         `${instructionsContents}\n\n` +
         `The above agent instructions were loaded from ${instructionsFilePath}. ` +
         `Resolve any relative file references from ${instructionsDir}.\n\n`;
-      await onLog(
-        "stderr",
-        `[staple] Loaded agent instructions file: ${instructionsFilePath}\n`,
-      );
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
       await onLog(
-        "stderr",
+        "stdout",
         `[staple] Warning: could not read agent instructions file "${instructionsFilePath}": ${reason}\n`,
       );
     }
   }
   const commandNotes = (() => {
-    const notes: string[] = ["Prompt is passed to Gemini as the final positional argument."];
+    const notes: string[] = ["Prompt is passed to Gemini via --prompt for non-interactive execution."];
     notes.push("Added --approval-mode yolo for unattended execution.");
     if (!instructionsFilePath) return notes;
     if (instructionsPrefix.length > 0) {
@@ -286,17 +398,20 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     run: { id: runId, source: "on_demand" },
     context,
   };
-  const renderedPrompt = renderTemplate(promptTemplate, templateData);
   const renderedBootstrapPrompt =
     !sessionId && bootstrapPromptTemplate.trim().length > 0
       ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
       : "";
+  const wakePrompt = renderStapleWakePrompt(context.stapleWake, { resumedSession: Boolean(sessionId) });
+  const shouldUseResumeDeltaPrompt = Boolean(sessionId) && wakePrompt.length > 0;
+  const renderedPrompt = shouldUseResumeDeltaPrompt ? "" : renderTemplate(promptTemplate, templateData);
   const sessionHandoffNote = asString(context.stapleSessionHandoffMarkdown, "").trim();
   const stapleEnvNote = renderStapleEnvNote(env);
   const apiAccessNote = renderApiAccessNote(env);
   const prompt = joinPromptSections([
     instructionsPrefix,
     renderedBootstrapPrompt,
+    wakePrompt,
     sessionHandoffNote,
     stapleEnvNote,
     apiAccessNote,
@@ -306,6 +421,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     promptChars: prompt.length,
     instructionsChars: instructionsPrefix.length,
     bootstrapPromptChars: renderedBootstrapPrompt.length,
+    wakePromptChars: wakePrompt.length,
     sessionHandoffChars: sessionHandoffNote.length,
     runtimeNoteChars: stapleEnvNote.length + apiAccessNote.length,
     heartbeatPromptChars: renderedPrompt.length,
@@ -322,7 +438,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       args.push("--sandbox=none");
     }
     if (extraArgs.length > 0) args.push(...extraArgs);
-    args.push(prompt);
+    args.push("--prompt", prompt);
     return args;
   };
 
@@ -331,24 +447,25 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     if (onMeta) {
       await onMeta({
         adapterType: "gemini_local",
-        command,
-        cwd,
+        command: resolvedCommand,
+        cwd: effectiveExecutionCwd,
         commandNotes,
         commandArgs: args.map((value, index) => (
           index === args.length - 1 ? `<prompt ${prompt.length} chars>` : value
         )),
-        env: redactEnvForLogs(env),
+        env: loggedEnv,
         prompt,
         promptMetrics,
         context,
       });
     }
 
-    const proc = await runChildProcess(runId, command, args, {
+    const proc = await runAdapterExecutionTargetProcess(runId, executionTarget, command, args, {
       cwd,
       env,
       timeoutSec,
       graceSec,
+      onSpawn,
       onLog,
     });
     return {
@@ -397,10 +514,15 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     const resolvedSessionParams = resolvedSessionId
       ? ({
         sessionId: resolvedSessionId,
-        cwd,
+        cwd: effectiveExecutionCwd,
         ...(workspaceId ? { workspaceId } : {}),
         ...(workspaceRepoUrl ? { repoUrl: workspaceRepoUrl } : {}),
         ...(workspaceRepoRef ? { repoRef: workspaceRepoRef } : {}),
+        ...(executionTargetIsRemote
+          ? {
+              remoteExecution: adapterExecutionTargetSessionIdentity(executionTarget),
+            }
+          : {}),
       } as Record<string, unknown>)
       : null;
     const parsedError = typeof attempt.parsed.errorMessage === "string" ? attempt.parsed.errorMessage.trim() : "";
@@ -439,20 +561,27 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     };
   };
 
-  const initial = await runAttempt(sessionId);
-  if (
-    sessionId &&
-    !initial.proc.timedOut &&
-    (initial.proc.exitCode ?? 0) !== 0 &&
-    isGeminiUnknownSessionError(initial.proc.stdout, initial.proc.stderr)
-  ) {
-    await onLog(
-      "stderr",
-      `[staple] Gemini resume session "${sessionId}" is unavailable; retrying with a fresh session.\n`,
-    );
-    const retry = await runAttempt(null);
-    return toResult(retry, true, true);
-  }
+  try {
+    const initial = await runAttempt(sessionId);
+    if (
+      sessionId &&
+      !initial.proc.timedOut &&
+      (initial.proc.exitCode ?? 0) !== 0 &&
+      isGeminiUnknownSessionError(initial.proc.stdout, initial.proc.stderr)
+    ) {
+      await onLog(
+        "stdout",
+        `[staple] Gemini resume session "${sessionId}" is unavailable; retrying with a fresh session.\n`,
+      );
+      const retry = await runAttempt(null);
+      return toResult(retry, true, true);
+    }
 
-  return toResult(initial);
+    return toResult(initial);
+  } finally {
+    await Promise.all([
+      restoreRemoteWorkspace?.(),
+      localSkillsDir ? fs.rm(path.dirname(localSkillsDir), { recursive: true, force: true }).catch(() => undefined) : Promise.resolve(),
+    ]);
+  }
 }

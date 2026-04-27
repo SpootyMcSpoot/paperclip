@@ -31,6 +31,8 @@ async function createCustomSkill(root: string, skillName: string) {
 }
 
 describe("codex local adapter skill injection", () => {
+  const stapleKey = "stapleai/staple/staple";
+  const createAgentKey = "stapleai/staple/staple-create-agent";
   const cleanupDirs = new Set<string>();
 
   afterEach(async () => {
@@ -47,6 +49,7 @@ describe("codex local adapter skill injection", () => {
     cleanupDirs.add(skillsHome);
 
     await createStapleRepoSkill(currentRepo, "staple");
+    await createStapleRepoSkill(currentRepo, "staple-create-agent");
     await createStapleRepoSkill(oldRepo, "staple");
     await fs.symlink(path.join(oldRepo, "skills", "staple"), path.join(skillsHome, "staple"));
 
@@ -57,17 +60,37 @@ describe("codex local adapter skill injection", () => {
       },
       {
         skillsHome,
-        skillsEntries: [{ name: "staple", source: path.join(currentRepo, "skills", "staple") }],
+        skillsEntries: [
+          {
+            key: stapleKey,
+            runtimeName: "staple",
+            source: path.join(currentRepo, "skills", "staple"),
+          },
+          {
+            key: createAgentKey,
+            runtimeName: "staple-create-agent",
+            source: path.join(currentRepo, "skills", "staple-create-agent"),
+          },
+        ],
       },
     );
 
     expect(await fs.realpath(path.join(skillsHome, "staple"))).toBe(
       await fs.realpath(path.join(currentRepo, "skills", "staple")),
     );
+    expect(await fs.realpath(path.join(skillsHome, "staple-create-agent"))).toBe(
+      await fs.realpath(path.join(currentRepo, "skills", "staple-create-agent")),
+    );
     expect(logs).toContainEqual(
       expect.objectContaining({
         stream: "stdout",
         chunk: expect.stringContaining('Repaired Codex skill "staple"'),
+      }),
+    );
+    expect(logs).toContainEqual(
+      expect.objectContaining({
+        stream: "stdout",
+        chunk: expect.stringContaining('Injected Codex skill "staple-create-agent"'),
       }),
     );
   });
@@ -86,11 +109,84 @@ describe("codex local adapter skill injection", () => {
 
     await ensureCodexSkillsInjected(async () => {}, {
       skillsHome,
-      skillsEntries: [{ name: "staple", source: path.join(currentRepo, "skills", "staple") }],
+      skillsEntries: [{
+        key: stapleKey,
+        runtimeName: "staple",
+        source: path.join(currentRepo, "skills", "staple"),
+      }],
     });
 
     expect(await fs.realpath(path.join(skillsHome, "staple"))).toBe(
       await fs.realpath(path.join(customRoot, "custom", "staple")),
+    );
+  });
+
+  it("prunes broken symlinks for unavailable Staple repo skills before Codex starts", async () => {
+    const currentRepo = await makeTempDir("staple-codex-current-");
+    const oldRepo = await makeTempDir("staple-codex-old-");
+    const skillsHome = await makeTempDir("staple-codex-home-");
+    cleanupDirs.add(currentRepo);
+    cleanupDirs.add(oldRepo);
+    cleanupDirs.add(skillsHome);
+
+    await createStapleRepoSkill(currentRepo, "staple");
+    await createStapleRepoSkill(oldRepo, "agent-browser");
+    const staleTarget = path.join(oldRepo, "skills", "agent-browser");
+    await fs.symlink(staleTarget, path.join(skillsHome, "agent-browser"));
+    await fs.rm(staleTarget, { recursive: true, force: true });
+
+    const logs: Array<{ stream: "stdout" | "stderr"; chunk: string }> = [];
+    await ensureCodexSkillsInjected(
+      async (stream, chunk) => {
+        logs.push({ stream, chunk });
+      },
+      {
+        skillsHome,
+        skillsEntries: [{
+          key: stapleKey,
+          runtimeName: "staple",
+          source: path.join(currentRepo, "skills", "staple"),
+        }],
+      },
+    );
+
+    await expect(fs.lstat(path.join(skillsHome, "agent-browser"))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
+    expect(logs).toContainEqual(
+      expect.objectContaining({
+        stream: "stdout",
+        chunk: expect.stringContaining('Removed stale Codex skill "agent-browser"'),
+      }),
+    );
+  });
+
+  it("preserves other live Staple skill symlinks in the shared workspace skill directory", async () => {
+    const currentRepo = await makeTempDir("staple-codex-current-");
+    const skillsHome = await makeTempDir("staple-codex-home-");
+    cleanupDirs.add(currentRepo);
+    cleanupDirs.add(skillsHome);
+
+    await createStapleRepoSkill(currentRepo, "staple");
+    await createStapleRepoSkill(currentRepo, "agent-browser");
+    await fs.symlink(
+      path.join(currentRepo, "skills", "agent-browser"),
+      path.join(skillsHome, "agent-browser"),
+    );
+
+    await ensureCodexSkillsInjected(async () => {}, {
+      skillsHome,
+      skillsEntries: [{
+        key: stapleKey,
+        runtimeName: "staple",
+        source: path.join(currentRepo, "skills", "staple"),
+      }],
+    });
+
+    expect((await fs.lstat(path.join(skillsHome, "staple"))).isSymbolicLink()).toBe(true);
+    expect((await fs.lstat(path.join(skillsHome, "agent-browser"))).isSymbolicLink()).toBe(true);
+    expect(await fs.realpath(path.join(skillsHome, "agent-browser"))).toBe(
+      await fs.realpath(path.join(currentRepo, "skills", "agent-browser")),
     );
   });
 });

@@ -37,7 +37,7 @@ These decisions close open questions from `SPEC.md` for V1.
 | Visibility | Full visibility to board and all agents in same company |
 | Communication | Tasks + comments only (no separate chat system) |
 | Task ownership | Single assignee; atomic checkout required for `in_progress` transition |
-| Recovery | No automatic reassignment; work recovery stays manual/explicit |
+| Recovery | No automatic reassignment; control-plane recovery may retry lost execution continuity once, then uses explicit recovery issues or human escalation |
 | Agent adapters | Built-in `process` and `http` adapters |
 | Auth | Mode-dependent human auth (`local_trusted` implicit board in current code; authenticated mode uses sessions), API keys for agents |
 | Budget period | Monthly UTC calendar window |
@@ -184,6 +184,11 @@ Invariant: at least one root `company` level goal per company.
 - `status` enum: `backlog | planned | in_progress | completed | cancelled`
 - `lead_agent_id` uuid fk `agents.id` null
 - `target_date` date null
+- `env` jsonb null (same secret-aware env binding format used by agent config)
+
+Invariant:
+
+- project env is merged into run environment for issues in that project and overrides conflicting agent env keys before Staple runtime-owned keys are injected
 
 ## 7.6 `issues` (core task entity)
 
@@ -390,6 +395,8 @@ Side effects:
 - entering `done` sets `completed_at`
 - entering `cancelled` sets `cancelled_at`
 
+Detailed ownership, execution, blocker, active-run watchdog, and crash-recovery semantics are documented in `doc/execution-semantics.md`.
+
 ## 8.3 Approval Status
 
 - `pending -> approved | rejected | cancelled`
@@ -441,6 +448,7 @@ All endpoints are under `/api` and return JSON.
 - `POST /companies`
 - `GET /companies/:companyId`
 - `PATCH /companies/:companyId`
+- `PATCH /companies/:companyId/branding`
 - `POST /companies/:companyId/archive`
 
 ## 10.2 Goals
@@ -476,6 +484,7 @@ All endpoints are under `/api` and return JSON.
 - `DELETE /issues/:issueId/documents/:key`
 - `POST /issues/:issueId/checkout`
 - `POST /issues/:issueId/release`
+- `POST /issues/:issueId/admin/force-release` (board-only lock recovery)
 - `POST /issues/:issueId/comments`
 - `GET /issues/:issueId/comments`
 - `POST /companies/:companyId/issues/:issueId/attachments` (multipart upload)
@@ -490,7 +499,7 @@ All endpoints are under `/api` and return JSON.
 ```json
 {
   "agentId": "uuid",
-  "expectedStatuses": ["todo", "backlog", "blocked"]
+  "expectedStatuses": ["todo", "backlog", "blocked", "in_review"]
 }
 ```
 
@@ -499,6 +508,8 @@ Server behavior:
 1. single SQL update with `WHERE id = ? AND status IN (?) AND (assignee_agent_id IS NULL OR assignee_agent_id = :agentId)`
 2. if updated row count is 0, return `409` with current owner/status
 3. successful checkout sets `assignee_agent_id`, `status = in_progress`, and `started_at`
+
+`POST /issues/:issueId/admin/force-release` is an operator recovery endpoint for stale harness locks. It requires board access to the issue company, clears checkout and execution run lock fields, and may clear the agent assignee when `clearAssignee=true` is passed. The route must write an `issue.admin_force_release` activity log entry containing the previous checkout and execution run IDs.
 
 ## 10.5 Projects
 
@@ -611,7 +622,7 @@ Per-agent schedule fields in `adapter_config`:
 
 - `enabled` boolean
 - `intervalSec` integer (minimum 30)
-- `maxConcurrentRuns` fixed at `1` for V1
+- `maxConcurrentRuns` integer; new agents default to `5`
 
 Scheduler must skip invocation when:
 
@@ -843,20 +854,31 @@ V1 is complete only when all criteria are true:
 
 V1 supports company import/export using a portable package contract:
 
-- exactly one JSON entrypoint: `staple.manifest.json`
-- all other package files are markdown with frontmatter
-- agent convention:
-  - `agents/<slug>/AGENTS.md` (required for V1 export/import)
-  - `agents/<slug>/HEARTBEAT.md` (optional, import accepted)
-  - `agents/<slug>/*.md` (optional, import accepted)
+- markdown-first package rooted at `COMPANY.md`
+- implicit folder discovery by convention
+- `.staple.yaml` sidecar for Staple-specific fidelity
+- canonical base package is vendor-neutral and aligned with `docs/companies/companies-spec.md`
+- common conventions:
+  - `agents/<slug>/AGENTS.md`
+  - `teams/<slug>/TEAM.md`
+  - `projects/<slug>/PROJECT.md`
+  - `projects/<slug>/tasks/<slug>/TASK.md`
+  - `tasks/<slug>/TASK.md`
+  - `skills/<slug>/SKILL.md`
 
 Export/import behavior in V1:
 
-- export includes company metadata and/or agents based on selection
-- export strips environment-specific paths (`cwd`, local instruction file paths)
-- export never includes secret values; secret requirements are reported
+- export emits a clean vendor-neutral markdown package plus `.staple.yaml`
+- projects and starter tasks are opt-in export content rather than default package content
+- recurring `TASK.md` entries use `recurring: true` in the base package and Staple routine fidelity in `.staple.yaml`
+- Staple imports recurring task packages as routines instead of downgrading them to one-time issues
+- export strips environment-specific paths (`cwd`, local instruction file paths, inline prompt duplication) while preserving portable project repo/workspace metadata such as `repoUrl`, refs, and workspace-policy references keyed in `.staple.yaml`
+- export never includes secret values; env inputs are reported as portable declarations instead
 - import supports target modes:
   - create a new company
   - import into an existing company
+- import recreates exported project workspaces and remaps portable workspace keys back to target-local workspace ids
+- import forces imported agent timer heartbeats off so packages never start scheduled runs implicitly
 - import supports collision strategies: `rename`, `skip`, `replace`
 - import supports preview (dry-run) before apply
+- GitHub imports warn on unpinned refs instead of blocking

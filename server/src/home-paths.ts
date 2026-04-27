@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
@@ -16,13 +15,7 @@ function expandHomePrefix(value: string): string {
 export function resolveStapleHomeDir(): string {
   const envHome = process.env.STAPLE_HOME?.trim();
   if (envHome) return path.resolve(expandHomePrefix(envHome));
-  const staplePath = path.resolve(os.homedir(), ".staple");
-  const legacyPath = path.resolve(os.homedir(), ".paperclip");
-  if (!fs.existsSync(staplePath) && fs.existsSync(legacyPath)) {
-    console.warn("[staple] Using legacy ~/.paperclip directory. Rename to ~/.staple to silence this warning.");
-    return legacyPath;
-  }
-  return staplePath;
+  return path.resolve(os.homedir(), ".staple");
 }
 
 export function resolveStapleInstanceId(): string {

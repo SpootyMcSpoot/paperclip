@@ -33,6 +33,8 @@ Interactive first-time setup:
 pnpm stapleai onboard
 ```
 
+If Staple is already configured, rerunning `onboard` keeps the existing config in place. Use `stapleai configure` to change settings on an existing install.
+
 First prompt:
 
 1. `Quickstart` (recommended): local defaults (embedded database, no LLM provider, local disk storage, default secrets)
@@ -49,6 +51,8 @@ Non-interactive defaults + immediate start (opens browser on server listen):
 ```sh
 pnpm stapleai onboard --yes
 ```
+
+On an existing install, `--yes` now preserves the current config and just starts Staple with that setup.
 
 ## `stapleai doctor`
 
@@ -84,6 +88,8 @@ Show resolved environment configuration:
 ```sh
 pnpm stapleai env
 ```
+
+This now includes bind-oriented deployment settings such as `STAPLE_BIND` and `STAPLE_BIND_HOST` when configured.
 
 ## `stapleai allowed-hostname`
 

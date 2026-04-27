@@ -33,6 +33,10 @@ export function resolveDefaultContextPath(): string {
   return path.resolve(resolveStapleHomeDir(), "context.json");
 }
 
+export function resolveDefaultCliAuthPath(): string {
+  return path.resolve(resolveStapleHomeDir(), "auth.json");
+}
+
 export function resolveDefaultEmbeddedPostgresDir(instanceId?: string): string {
   return path.resolve(resolveStapleInstanceRoot(instanceId), "db");
 }

@@ -3,7 +3,7 @@ Use this exact checklist.
 1. Start Staple in auth mode.
 ```bash
 cd <staple-repo-root>
-pnpm dev --tailscale-auth
+pnpm dev --bind lan
 ```
 Then verify:
 ```bash

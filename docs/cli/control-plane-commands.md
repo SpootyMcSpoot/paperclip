@@ -41,15 +41,16 @@ pnpm stapleai company export <company-id> --out ./exports/acme --include company
 
 # Preview import (no writes)
 pnpm stapleai company import \
-  --from https://github.com/<owner>/<repo>/tree/main/<path> \
+  <owner>/<repo>/<path> \
   --target existing \
   --company-id <company-id> \
+  --ref main \
   --collision rename \
   --dry-run
 
 # Apply import
 pnpm stapleai company import \
-  --from ./exports/acme \
+  ./exports/acme \
   --target new \
   --new-company-name "Acme Imported" \
   --include company,agents

@@ -51,9 +51,8 @@ Public packages are discovered from:
 
 - `packages/`
 - `server/`
+- `ui/`
 - `cli/`
-
-`ui/` is ignored because it is private.
 
 The version rewrite step now uses [`scripts/release-package-map.mjs`](../scripts/release-package-map.mjs), which:
 
@@ -65,17 +64,68 @@ The version rewrite step now uses [`scripts/release-package-map.mjs`](../scripts
 
 Those rewrites are temporary. The working tree is restored after publish or dry-run.
 
+## `@stapleai/ui` packaging
+
+The UI package publishes prebuilt static assets, not the source workspace.
+
+The `ui` package uses [`scripts/generate-ui-package-json.mjs`](../scripts/generate-ui-package-json.mjs) during `prepack` to swap in a lean publish manifest that:
+
+- keeps the release-managed `name` and `version`
+- publishes only `dist/`
+- omits the source-only dependency graph from downstream installs
+
+After packing or publishing, `postpack` restores the development manifest automatically.
+
+### Manual first publish for `@stapleai/ui`
+
+If you need to publish only the UI package once by hand, use the real package name:
+
+- `@stapleai/ui`
+
+Recommended flow from the repo root:
+
+```bash
+# optional sanity check: this 404s until the first publish exists
+npm view @stapleai/ui version
+
+# make sure the dist payload is fresh
+pnpm --filter @stapleai/ui build
+
+# confirm your local npm auth before the real publish
+npm whoami
+
+# safe preview of the exact publish payload
+cd ui
+pnpm publish --dry-run --no-git-checks --access public
+
+# real publish
+pnpm publish --no-git-checks --access public
+```
+
+Notes:
+
+- Publish from `ui/`, not the repo root.
+- `prepack` automatically rewrites `ui/package.json` to the lean publish manifest, and `postpack` restores the dev manifest after the command finishes.
+- If `npm view @stapleai/ui version` already returns the same version that is in [`ui/package.json`](../ui/package.json), do not republish. Bump the version or use the normal repo-wide release flow in [`scripts/release.sh`](../scripts/release.sh).
+
+If the first real publish returns npm `E404`, check npm-side prerequisites before retrying:
+
+- `npm whoami` must succeed first. An expired or missing npm login will block the publish.
+- For an organization-scoped package like `@stapleai/ui`, the `stapleai` npm organization must exist and the publisher must be a member with permission to publish to that scope.
+- The initial publish must include `--access public` for a public scoped package.
+- npm also requires either account 2FA for publishing or a granular token that is allowed to bypass 2FA.
+
 ## Version formats
 
 Staple uses calendar versions:
 
-- stable: `YYYY.M.D`
-- canary: `YYYY.M.D-canary.N`
+- stable: `YYYY.MDD.P`
+- canary: `YYYY.MDD.P-canary.N`
 
 Examples:
 
-- stable: `2026.3.17`
-- canary: `2026.3.17-canary.2`
+- stable: `2026.318.0`
+- canary: `2026.318.1-canary.2`
 
 ## Publish model
 
@@ -85,7 +135,7 @@ Canaries publish under the npm dist-tag `canary`.
 
 Example:
 
-- `stapleai@2026.3.17-canary.2`
+- `stapleai@2026.318.1-canary.2`
 
 This keeps the default install path unchanged while allowing explicit installs with:
 
@@ -99,13 +149,13 @@ Stable publishes use the npm dist-tag `latest`.
 
 Example:
 
-- `stapleai@2026.3.17`
+- `stapleai@2026.318.0`
 
 Stable publishes do not create a release commit. Instead:
 
 - package versions are rewritten temporarily
 - packages are published from the chosen source commit
-- git tag `vYYYY.M.D` points at that original commit
+- git tag `vYYYY.MDD.P` points at that original commit
 
 ## Trusted publishing
 
@@ -126,7 +176,7 @@ Rollback does not unpublish anything.
 It repoints the `latest` dist-tag to a prior stable version:
 
 ```bash
-./scripts/rollback-latest.sh 2026.3.16
+./scripts/rollback-latest.sh 2026.318.0
 ```
 
 This is the fastest way to restore the default install path if a stable release is bad.
@@ -135,6 +185,7 @@ This is the fastest way to restore the default install path if a stable release 
 
 - [`scripts/build-npm.sh`](../scripts/build-npm.sh)
 - [`scripts/generate-npm-package-json.mjs`](../scripts/generate-npm-package-json.mjs)
+- [`scripts/generate-ui-package-json.mjs`](../scripts/generate-ui-package-json.mjs)
 - [`scripts/release-package-map.mjs`](../scripts/release-package-map.mjs)
 - [`cli/esbuild.config.mjs`](../cli/esbuild.config.mjs)
 - [`doc/RELEASING.md`](RELEASING.md)
