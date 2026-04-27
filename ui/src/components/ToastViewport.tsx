@@ -37,8 +37,12 @@ function AnimatedToast({
     return () => cancelAnimationFrame(frame);
   }, []);
 
+  const isError = toast.tone === "error";
+
   return (
     <li
+      role={isError ? "alert" : undefined}
+      aria-live={isError ? "assertive" : undefined}
       className={cn(
         "pointer-events-auto rounded-sm border shadow-lg backdrop-blur-xl transition-[transform,opacity] duration-200 ease-out",
         visible
