@@ -208,15 +208,16 @@ export function Companies() {
                         variant="ghost"
                         size="icon-xs"
                         className="text-muted-foreground opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100"
+                        aria-label={`Company actions for ${company.name}`}
                       >
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={() => startEdit(company.id, company.name)}
                       >
-                        <Pencil className="h-3.5 w-3.5" />
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                         Rename
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -224,7 +225,7 @@ export function Companies() {
                         variant="destructive"
                         onClick={() => setConfirmDeleteId(company.id)}
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                         Delete Company
                       </DropdownMenuItem>
                     </DropdownMenuContent>
