@@ -1185,11 +1185,17 @@ export function CompanySkills() {
                   onClick={() => scanProjects.mutate()}
                   disabled={scanProjects.isPending}
                   title="Scan project workspaces for skills"
+                  aria-label="Scan project workspaces for skills"
                 >
-                  <RefreshCw className={cn("h-4 w-4", scanProjects.isPending && "animate-spin")} />
+                  <RefreshCw className={cn("h-4 w-4", scanProjects.isPending && "animate-spin")} aria-hidden="true" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => setCreateOpen((value) => !value)}>
-                  <Plus className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setCreateOpen((value) => !value)}
+                  aria-label="Create skill"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
