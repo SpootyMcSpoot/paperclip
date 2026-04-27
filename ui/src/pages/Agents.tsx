@@ -148,7 +148,7 @@ export function Agents() {
               )}
               onClick={() => setFiltersOpen(!filtersOpen)}
             >
-              <SlidersHorizontal className="h-3 w-3" />
+              <SlidersHorizontal className="h-3 w-3" aria-hidden="true" />
               Filters
               {showTerminated && <span className="ml-0.5 px-1 bg-foreground/10 rounded text-[10px]">1</span>}
             </button>
