@@ -872,8 +872,10 @@ export function IssuesList({
               className={cn("hidden h-8 w-8 shrink-0 sm:inline-flex", viewState.nestingEnabled && "bg-accent")}
               onClick={() => updateView({ nestingEnabled: !viewState.nestingEnabled })}
               title={viewState.nestingEnabled ? "Disable parent-child nesting" : "Enable parent-child nesting"}
+              aria-label={viewState.nestingEnabled ? "Disable parent-child nesting" : "Enable parent-child nesting"}
+              aria-pressed={viewState.nestingEnabled}
             >
-              <ListTree className="h-3.5 w-3.5" />
+              <ListTree className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
           )}
 
@@ -904,8 +906,8 @@ export function IssuesList({
           {viewState.viewMode === "list" && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Sort">
-                  <ArrowUpDown className="h-3.5 w-3.5" />
+                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Sort" aria-label="Sort issues">
+                  <ArrowUpDown className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-48 p-0">
@@ -947,8 +949,8 @@ export function IssuesList({
           {viewState.viewMode === "list" && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Group">
-                  <Layers className="h-3.5 w-3.5" />
+                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Group" aria-label="Group issues">
+                  <Layers className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-44 p-0">
