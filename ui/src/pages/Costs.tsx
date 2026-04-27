@@ -88,7 +88,7 @@ function MetricTile({
           <div className="mt-1 text-xs leading-5 text-muted-foreground">{subtitle}</div>
         </div>
         <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-border">
-          <Icon className="h-4 w-4 text-muted-foreground" />
+          <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </div>
       </div>
     </div>
