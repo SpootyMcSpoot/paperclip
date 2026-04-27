@@ -293,7 +293,7 @@ function TaskTreeNode({
 
         {hiddenChildCount > 0 ? (
           <div className="mt-2 flex items-center gap-2 rounded-sm border border-amber-500/60 bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-100">
-            <GitBranch className="h-3.5 w-3.5 shrink-0" />
+            <GitBranch className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span>
               {hiddenChildCount === 1
                 ? "1 follow-on task hidden in preview"
@@ -703,7 +703,7 @@ function AskUserQuestionsCard({
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/70 px-2.5 py-1 font-medium uppercase tracking-[0.16em] text-foreground/70">
-          <MessageSquareQuote className="h-3 w-3" />
+          <MessageSquareQuote className="h-3 w-3" aria-hidden="true" />
           Ask user questions
         </span>
         <span>
@@ -872,7 +872,7 @@ function RequestConfirmationTargetChip({
   );
   const content = (
     <>
-      <GitBranch className="h-3 w-3 shrink-0" />
+      <GitBranch className="h-3 w-3 shrink-0" aria-hidden="true" />
       <span className="min-w-0 truncate">{requestConfirmationTargetLabel(target)}</span>
     </>
   );
@@ -1189,7 +1189,7 @@ export function IssueThreadInteractionCard({
         <div className="min-w-0 flex-1 basis-64">
           <div className="flex flex-wrap items-center gap-2">
             <span className={cn("inline-flex items-center gap-1 rounded-sm border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]", styles.badge)}>
-              <StatusIcon className="h-3.5 w-3.5" />
+              <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" />
               {interactionKindLabel(interaction.kind)}
               <span className="text-current/60">/</span>
               {statusLabel(interaction.status)}
@@ -1197,7 +1197,7 @@ export function IssueThreadInteractionCard({
             {interaction.continuationPolicy === "wake_assignee"
               || interaction.continuationPolicy === "wake_assignee_on_accept" ? (
               <span className="inline-flex items-center gap-1 rounded-sm border border-border/70 bg-transparent px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-foreground/70">
-                <ListChecks className="h-3.5 w-3.5" />
+                <ListChecks className="h-3.5 w-3.5" aria-hidden="true" />
                 {interaction.continuationPolicy === "wake_assignee_on_accept"
                   ? "Wakes on confirm"
                   : "Wakes assignee"}
