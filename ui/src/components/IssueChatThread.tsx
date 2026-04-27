@@ -1538,7 +1538,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       title="More actions"
                       aria-label="More actions"
                     >
-                      <MoreHorizontal className="h-3.5 w-3.5" />
+                      <MoreHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -2447,8 +2447,9 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               onClick={() => attachInputRef.current?.click()}
               disabled={attaching}
               title="Attach file"
+              aria-label="Attach file"
             >
-              <Paperclip className="h-4 w-4" />
+              <Paperclip className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         ) : null}
