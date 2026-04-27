@@ -438,7 +438,7 @@ export function AdapterManager() {
                   )}
                   onClick={() => setIsLocalPath(false)}
                 >
-                  <Package className="h-3.5 w-3.5" />
+                  <Package className="h-3.5 w-3.5" aria-hidden="true" />
                   npm package
                 </button>
                 <button
@@ -451,7 +451,7 @@ export function AdapterManager() {
                   )}
                   onClick={() => setIsLocalPath(true)}
                 >
-                  <FolderOpen className="h-3.5 w-3.5" />
+                  <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                   Local path
                 </button>
               </div>
@@ -520,7 +520,7 @@ export function AdapterManager() {
       {/* Alpha notice */}
       <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" />
           <div className="space-y-1 text-sm">
             <p className="font-medium text-foreground">External adapters are alpha.</p>
             <p className="text-muted-foreground">
@@ -534,14 +534,14 @@ export function AdapterManager() {
       {/* External adapters */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-muted-foreground" />
+          <Cpu className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">External Adapters</h2>
         </div>
 
         {externalAdapters.length === 0 ? (
           <Card className="bg-muted/30">
             <CardContent className="flex flex-col items-center justify-center py-10">
-              <Cpu className="h-10 w-10 text-muted-foreground mb-4" />
+              <Cpu className="h-10 w-10 text-muted-foreground mb-4" aria-hidden="true" />
               <p className="text-sm font-medium">No external adapters installed</p>
               <p className="text-xs text-muted-foreground mt-1">
                 Install an adapter package to extend model support.
@@ -589,7 +589,7 @@ export function AdapterManager() {
       {/* Built-in adapters */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-muted-foreground" />
+          <Cpu className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">Built-in Adapters</h2>
         </div>
 

@@ -205,7 +205,7 @@ export function RunTranscriptUxLab() {
           <aside className="border-b border-border/60 bg-background/75 p-5 lg:border-b-0 lg:border-r">
             <div className="mb-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-300">
-                <FlaskConical className="h-3.5 w-3.5" />
+                <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
                 UX Lab
               </div>
               <h1 className="mt-4 text-2xl font-semibold tracking-tight">Run Transcript Fixtures</h1>
@@ -231,7 +231,7 @@ export function RunTranscriptUxLab() {
                   >
                     <div className="flex items-start gap-3">
                       <span className="rounded-lg border border-current/15 p-2 text-cyan-700 dark:text-cyan-300">
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">

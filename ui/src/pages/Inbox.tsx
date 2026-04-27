@@ -464,7 +464,7 @@ function ApprovalInboxRow({
           {!showUnreadSlot && <span className="hidden h-2 w-2 shrink-0 sm:inline-flex" aria-hidden="true" />}
           <span className="hidden h-3.5 w-3.5 shrink-0 sm:inline-flex" aria-hidden="true" />
           <span className="mt-0.5 shrink-0 rounded-md bg-muted p-1.5 sm:mt-0">
-            <Icon className="h-4 w-4 text-muted-foreground" />
+            <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           </span>
           <span className="min-w-0 flex-1">
             <span className="line-clamp-2 text-sm font-medium sm:truncate sm:line-clamp-none">
