@@ -232,16 +232,18 @@ export function NewProjectDialog() {
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => { reset(); closeNewProject(); }}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
