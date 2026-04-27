@@ -26,6 +26,7 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
   const config = priorityConfig[priority] ?? priorityConfig.medium!;
   const Icon = config.icon;
 
+  const ariaLabel = `Priority: ${config.label}`;
   const icon = (
     <span
       className={cn(
@@ -34,8 +35,11 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
         onChange && !showLabel && "cursor-pointer",
         className
       )}
+      aria-label={ariaLabel}
+      title={ariaLabel}
+      role="img"
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3.5 w-3.5" aria-hidden />
     </span>
   );
 
