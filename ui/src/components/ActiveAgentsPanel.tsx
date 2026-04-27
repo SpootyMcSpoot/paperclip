@@ -56,6 +56,7 @@ export function ActiveAgentsPanel({
   const runs = liveRuns ?? [];
   const visibleRuns = useMemo(() => runs.slice(0, cardLimit), [cardLimit, runs]);
   const hiddenRunCount = Math.max(0, runs.length - visibleRuns.length);
+  const activeRunCount = useMemo(() => runs.filter(isRunActive).length, [runs]);
   const { data: issues } = useQuery({
     queryKey: [...queryKeys.issues.list(companyId), "with-routine-executions"],
     queryFn: () => issuesApi.list(companyId, { includeRoutineExecutions: true }),
@@ -80,10 +81,15 @@ export function ActiveAgentsPanel({
   });
 
   return (
-    <div>
+    <section aria-label={title}>
       <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {title}
       </h3>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {runs.length === 0
+          ? emptyMessage
+          : `${activeRunCount} active, ${runs.length} total agent runs`}
+      </div>
       {runs.length === 0 ? (
         <div className="rounded-xl border border-border p-4">
           <p className="text-sm text-muted-foreground">{emptyMessage}</p>
@@ -111,7 +117,7 @@ export function ActiveAgentsPanel({
           </Link>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
