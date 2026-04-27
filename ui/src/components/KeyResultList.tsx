@@ -118,10 +118,13 @@ function KeyResultRow({
         </div>
       </div>
       <button
+        type="button"
         onClick={() => onRemove(kr.id)}
         className="p-1 text-muted-foreground hover:text-destructive shrink-0"
+        aria-label={`Remove key result ${kr.title}`}
+        title="Remove key result"
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
     </div>
   );
