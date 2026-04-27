@@ -964,8 +964,8 @@ export function AgentDetail() {
           {/* Overflow menu */}
           <Popover open={moreOpen} onOpenChange={setMoreOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon-xs">
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="icon-xs" aria-label="More agent actions">
+                <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="end">
