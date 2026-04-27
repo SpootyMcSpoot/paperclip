@@ -991,7 +991,7 @@ export function OnboardingWizard() {
                       {adapterEnvResult &&
                       adapterEnvResult.status === "pass" ? (
                         <div className="flex items-center gap-2 rounded-md border border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10 px-3 py-2 text-xs text-green-700 dark:text-green-300 animate-in fade-in slide-in-from-bottom-1 duration-300">
-                          <Check className="h-3.5 w-3.5 shrink-0" />
+                          <Check className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                           <span className="font-medium">Passed</span>
                         </div>
                       ) : adapterEnvResult ? (
@@ -1209,7 +1209,7 @@ export function OnboardingWizard() {
                       onClick={() => setStep((step - 1) as Step)}
                       disabled={loading}
                     >
-                      <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                      <ArrowLeft className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       Back
                     </Button>
                   )}
@@ -1222,9 +1222,9 @@ export function OnboardingWizard() {
                       onClick={handleStep1Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1238,9 +1238,9 @@ export function OnboardingWizard() {
                       onClick={handleStep2Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1252,9 +1252,9 @@ export function OnboardingWizard() {
                       onClick={handleStep3Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1262,9 +1262,9 @@ export function OnboardingWizard() {
                   {step === 4 && (
                     <Button size="sm" disabled={loading} onClick={handleLaunch}>
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Create & Open Issue"}
                     </Button>

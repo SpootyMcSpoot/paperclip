@@ -809,7 +809,7 @@ function IssueChatChainOfThought({
           {agentIcon ? (
             <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
           ) : isActive ? (
-            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
           ) : (
             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/70" />
@@ -934,7 +934,7 @@ function IssueChatRollingToolPart({ toolParts }: { toolParts: ToolCallMessagePar
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-0.5">
         {isRunning ? (
-          <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground/50" />
+          <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground/50" aria-hidden="true" />
         ) : (
           <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
         )}
@@ -983,7 +983,7 @@ function CopyablePreBlock({ children, className }: { children: string; className
           });
         }}
       >
-        {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+        {copied ? <Check className="h-3 w-3" aria-hidden="true" /> : <Copy className="h-3 w-3" aria-hidden="true" />}
       </button>
     </div>
   );
@@ -1473,7 +1473,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       {agentIcon ? (
                         <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
                       ) : (
-                        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+                        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
                       )}
                       <span className="shimmer-text">{waitingText}</span>
                     </span>
