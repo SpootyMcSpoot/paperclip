@@ -277,9 +277,9 @@ export function IssueFiltersPopover({
                           }`}
                           onClick={() => onChange({ creators: toggleIssueFilterValue(state.creators, creator.id) })}
                         >
-                          {creator.kind === "agent" ? <Bot className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
+                          {creator.kind === "agent" ? <Bot className="h-3.5 w-3.5" aria-hidden="true" /> : <User className="h-3.5 w-3.5" aria-hidden="true" />}
                           <span className="min-w-0 flex-1 truncate">{creator.label}</span>
-                          {selected ? <X className="h-3 w-3" /> : null}
+                          {selected ? <X className="h-3 w-3" aria-hidden="true" /> : null}
                         </button>
                       );
                     }) : (
