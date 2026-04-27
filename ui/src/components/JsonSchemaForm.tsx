@@ -519,9 +519,9 @@ const SecretField = React.memo(({
           disabled={disabled}
         >
           {isVisible ? (
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
+            <EyeOff className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <Eye className="h-4 w-4 text-muted-foreground" />
+            <Eye className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           )}
           <span className="sr-only">
             {isVisible ? "Hide secret" : "Show secret"}
@@ -693,7 +693,7 @@ const ArrayField = React.memo(({
             onChange([...items, newItem]);
           }}
         >
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
           {isComplex ? "Add item" : "Add"}
         </Button>
       </div>
@@ -738,7 +738,7 @@ const ArrayField = React.memo(({
                 onChange(newItems);
               }}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
               <span className="sr-only">Remove item</span>
             </Button>
           </div>
