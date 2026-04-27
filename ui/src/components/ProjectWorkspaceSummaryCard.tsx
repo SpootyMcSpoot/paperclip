@@ -165,7 +165,7 @@ export function ProjectWorkspaceSummaryCard({
                       className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground"
                       copiedLabel="Branch copied"
                     >
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     </CopyText>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export function ProjectWorkspaceSummaryCard({
                       className="mt-0.5 shrink-0 text-muted-foreground hover:text-foreground"
                       copiedLabel="Path copied"
                     >
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     </CopyText>
                   </div>
                 </div>
