@@ -360,10 +360,10 @@ export function DesignGuide() {
 
         <SubSection title="With icons">
           <div className="flex items-center gap-2 flex-wrap">
-            <Button><Plus /> New Issue</Button>
-            <Button variant="outline"><Upload /> Upload</Button>
-            <Button variant="destructive"><Trash2 /> Delete</Button>
-            <Button size="sm"><Plus /> Add</Button>
+            <Button><Plus aria-hidden="true" /> New Issue</Button>
+            <Button variant="outline"><Upload aria-hidden="true" /> Upload</Button>
+            <Button variant="destructive"><Trash2 aria-hidden="true" /> Delete</Button>
+            <Button size="sm"><Plus aria-hidden="true" /> Add</Button>
           </div>
         </SubSection>
 
@@ -595,17 +595,17 @@ export function DesignGuide() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
               Quick Actions
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-56">
             <DropdownMenuItem>
-              <Check className="h-4 w-4" />
+              <Check className="h-4 w-4" aria-hidden="true" />
               Mark as done
               <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <BookOpen className="h-4 w-4" />
+              <BookOpen className="h-4 w-4" aria-hidden="true" />
               Open docs
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -616,7 +616,7 @@ export function DesignGuide() {
               Watch issue
             </DropdownMenuCheckboxItem>
             <DropdownMenuItem variant="destructive">
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
               Delete issue
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -717,22 +717,22 @@ export function DesignGuide() {
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Pages">
                 <CommandItem>
-                  <LayoutDashboard className="h-4 w-4" />
+                  <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                   Dashboard
                 </CommandItem>
                 <CommandItem>
-                  <CircleDot className="h-4 w-4" />
+                  <CircleDot className="h-4 w-4" aria-hidden="true" />
                   Issues
                 </CommandItem>
               </CommandGroup>
               <CommandSeparator />
               <CommandGroup heading="Actions">
                 <CommandItem>
-                  <CommandIcon className="h-4 w-4" />
+                  <CommandIcon className="h-4 w-4" aria-hidden="true" />
                   Open command palette
                 </CommandItem>
                 <CommandItem>
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-4 w-4" aria-hidden="true" />
                   Create new issue
                 </CommandItem>
               </CommandGroup>
@@ -1119,22 +1119,22 @@ export function DesignGuide() {
         <SubSection title="Sidebar nav items">
           <div className="w-60 border border-border rounded-md p-3 space-y-0.5 bg-card">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-accent text-accent-foreground">
-              <LayoutDashboard className="h-4 w-4" />
+              <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
               Dashboard
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <CircleDot className="h-4 w-4" />
+              <CircleDot className="h-4 w-4" aria-hidden="true" />
               Issues
               <span className="ml-auto text-xs bg-primary text-primary-foreground rounded-full px-1.5 py-0.5">
                 12
               </span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <Bot className="h-4 w-4" />
+              <Bot className="h-4 w-4" aria-hidden="true" />
               Agents
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground cursor-pointer">
-              <Hexagon className="h-4 w-4" />
+              <Hexagon className="h-4 w-4" aria-hidden="true" />
               Projects
             </div>
           </div>
@@ -1143,11 +1143,11 @@ export function DesignGuide() {
         <SubSection title="View toggle">
           <div className="flex items-center border border-border rounded-md w-fit">
             <button className="px-3 py-1.5 text-xs font-medium bg-accent text-foreground rounded-l-md">
-              <ListTodo className="h-3.5 w-3.5 inline mr-1" />
+              <ListTodo className="h-3.5 w-3.5 inline mr-1" aria-hidden="true" />
               List
             </button>
             <button className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent/50 rounded-r-md">
-              <Target className="h-3.5 w-3.5 inline mr-1" />
+              <Target className="h-3.5 w-3.5 inline mr-1" aria-hidden="true" />
               Org
             </button>
           </div>
