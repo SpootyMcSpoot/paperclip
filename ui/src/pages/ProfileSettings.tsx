@@ -182,7 +182,7 @@ export function ProfileSettings() {
                   />
                   <span className="absolute inset-0 z-10 rounded-full bg-black/0 transition-colors group-hover:bg-black/14 group-focus-within:bg-black/14" />
                   <span className="absolute bottom-1 right-1 z-20 flex size-9 items-center justify-center rounded-full border border-background bg-primary text-primary-foreground shadow-sm">
-                    {uploadAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Camera className="size-4" />}
+                    {uploadAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : <Camera className="size-4" aria-hidden="true" />}
                   </span>
                   <Avatar size="lg" className="data-[size=lg]:size-24 ring-4 ring-background shadow-xl">
                     {currentImage ? <AvatarImage src={currentImage} alt={currentName} /> : null}

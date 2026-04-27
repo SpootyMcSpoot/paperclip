@@ -152,7 +152,7 @@ export function PluginSettings() {
           </Button>
         </Link>
         <div className="flex items-center gap-2">
-          <Puzzle className="h-6 w-6 text-muted-foreground" />
+          <Puzzle className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">{plugin.manifestJson.displayName ?? plugin.packageName}</h1>
           <Badge variant={statusVariant} className="ml-2">
             {displayStatus}
@@ -250,7 +250,7 @@ export function PluginSettings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
-                    <Cpu className="h-4 w-4" />
+                    <Cpu className="h-4 w-4" aria-hidden="true" />
                     Runtime Dashboard
                   </CardTitle>
                   <CardDescription>
@@ -262,7 +262,7 @@ export function PluginSettings() {
                     <>
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
-                          <Cpu className="h-3.5 w-3.5 text-muted-foreground" />
+                          <Cpu className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                           Worker Process
                         </h3>
                         {dashboardData.worker ? (
@@ -289,7 +289,7 @@ export function PluginSettings() {
                               <>
                                 <div className="flex justify-between col-span-2">
                                   <span className="text-muted-foreground flex items-center gap-1">
-                                    <AlertTriangle className="h-3 w-3 text-amber-500" />
+                                    <AlertTriangle className="h-3 w-3 text-amber-500" aria-hidden="true" />
                                     Crashes
                                   </span>
                                   <span className="text-xs">
@@ -314,7 +314,7 @@ export function PluginSettings() {
 
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
-                          <CalendarClock className="h-3.5 w-3.5 text-muted-foreground" />
+                          <CalendarClock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                           Recent Job Runs
                         </h3>
                         {dashboardData.recentJobRuns.length > 0 ? (
@@ -349,7 +349,7 @@ export function PluginSettings() {
 
                       <div>
                         <h3 className="text-sm font-medium mb-3 flex items-center gap-1.5">
-                          <Webhook className="h-3.5 w-3.5 text-muted-foreground" />
+                          <Webhook className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                           Recent Webhook Deliveries
                         </h3>
                         {dashboardData.recentWebhookDeliveries.length > 0 ? (
@@ -378,7 +378,7 @@ export function PluginSettings() {
                       </div>
 
                       <div className="flex items-center gap-1.5 border-t border-border/50 pt-2 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="h-3 w-3" aria-hidden="true" />
                         Last checked: {new Date(dashboardData.checkedAt).toLocaleTimeString()}
                       </div>
                     </>
@@ -394,7 +394,7 @@ export function PluginSettings() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-base flex items-center gap-1.5">
-                      <ActivitySquare className="h-4 w-4" />
+                      <ActivitySquare className="h-4 w-4" aria-hidden="true" />
                       Recent Logs
                     </CardTitle>
                     <CardDescription>Last {recentLogs.length} log entries</CardDescription>
@@ -429,7 +429,7 @@ export function PluginSettings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
-                    <ActivitySquare className="h-4 w-4" />
+                    <ActivitySquare className="h-4 w-4" aria-hidden="true" />
                     Health Status
                   </CardTitle>
                 </CardHeader>
@@ -514,7 +514,7 @@ export function PluginSettings() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-1.5">
-                    <ShieldAlert className="h-4 w-4" />
+                    <ShieldAlert className="h-4 w-4" aria-hidden="true" />
                     Permissions
                   </CardTitle>
                 </CardHeader>
@@ -660,7 +660,7 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         Loading configuration...
       </div>
     );
@@ -710,7 +710,7 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
         >
           {saveMutation.isPending ? (
             <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
               Saving...
             </>
           ) : (
@@ -726,7 +726,7 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
           >
             {testMutation.isPending ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
                 Testing...
               </>
             ) : (
