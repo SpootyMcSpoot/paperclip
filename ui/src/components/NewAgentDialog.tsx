@@ -136,7 +136,7 @@ export function NewAgentDialog() {
               {/* Recommendation */}
               <div className="text-center space-y-3">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent">
-                  <Bot className="h-6 w-6 text-foreground" />
+                  <Bot className="h-6 w-6 text-foreground" aria-hidden="true" />
                 </div>
                 <p className="text-sm text-muted-foreground">
                   We recommend letting your CEO handle agent setup — they know the
@@ -146,7 +146,7 @@ export function NewAgentDialog() {
               </div>
 
               <Button className="w-full" size="lg" onClick={handleAskCeo}>
-                <Bot className="h-4 w-4 mr-2" />
+                <Bot className="h-4 w-4 mr-2" aria-hidden="true" />
                 Ask the CEO to create a new agent
               </Button>
 

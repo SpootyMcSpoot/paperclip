@@ -50,7 +50,7 @@ export function ReportsToPicker({
         >
           {unknownManager ? (
             <>
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="min-w-0 truncate text-muted-foreground">Unknown manager (stale ID)</span>
             </>
           ) : current ? (
@@ -67,7 +67,7 @@ export function ReportsToPicker({
             </>
           ) : (
             <>
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="min-w-0 truncate">
                 {disabled ? disabledEmptyLabel : chooseLabel}
               </span>
