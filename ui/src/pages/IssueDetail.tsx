@@ -3504,7 +3504,7 @@ export function IssueDetail() {
                     {treePreviewAffectedAgentRows.map(({ agentId, agent }) => (
                       <div key={agentId} className="flex items-center gap-2 rounded-sm px-1 py-1 text-sm hover:bg-accent/50">
                         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border bg-background">
-                          <AgentIcon icon={agent?.icon} className="h-3.5 w-3.5 text-muted-foreground" />
+                          <AgentIcon icon={agent?.icon} className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                         </span>
                         <span className="min-w-0 flex-1 truncate">{agent?.name ?? agentId.slice(0, 8)}</span>
                       </div>

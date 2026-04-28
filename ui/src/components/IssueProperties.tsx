@@ -665,7 +665,7 @@ export function IssueProperties({
               }}
             >
               {option.kind === "agent" ? (
-                <AgentIcon icon={option.agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
+                <AgentIcon icon={option.agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" aria-hidden="true" />
               ) : option.kind === "user" ? (
                 <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               ) : null}
@@ -759,7 +759,7 @@ export function IssueProperties({
                 )}
                 onClick={() => toggleExecutionParticipant(stageType, encoded)}
               >
-                <AgentIcon icon={agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
+                <AgentIcon icon={agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {agent.name}
               </button>
             );

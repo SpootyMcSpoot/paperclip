@@ -807,7 +807,7 @@ function IssueChatChainOfThought({
       >
         <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80">
           {agentIcon ? (
-            <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
+            <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" aria-hidden="true" />
           ) : isActive ? (
             <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
           ) : (
@@ -1422,7 +1422,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
       <div className="flex items-start gap-2.5 py-1.5">
         <Avatar size="sm" className="shrink-0">
           {agentIcon ? (
-            <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+            <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
           ) : (
             <AvatarFallback>{initialsForName(authorName)}</AvatarFallback>
           )}
@@ -1471,7 +1471,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                   <div className="flex items-center gap-2.5 rounded-lg px-1 py-2">
                     <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80">
                       {agentIcon ? (
-                        <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
+                        <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" aria-hidden="true" />
                       ) : (
                         <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
                       )}
@@ -1877,7 +1877,7 @@ function ExpiredRequestConfirmationActivity({
         <div className="flex items-start gap-2.5 py-1">
           <Avatar size="sm" className="mt-0.5">
             {actorIcon ? (
-              <AvatarFallback><AgentIcon icon={actorIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={actorIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(actorName)}</AvatarFallback>
             )}
@@ -2023,7 +2023,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className="flex items-start gap-2.5 py-1">
           <Avatar size="sm" className="mt-0.5">
             {agentIcon ? (
-              <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(actorName)}</AvatarFallback>
             )}
@@ -2044,7 +2044,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className="flex items-center gap-2.5 py-1">
           <Avatar size="sm">
             {runAgentIcon ? (
-              <AvatarFallback><AgentIcon icon={runAgentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={runAgentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(displayedRunAgentName)}</AvatarFallback>
             )}

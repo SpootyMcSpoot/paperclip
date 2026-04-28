@@ -1172,6 +1172,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
                   <AgentIcon
                     icon={option.agentIcon}
                     className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+                    aria-hidden="true"
                   />
                 )}
                 <span>{option.kind === "skill" ? `/${option.slug}` : option.name}</span>
