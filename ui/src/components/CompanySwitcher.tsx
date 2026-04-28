@@ -52,7 +52,7 @@ export function CompanySwitcher({ open: controlledOpen, onOpenChange }: CompanyS
               {selectedCompany?.name ?? "Select company"}
             </span>
           </div>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[220px]">
