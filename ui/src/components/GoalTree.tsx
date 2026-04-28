@@ -41,18 +41,22 @@ function GoalNode({
     <>
       {hasChildren ? (
         <button
+          type="button"
           className="p-0.5"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             setExpanded(!expanded);
           }}
+          aria-label={expanded ? `Collapse ${goal.title}` : `Expand ${goal.title}`}
+          aria-expanded={expanded}
         >
           <ChevronRight
             className={cn(
               "h-3 w-3 transition-transform",
               expanded && "rotate-90",
             )}
+            aria-hidden="true"
           />
         </button>
       ) : (

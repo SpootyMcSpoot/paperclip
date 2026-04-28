@@ -85,8 +85,9 @@ export function IssueColumnPicker({
           size={iconOnly ? "icon" : "sm"}
           className={iconOnly ? "h-8 w-8 shrink-0" : "hidden h-8 shrink-0 px-2 text-xs sm:inline-flex"}
           title="Columns"
+          aria-label="Columns"
         >
-          <Columns3 className={iconOnly ? "h-3.5 w-3.5" : "mr-1 h-3.5 w-3.5"} />
+          <Columns3 className={iconOnly ? "h-3.5 w-3.5" : "mr-1 h-3.5 w-3.5"} aria-hidden="true" />
           {!iconOnly && "Columns"}
         </Button>
       </DropdownMenuTrigger>
