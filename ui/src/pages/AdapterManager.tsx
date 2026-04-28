@@ -77,8 +77,8 @@ function AdapterRow({
             <Badge variant="outline">{adapter.source === "external" ? "External" : "Built-in"}</Badge>
             {adapter.source === "external" && (
               adapter.isLocalPath
-                ? <span title="Installed from local path"><FolderOpen className="h-4 w-4 text-amber-500" /></span>
-                : <span title="Installed from npm"><Package className="h-4 w-4 text-red-500" /></span>
+                ? <span title="Installed from local path"><FolderOpen className="h-4 w-4 text-amber-500" aria-hidden="true" /></span>
+                : <span title="Installed from npm"><Package className="h-4 w-4 text-red-500" aria-hidden="true" /></span>
             )}
             {adapter.version && (
               <Badge variant="secondary" className="font-mono text-[10px]">
