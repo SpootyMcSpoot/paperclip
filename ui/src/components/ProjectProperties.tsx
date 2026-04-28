@@ -76,7 +76,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "error") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-destructive">
-        <AlertCircle className="h-3 w-3" />
+        <AlertCircle className="h-3 w-3" aria-hidden="true" />
         Failed
       </span>
     );
@@ -211,9 +211,9 @@ function ArchiveDangerZone({
           onClick={() => setConfirming(true)}
         >
           {isArchive ? (
-            <><Archive className="h-3 w-3 mr-1" />{action} project</>
+            <><Archive className="h-3 w-3 mr-1" aria-hidden="true" />{action} project</>
           ) : (
-            <><ArchiveRestore className="h-3 w-3 mr-1" />{action} project</>
+            <><ArchiveRestore className="h-3 w-3 mr-1" aria-hidden="true" />{action} project</>
           )}
         </Button>
       )}
@@ -688,7 +688,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                     </a>
                   ) : (
                     <div className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-                      <Github className="h-3 w-3 shrink-0" />
+                      <Github className="h-3 w-3 shrink-0" aria-hidden="true" />
                       <span className="break-all min-w-0">{codebase.repoUrl}</span>
                     </div>
                   )}
