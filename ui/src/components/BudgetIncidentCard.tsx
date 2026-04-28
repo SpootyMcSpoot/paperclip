@@ -61,13 +61,13 @@ export function BudgetIncidentCard({
             </CardDescription>
           </div>
           <div className="rounded-full border border-red-400/30 bg-red-500/10 p-2 text-red-200">
-            <AlertOctagon className="h-4 w-4" />
+            <AlertOctagon className="h-4 w-4" aria-hidden="true" />
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4 px-5 pb-5 pt-0">
         <div className="flex items-start gap-2 rounded-xl border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-50/90">
-          <PauseCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <PauseCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <div>
             {incident.scopeType === "project"
               ? "Project execution is paused. New work in this project will not start until you resolve the budget incident."
@@ -93,7 +93,7 @@ export function BudgetIncidentCard({
                 if (typeof parsed === "number") onRaiseAndResume(parsed);
               }}
             >
-              <ArrowUpRight className="h-4 w-4" />
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               {isMutating ? "Applying..." : "Raise budget & resume"}
             </Button>
           </div>
