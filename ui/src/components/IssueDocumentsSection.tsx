@@ -851,7 +851,7 @@ export function IssueDocumentsSection({
                           )}
                         >
                           rev {displayedRevisionNumber}
-                          <ChevronDown className="h-3 w-3" />
+                          <ChevronDown className="h-3 w-3" aria-hidden="true" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start" className="w-72">
@@ -933,7 +933,7 @@ export function IssueDocumentsSection({
                       <DropdownMenuContent align="end">
                       {!isHistoricalPreview ? (
                         <DropdownMenuItem onClick={() => beginEdit(doc.key)}>
-                          <FilePenLine className="h-3.5 w-3.5" />
+                          <FilePenLine className="h-3.5 w-3.5" aria-hidden="true" />
                           Edit document
                         </DropdownMenuItem>
                       ) : null}
@@ -941,12 +941,12 @@ export function IssueDocumentsSection({
                       <DropdownMenuItem
                         onClick={() => downloadDocumentFile(doc.key, displayedBody)}
                       >
-                        <Download className="h-3.5 w-3.5" />
+                        <Download className="h-3.5 w-3.5" aria-hidden="true" />
                         Download document
                       </DropdownMenuItem>
                       {doc.latestRevisionNumber > 1 ? (
                         <DropdownMenuItem onClick={() => setDiffViewKey(doc.key)}>
-                          <Diff className="h-3.5 w-3.5" />
+                          <Diff className="h-3.5 w-3.5" aria-hidden="true" />
                           View diff
                         </DropdownMenuItem>
                       ) : null}
