@@ -30,6 +30,7 @@ export function IssueGroupHeader({
         >
           <ChevronRight
             className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform", !collapsed && "rotate-90")}
+            aria-hidden="true"
           />
           <span className="truncate text-sm font-semibold uppercase tracking-wide">
             {label}
