@@ -173,22 +173,30 @@ export function Agents() {
           {!forceListView && (
             <div className="flex items-center border border-border">
               <button
+                type="button"
                 className={cn(
                   "p-1.5 transition-colors",
                   effectiveView === "list" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50"
                 )}
                 onClick={() => setView("list")}
+                aria-label="List view"
+                aria-pressed={effectiveView === "list"}
+                title="List view"
               >
-                <List className="h-3.5 w-3.5" />
+                <List className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
               <button
+                type="button"
                 className={cn(
                   "p-1.5 transition-colors",
                   effectiveView === "org" ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50"
                 )}
                 onClick={() => setView("org")}
+                aria-label="Org view"
+                aria-pressed={effectiveView === "org"}
+                title="Org view"
               >
-                <GitBranch className="h-3.5 w-3.5" />
+                <GitBranch className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           )}
