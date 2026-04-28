@@ -80,6 +80,7 @@ export function SidebarAgents() {
                 "h-3 w-3 text-muted-foreground/60 transition-transform opacity-0 group-hover:opacity-100",
                 open && "rotate-90"
               )}
+              aria-hidden="true"
             />
             <span className="text-[10px] font-medium uppercase tracking-widest font-mono text-muted-foreground/60">
               Agents
