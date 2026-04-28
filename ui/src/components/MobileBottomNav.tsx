@@ -82,7 +82,7 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className="h-[18px] w-[18px]" />
+                <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                 <span className="truncate">{item.label}</span>
               </button>
             );

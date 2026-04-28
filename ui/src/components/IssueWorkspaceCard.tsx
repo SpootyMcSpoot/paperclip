@@ -374,7 +374,7 @@ export function IssueWorkspaceCard({
       {/* Header row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />
+          <GitBranch className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
           {activeNonDefaultWorkspace && workspace
             ? workspaceModeLabel(workspace.mode)
             : configuredWorkspaceLabel(currentSelection, selectedReusableExecutionWorkspace)}
