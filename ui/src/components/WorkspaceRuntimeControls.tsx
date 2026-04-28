@@ -400,7 +400,7 @@ export function WorkspaceRuntimeControls({
                   : "border-border bg-background text-muted-foreground",
               )}
             >
-              <Activity className="h-3.5 w-3.5" />
+              <Activity className="h-3.5 w-3.5" aria-hidden="true" />
               {runningCount > 0 ? `${runningCount} services running` : "No services running"}
             </span>
             <span className="text-xs text-muted-foreground">
