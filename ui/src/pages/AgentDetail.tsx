@@ -2104,8 +2104,8 @@ function PromptsTab({
                   <div className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground pt-1.5">
                     <span className="min-w-0 truncate" title={currentRootPath || undefined}>{currentRootPath || "(managed)"}</span>
                     {currentRootPath && (
-                      <CopyText text={currentRootPath} className="shrink-0">
-                        <Copy className="h-3.5 w-3.5" />
+                      <CopyText text={currentRootPath} className="shrink-0" ariaLabel="Copy root path" title="Copy root path">
+                        <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                       </CopyText>
                     )}
                   </div>
@@ -2130,8 +2130,8 @@ function PromptsTab({
                       placeholder="/absolute/path/to/agent/prompts"
                     />
                     {currentRootPath && (
-                      <CopyText text={currentRootPath} className="shrink-0">
-                        <Copy className="h-3.5 w-3.5" />
+                      <CopyText text={currentRootPath} className="shrink-0" ariaLabel="Copy root path" title="Copy root path">
+                        <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                       </CopyText>
                     )}
                   </div>
