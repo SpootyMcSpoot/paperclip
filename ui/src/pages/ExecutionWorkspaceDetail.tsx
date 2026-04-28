@@ -224,8 +224,8 @@ function MonoValue({ value, copy }: { value: string; copy?: boolean }) {
     <div className="inline-flex max-w-full items-start gap-2">
       <span className="break-all font-mono text-xs">{value}</span>
       {copy ? (
-        <CopyText text={value} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied">
-          <Copy className="h-3.5 w-3.5" />
+        <CopyText text={value} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied" ariaLabel="Copy value" title="Copy value">
+          <Copy className="h-3.5 w-3.5" aria-hidden="true" />
         </CopyText>
       ) : null}
     </div>
@@ -864,8 +864,8 @@ export function ExecutionWorkspaceDetail() {
                       {workspace.repoUrl}
                       <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </a>
-                    <CopyText text={workspace.repoUrl} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied">
-                      <Copy className="h-3.5 w-3.5" />
+                    <CopyText text={workspace.repoUrl} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied" ariaLabel="Copy repo URL" title="Copy repo URL">
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     </CopyText>
                   </div>
                 ) : workspace.repoUrl ? (
