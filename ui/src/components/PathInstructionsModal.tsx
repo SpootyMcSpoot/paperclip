@@ -91,7 +91,7 @@ export function PathInstructionsModal({
               )}
               onClick={() => setPlatform(p.id)}
             >
-              <p.icon className="h-3.5 w-3.5" />
+              <p.icon className="h-3.5 w-3.5" aria-hidden="true" />
               {p.label}
             </button>
           ))}

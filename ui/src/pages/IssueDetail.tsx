@@ -3289,7 +3289,7 @@ export function IssueDetail() {
                     }}
                     title="Delete attachment"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -3318,7 +3318,7 @@ export function IssueDetail() {
                     disabled={deleteAttachment.isPending}
                     title="Delete attachment"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
