@@ -1323,7 +1323,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
               });
             }}
           >
-            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
           </button>
         </div>
       )}
@@ -1506,7 +1506,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                     });
                   }}
                 >
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
                 </button>
                 {commentId && onVote ? (
                   <IssueChatFeedbackButtons
@@ -1675,7 +1675,7 @@ function IssueChatFeedbackButtons({
         aria-label="Helpful"
         onClick={handleThumbsUp}
       >
-        <ThumbsUp className="h-3.5 w-3.5" />
+        <ThumbsUp className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
       <Popover open={reasonOpen} onOpenChange={setReasonOpen}>
         <PopoverTrigger asChild>
@@ -1692,7 +1692,7 @@ function IssueChatFeedbackButtons({
             aria-label="Needs work"
             onClick={handleThumbsDown}
           >
-            <ThumbsDown className="h-3.5 w-3.5" />
+            <ThumbsDown className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-80 p-3">
@@ -1986,7 +1986,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
               Status
             </span>
             <span className="text-muted-foreground">{humanizeValue(statusChange.from)}</span>
-            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">{humanizeValue(statusChange.to)}</span>
           </div>
         ) : null}
@@ -1999,7 +1999,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
             <span className="text-muted-foreground">
               {formatTimelineAssigneeLabel(assigneeChange.from, agentMap, currentUserId, userLabelMap)}
             </span>
-            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">
               {formatTimelineAssigneeLabel(assigneeChange.to, agentMap, currentUserId, userLabelMap)}
             </span>
@@ -2413,11 +2413,11 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
                 )}
               >
                 {attachment.status === "uploading" ? (
-                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" aria-hidden="true" />
                 ) : attachment.status === "attached" ? (
-                  <Check className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" />
+                  <Check className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
                 ) : (
-                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 )}
                 <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                   {attachment.name}
