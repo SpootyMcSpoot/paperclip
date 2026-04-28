@@ -647,7 +647,7 @@ function TranscriptMessageBlock({
     <div>
       {!isAssistant && (
         <div className="mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          <User className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} />
+          <User className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} aria-hidden="true" />
           <span>User</span>
         </div>
       )}
@@ -738,11 +738,11 @@ function TranscriptToolCard({
     <div className={cn(block.status === "error" && "rounded-xl border border-red-500/20 bg-red-500/[0.04] p-3")}>
       <div className="flex items-start gap-2">
         {block.status === "error" ? (
-          <CircleAlert className={iconClass} />
+          <CircleAlert className={iconClass} aria-hidden="true" />
         ) : block.status === "completed" ? (
-          <Check className={iconClass} />
+          <Check className={iconClass} aria-hidden="true" />
         ) : (
-          <Wrench className={iconClass} />
+          <Wrench className={iconClass} aria-hidden="true" />
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
