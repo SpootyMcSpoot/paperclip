@@ -936,7 +936,7 @@ function IssueChatRollingToolPart({ toolParts }: { toolParts: ToolCallMessagePar
         {isRunning ? (
           <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground/50" aria-hidden="true" />
         ) : (
-          <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+          <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
         )}
       </div>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
@@ -1036,7 +1036,7 @@ function IssueChatToolPart({
   return (
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-1">
-        <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
         {open ? <div className="mt-1 w-px flex-1 bg-border/40" /> : null}
       </div>
 
