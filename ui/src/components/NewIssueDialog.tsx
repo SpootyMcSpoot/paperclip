@@ -1336,7 +1336,7 @@ export function NewIssueDialog() {
             <div className="px-4 pb-2">
             <div className="max-w-full rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
-                <ListTree className="h-3.5 w-3.5 shrink-0" />
+                <ListTree className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 <span className="shrink-0">Sub-issue of</span>
                 <span className="font-medium text-foreground">{parentIssueLabel}</span>
               </div>
@@ -1596,7 +1596,7 @@ export function NewIssueDialog() {
                   </>
                 ) : (
                   <>
-                    <Minus className="h-3 w-3 text-muted-foreground" />
+                    <Minus className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                     Priority
                   </>
                 )}
@@ -1638,7 +1638,7 @@ export function NewIssueDialog() {
             onClick={() => stageFileInputRef.current?.click()}
             disabled={createIssue.isPending}
           >
-            <Paperclip className="h-3 w-3" />
+            <Paperclip className="h-3 w-3" aria-hidden="true" />
             Upload
           </button>
 
