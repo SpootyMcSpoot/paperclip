@@ -1159,14 +1159,14 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
                 }}
               >
                 {option.kind === "skill" ? (
-                  <Boxes className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <Boxes className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 ) : option.kind === "project" && option.projectId ? (
                   <span
                     className="inline-flex h-2 w-2 rounded-full border border-border/50"
                     style={{ backgroundColor: option.projectColor ?? "#64748b" }}
                   />
                 ) : option.kind === "user" ? (
-                  <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 ) : (
                   <AgentIcon
                     icon={option.agentIcon}

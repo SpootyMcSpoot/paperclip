@@ -214,7 +214,7 @@ export function NewGoalDialog() {
           <Popover open={levelOpen} onOpenChange={setLevelOpen}>
             <PopoverTrigger asChild>
               <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <Layers className="h-3 w-3 text-muted-foreground" />
+                <Layers className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {levelLabels[level] ?? level}
               </button>
             </PopoverTrigger>
@@ -238,7 +238,7 @@ export function NewGoalDialog() {
           <Popover open={parentOpen} onOpenChange={setParentOpen}>
             <PopoverTrigger asChild>
               <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <Target className="h-3 w-3 text-muted-foreground" />
+                <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {currentParent ? currentParent.title : "Parent goal"}
               </button>
             </PopoverTrigger>

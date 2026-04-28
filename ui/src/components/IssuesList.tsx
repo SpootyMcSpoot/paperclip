@@ -1219,7 +1219,7 @@ export function IssuesList({
                                       ) : (
                                         <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                                           <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-muted-foreground/35 bg-muted/30">
-                                            <User className="h-3.5 w-3.5" />
+                                            <User className="h-3.5 w-3.5" aria-hidden="true" />
                                           </span>
                                           Assignee
                                         </span>
@@ -1265,7 +1265,7 @@ export function IssuesList({
                                             assignIssue(issue.id, null, currentUserId);
                                           }}
                                         >
-                                          <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                          <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                                           <span>Me</span>
                                         </button>
                                       )}

@@ -51,7 +51,7 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
 
   return (
     <div className="flex items-start gap-1.5 min-w-0 flex-1">
-      <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+      <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
       <button
         type="button"
         className="text-sm font-mono min-w-0 break-all text-left cursor-pointer hover:text-foreground transition-colors"
