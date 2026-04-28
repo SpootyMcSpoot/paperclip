@@ -69,7 +69,7 @@ function MenuAction({ label, description, icon: Icon, onClick, href, external = 
   const content = (
     <>
       <span className="mt-0.5 rounded-lg border border-border bg-background/70 p-2 text-muted-foreground">
-        <Icon className="size-4" />
+        <Icon className="size-4" aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-sm font-medium text-foreground">{label}</span>
@@ -235,7 +235,7 @@ export function SidebarAccountMenu({
                   disabled={signOutMutation.isPending}
                 >
                   <span className="mt-0.5 rounded-lg border border-border bg-background/70 p-2 text-muted-foreground">
-                    <LogOut className="size-4" />
+                    <LogOut className="size-4" aria-hidden="true" />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-medium text-foreground">

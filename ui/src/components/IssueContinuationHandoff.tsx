@@ -71,7 +71,7 @@ export function IssueContinuationHandoff({
         >
           {expanded ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
         </button>
-        <History className="h-4 w-4 text-muted-foreground" />
+        <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-foreground">{title}</span>
