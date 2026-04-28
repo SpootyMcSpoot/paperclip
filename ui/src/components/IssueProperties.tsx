@@ -493,7 +493,7 @@ export function IssueProperties({
     </div>
   ) : (
     <>
-      <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+      <Tag className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">No labels</span>
     </>
   );
@@ -578,12 +578,12 @@ export function IssueProperties({
     <Identity name={assignee.name} size="sm" />
   ) : assigneeUserLabel ? (
     <>
-      <User className="h-3.5 w-3.5 text-muted-foreground" />
+      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm">{assigneeUserLabel}</span>
     </>
   ) : (
     <>
-      <User className="h-3.5 w-3.5 text-muted-foreground" />
+      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">Unassigned</span>
     </>
   );
@@ -667,7 +667,7 @@ export function IssueProperties({
               {option.kind === "agent" ? (
                 <AgentIcon icon={option.agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
               ) : option.kind === "user" ? (
-                <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+                <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               ) : null}
               {option.label}
             </button>
@@ -709,7 +709,7 @@ export function IssueProperties({
             )}
             onClick={() => toggleExecutionParticipant(stageType, `user:${currentUserId}`)}
           >
-            <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+            <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
             Assign to me
           </button>
         )}
@@ -721,7 +721,7 @@ export function IssueProperties({
             )}
             onClick={() => toggleExecutionParticipant(stageType, `user:${issue.createdByUserId}`)}
           >
-            <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+            <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
             {creatorUserLabel ? creatorUserLabel : "Requester"}
           </button>
         )}
@@ -739,7 +739,7 @@ export function IssueProperties({
               )}
               onClick={() => toggleExecutionParticipant(stageType, option.id)}
             >
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               {option.label}
             </button>
           ))}
@@ -778,7 +778,7 @@ export function IssueProperties({
     </>
   ) : (
     <>
-      <Hexagon className="h-3.5 w-3.5 text-muted-foreground" />
+      <Hexagon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">No project</span>
     </>
   );
@@ -1328,7 +1328,7 @@ export function IssueProperties({
               </Link>
             ) : (
               <>
-                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                 <span className="text-sm">{creatorUserLabel ?? "User"}</span>
               </>
             )}
