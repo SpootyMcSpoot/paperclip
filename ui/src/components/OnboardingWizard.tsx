@@ -733,7 +733,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Bot className="h-5 w-5 text-muted-foreground" />
+                      <Bot className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Create your first agent</h3>
@@ -884,7 +884,7 @@ export function OnboardingWizard() {
                                       ? "Select model (required)"
                                       : "Default")}
                               </span>
-                              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                              <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                             </button>
                           </PopoverTrigger>
                           <PopoverContent
@@ -1104,7 +1104,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <ListTodo className="h-5 w-5 text-muted-foreground" />
+                      <ListTodo className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Give it something to do</h3>
@@ -1145,7 +1145,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Rocket className="h-5 w-5 text-muted-foreground" />
+                      <Rocket className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Ready to launch</h3>
@@ -1167,7 +1167,7 @@ export function OnboardingWizard() {
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <Bot className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <Bot className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {agentName}
@@ -1179,7 +1179,7 @@ export function OnboardingWizard() {
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <ListTodo className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <ListTodo className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {taskTitle}
