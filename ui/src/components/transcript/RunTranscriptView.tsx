@@ -858,7 +858,7 @@ function TranscriptCommandGroup({
                 isRunning && "animate-pulse",
               )}
             >
-              <TerminalSquare className="h-3.5 w-3.5" />
+              <TerminalSquare className="h-3.5 w-3.5" aria-hidden="true" />
             </span>
           ))}
         </div>
@@ -905,7 +905,7 @@ function TranscriptCommandGroup({
                       ? "border-cyan-500/25 bg-cyan-500/[0.08] text-cyan-600 dark:text-cyan-300"
                       : "border-border/70 bg-background text-foreground/55",
                 )}>
-                  <TerminalSquare className="h-3 w-3" />
+                  <TerminalSquare className="h-3 w-3" aria-hidden="true" />
                 </span>
                 <span className={cn("font-mono break-all", compact ? "text-[11px]" : "text-xs")}>
                   {summarizeToolInput("command_execution", item.input, density)}
@@ -983,7 +983,7 @@ function TranscriptToolGroup({
                   isItemRunning && "animate-pulse",
                 )}
               >
-                <Wrench className="h-3.5 w-3.5" />
+                <Wrench className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
             );
           })}
@@ -1020,7 +1020,7 @@ function TranscriptToolGroup({
                       ? "border-cyan-500/25 bg-cyan-500/[0.08] text-cyan-600 dark:text-cyan-300"
                       : "border-border/70 bg-background text-foreground/55",
                 )}>
-                  <Wrench className="h-3 w-3" />
+                  <Wrench className="h-3 w-3" aria-hidden="true" />
                 </span>
                 <span className={cn("text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground")}>
                   {humanizeLabel(item.name)}
@@ -1183,7 +1183,7 @@ function TranscriptDiffGroup({
             <span className="text-red-600 dark:text-red-400">-{removeCount}</span>
           </span>
         )}
-        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+        {open ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
       </div>
       {open && (
         <pre className={cn(
@@ -1261,7 +1261,7 @@ function TranscriptStderrGroup({
         <span className={cn("text-[10px] font-semibold uppercase tracking-[0.14em]")}>
           {block.lines.length} log {block.lines.length === 1 ? "line" : "lines"}
         </span>
-        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+        {open ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
       </div>
       {open && (
         <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] text-amber-700/80 dark:text-amber-300/80 pl-5">
@@ -1294,11 +1294,11 @@ function TranscriptSystemGroup({
         onClick={() => setOpen((v) => !v)}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen((v) => !v); } }}
       >
-        <TerminalSquare className="h-3.5 w-3.5 shrink-0" />
+        <TerminalSquare className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         <span className="text-[10px] font-semibold uppercase tracking-[0.14em]">
           {block.lines.length} system {block.lines.length === 1 ? "message" : "messages"}
         </span>
-        {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+        {open ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
       </div>
       {open && (
         <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] text-blue-700/80 dark:text-blue-300/80 pl-5">
@@ -1337,7 +1337,7 @@ function TranscriptStdoutRow({
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? "Collapse stdout" : "Expand stdout"}
         >
-          {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
       </div>
       {open && (
