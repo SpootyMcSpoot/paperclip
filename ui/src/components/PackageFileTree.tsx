@@ -250,11 +250,13 @@ export function PackageFileTree({
                   type="button"
                   className="flex h-9 w-9 items-center justify-center self-center rounded-sm text-muted-foreground opacity-70 transition-[background-color,color,opacity] hover:bg-accent hover:text-foreground group-hover:opacity-100"
                   onClick={() => onToggleDir(node.path)}
+                  aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+                  aria-expanded={expanded}
                 >
                   {expanded ? (
-                    <ChevronDown className="h-3.5 w-3.5" />
+                    <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
                   ) : (
-                    <ChevronRight className="h-3.5 w-3.5" />
+                    <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
                   )}
                 </button>
               </div>
