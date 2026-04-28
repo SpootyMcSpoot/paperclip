@@ -169,7 +169,7 @@ function DashboardPreview({
               </div>
             </div>
             <span className="rounded-full border border-border/70 bg-background/70 px-2 py-1 text-[10px] text-muted-foreground">
-              <ExternalLink className="h-2.5 w-2.5" />
+              <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
             </span>
           </div>
           <div className="mt-3 rounded-lg border border-border/60 bg-background/60 px-3 py-2 text-xs text-cyan-700 dark:text-cyan-300">
