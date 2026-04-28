@@ -1107,7 +1107,7 @@ function AdapterTypeDropdown({
       <PopoverTrigger asChild>
         <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm hover:bg-accent/50 transition-colors w-full justify-between">
           <span className="inline-flex items-center gap-1.5">
-            {value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" /> : null}
+            {value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" aria-hidden="true" /> : null}
             <span>{adapterLabels[value] ?? getAdapterLabel(value)}</span>
           </span>
           <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
@@ -1133,7 +1133,7 @@ function AdapterTypeDropdown({
             }}
           >
             <span className="inline-flex items-center gap-1.5">
-              {item.value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" /> : null}
+              {item.value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" aria-hidden="true" /> : null}
               <span>{item.label}</span>
             </span>
             {item.comingSoon && (
