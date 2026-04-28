@@ -898,8 +898,10 @@ export function IssueProperties({
       to={`/issues/${parentIdentifier ?? issue.parentId}`}
       className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
       onClick={(e) => e.stopPropagation()}
+      aria-label="Open parent issue"
+      title="Open parent issue"
     >
-      <ArrowUpRight className="h-3 w-3" />
+      <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
     </Link>
   ) : undefined;
   const parentOptions = (allIssues ?? [])
@@ -1083,8 +1085,10 @@ export function IssueProperties({
               to={`/agents/${issue.assigneeAgentId}`}
               className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Open assignee agent"
+              title="Open assignee agent"
             >
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
             </Link>
           ) : undefined}
         >
@@ -1104,8 +1108,10 @@ export function IssueProperties({
               to={projectLink(issue.projectId)!}
               className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Open project"
+              title="Open project"
             >
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
             </Link>
           ) : undefined}
         >
