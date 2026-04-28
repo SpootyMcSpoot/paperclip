@@ -880,7 +880,7 @@ function IssueChatReasoningPart({ text }: { text: string }) {
   return (
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-0.5">
-        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
       </div>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
         {ticker.exiting !== null && (
@@ -1547,7 +1547,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                         void navigator.clipboard.writeText(copyText);
                       }}
                     >
-                      <Copy className="mr-2 h-3.5 w-3.5" />
+                      <Copy className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                       Copy message
                     </DropdownMenuItem>
                     {canStopRun && onStopRun && runId ? (
@@ -1558,14 +1558,14 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                           void onStopRun(runId);
                         }}
                       >
-                        <Square className="mr-2 h-3.5 w-3.5 fill-current" />
+                        <Square className="mr-2 h-3.5 w-3.5 fill-current" aria-hidden="true" />
                         {stoppingRunId === runId ? "Stopping…" : "Stop run"}
                       </DropdownMenuItem>
                     ) : null}
                     {runHref ? (
                       <DropdownMenuItem asChild>
                         <Link to={runHref} target="_blank" rel="noreferrer noopener">
-                          <Search className="mr-2 h-3.5 w-3.5" />
+                          <Search className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                           View run
                         </Link>
                       </DropdownMenuItem>
@@ -2356,7 +2356,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
         >
           <div className="flex max-w-md items-center gap-3 rounded-md bg-background/80 px-3 py-2 text-left shadow-sm ring-1 ring-border/60">
             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Paperclip className="h-4 w-4" />
+              <Paperclip className="h-4 w-4" aria-hidden="true" />
             </span>
             <div className="min-w-0">
               <div className="text-sm font-medium text-foreground">Drop to upload</div>
