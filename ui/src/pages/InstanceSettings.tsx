@@ -257,7 +257,7 @@ export function InstanceSettings() {
                             className="text-muted-foreground hover:text-foreground"
                             title="Full agent config"
                           >
-                            <ExternalLink className="h-3.5 w-3.5" />
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                           </Link>
                           <Button
                             variant="ghost"
