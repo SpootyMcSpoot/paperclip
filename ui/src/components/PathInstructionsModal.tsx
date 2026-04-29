@@ -83,6 +83,7 @@ export function PathInstructionsModal({
             <button
               key={p.id}
               type="button"
+              aria-pressed={platform === p.id}
               className={cn(
                 "flex flex-1 items-center justify-center gap-1.5 rounded px-2 py-1 text-xs transition-colors",
                 platform === p.id
