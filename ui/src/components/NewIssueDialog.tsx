@@ -1564,7 +1564,7 @@ export function NewIssueDialog() {
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
               <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <CircleDot className={cn("h-3 w-3", currentStatus.color)} />
+                <CircleDot className={cn("h-3 w-3", currentStatus.color)} aria-hidden="true" />
                 {currentStatus.label}
               </button>
             </PopoverTrigger>
@@ -1578,7 +1578,7 @@ export function NewIssueDialog() {
                   )}
                   onClick={() => { setStatus(s.value); setStatusOpen(false); }}
                 >
-                  <CircleDot className={cn("h-3 w-3", s.color)} />
+                  <CircleDot className={cn("h-3 w-3", s.color)} aria-hidden="true" />
                   {s.label}
                 </button>
               ))}
