@@ -977,6 +977,10 @@ export function NewIssueDialog() {
             <Popover open={companyOpen} onOpenChange={setCompanyOpen}>
               <PopoverTrigger asChild>
                 <button
+                  type="button"
+                  aria-label={dialogCompany?.name ? `Switch company (current: ${dialogCompany.name})` : "Switch company"}
+                  aria-expanded={companyOpen}
+                  aria-haspopup="listbox"
                   className={cn(
                     "px-1.5 py-0.5 rounded text-xs font-semibold cursor-pointer hover:opacity-80 transition-opacity",
                     !dialogCompany?.brandColor && "bg-muted",
@@ -998,6 +1002,9 @@ export function NewIssueDialog() {
                 {companies.filter((c) => c.status !== "archived").map((c) => (
                   <button
                     key={c.id}
+                    type="button"
+                    role="option"
+                    aria-selected={c.id === effectiveCompanyId}
                     className={cn(
                       "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                       c.id === effectiveCompanyId && "bg-accent",
