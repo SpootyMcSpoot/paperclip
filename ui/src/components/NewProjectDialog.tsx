@@ -289,7 +289,7 @@ export function NewProjectDialog() {
               <span className="text-xs text-muted-foreground/50">optional</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
                   Link a GitHub repository so agents can clone, read, and push code for this project.
@@ -310,7 +310,7 @@ export function NewProjectDialog() {
               <span className="text-xs text-muted-foreground/50">optional</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
                   Set an absolute path on this machine where local agents will read and write files for this project.

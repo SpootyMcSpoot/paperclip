@@ -2043,7 +2043,7 @@ function PromptsTab({
                   Mode
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       Managed: Staple stores and serves the instructions bundle. External: you provide a path on disk where the instructions live.
@@ -2098,7 +2098,7 @@ function PromptsTab({
                   Root path
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       The absolute directory on disk where the instructions bundle lives. In managed mode this is set by Staple automatically.
@@ -2147,7 +2147,7 @@ function PromptsTab({
                   Entry file
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       The main file the agent reads first when loading instructions. Defaults to AGENTS.md.
