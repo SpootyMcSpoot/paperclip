@@ -956,6 +956,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
           ref={fallbackTextareaRef}
           value={value}
           placeholder={placeholder}
+          aria-label={placeholder ?? "Markdown source"}
           readOnly={readOnly}
           onChange={(event) => {
             if (readOnly) return;
