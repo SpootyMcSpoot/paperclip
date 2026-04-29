@@ -332,6 +332,7 @@ export function InboxIssueTrailingColumns({
                   <TooltipTrigger asChild>
                     <button
                       type="button"
+                      aria-label={`Filter by workspace ${workspaceName}`}
                       className="truncate rounded-sm text-left text-xs text-muted-foreground transition-colors hover:text-foreground hover:underline"
                       onClick={(event) => {
                         event.preventDefault();
