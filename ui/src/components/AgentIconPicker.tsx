@@ -14,14 +14,13 @@ import { AGENT_ICONS, getAgentIcon } from "../lib/agent-icons";
 
 const DEFAULT_ICON: AgentIconName = "bot";
 
-interface AgentIconProps {
+interface AgentIconProps extends React.SVGAttributes<SVGSVGElement> {
   icon: string | null | undefined;
-  className?: string;
 }
 
-export function AgentIcon({ icon, className }: AgentIconProps) {
+export function AgentIcon({ icon, ...rest }: AgentIconProps) {
   const Icon = getAgentIcon(icon);
-  return <Icon className={className} />;
+  return <Icon {...rest} />;
 }
 
 interface AgentIconPickerProps {

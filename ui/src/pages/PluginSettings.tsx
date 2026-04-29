@@ -453,9 +453,9 @@ export function PluginSettings() {
                                 {check.name}
                               </span>
                               {check.passed ? (
-                                <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
+                                <CheckCircle className="h-4 w-4 shrink-0 text-green-500" role="img" aria-label="Passed" />
                               ) : (
-                                <XCircle className="h-4 w-4 shrink-0 text-destructive" />
+                                <XCircle className="h-4 w-4 shrink-0 text-destructive" role="img" aria-label="Failed" />
                               )}
                             </div>
                           ))}
