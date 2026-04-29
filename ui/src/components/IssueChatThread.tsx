@@ -828,7 +828,7 @@ function IssueChatChainOfThought({
           <span className="text-xs text-muted-foreground/40">· {toolSummary}</span>
         ) : null}
         {hasContent ? (
-          <ChevronDown className={cn("ml-auto h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform", expanded && "rotate-180")} />
+          <ChevronDown className={cn("ml-auto h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform", expanded && "rotate-180")} aria-hidden="true" />
         ) : null}
       </button>
       {expanded && hasContent ? (
@@ -1051,9 +1051,9 @@ function IssueChatToolPart({
             {!intentDetail && summary ? <span className="ml-1.5 text-muted-foreground/50">{summary}</span> : null}
           </span>
           {result === undefined ? (
-            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground/50" />
+            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground/50" aria-hidden="true" />
           ) : null}
-          <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground/40 transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground/40 transition-transform", open && "rotate-180")} aria-hidden="true" />
         </button>
 
         {open ? (
@@ -1443,7 +1443,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                     {commentDateLabel(message.createdAt)}
                   </span>
                 ) : null}
-                <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/40 transition-transform", !folded && "rotate-180")} />
+                <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/40 transition-transform", !folded && "rotate-180")} aria-hidden="true" />
               </span>
             </button>
           ) : (
@@ -1456,7 +1456,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
               ) : null}
               {isRunning ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-cyan-700 dark:text-cyan-200">
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   Running
                 </span>
               ) : null}
@@ -1855,7 +1855,7 @@ function ExpiredRequestConfirmationActivity({
           aria-controls={detailsId}
           onClick={() => setExpanded((current) => !current)}
         >
-          <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} />
+          <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} aria-hidden="true" />
           {expanded ? "Hide confirmation" : "Expired confirmation"}
         </button>
       </div>
