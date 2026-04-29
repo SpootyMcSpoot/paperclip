@@ -680,7 +680,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                      <Building2 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Name your company</h3>
@@ -1157,14 +1157,14 @@ export function OnboardingWizard() {
                   </div>
                   <div className="border border-border divide-y divide-border">
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <Building2 className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {companyName}
                         </p>
                         <p className="text-xs text-muted-foreground">Company</p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
                       <Bot className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -1176,7 +1176,7 @@ export function OnboardingWizard() {
                           {getUIAdapter(adapterType).label}
                         </p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
                       <ListTodo className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
@@ -1186,7 +1186,7 @@ export function OnboardingWizard() {
                         </p>
                         <p className="text-xs text-muted-foreground">Task</p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                   </div>
                 </div>
