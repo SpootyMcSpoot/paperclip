@@ -927,6 +927,8 @@ export function IssuesList({
                   ] as const).map(([field, label]) => (
                     <button
                       key={field}
+                      type="button"
+                      aria-pressed={viewState.sortField === field}
                       className={`flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm ${
                         viewState.sortField === field ? "bg-accent/50 text-foreground" : "hover:bg-accent/50 text-muted-foreground"
                       }`}
@@ -940,7 +942,7 @@ export function IssuesList({
                     >
                       <span>{label}</span>
                       {viewState.sortField === field && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground" aria-hidden="true">
                           {viewState.sortDir === "asc" ? "\u2191" : "\u2193"}
                         </span>
                       )}
@@ -971,6 +973,8 @@ export function IssuesList({
                   ] as const).map(([value, label]) => (
                     <button
                       key={value}
+                      type="button"
+                      aria-pressed={viewState.groupBy === value}
                       className={`flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm ${
                         viewState.groupBy === value ? "bg-accent/50 text-foreground" : "hover:bg-accent/50 text-muted-foreground"
                       }`}
