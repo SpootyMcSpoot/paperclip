@@ -197,6 +197,7 @@ export function SidebarProjects() {
             </span>
           </CollapsibleTrigger>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               openNewProject();

@@ -87,6 +87,7 @@ export function SidebarAgents() {
             </span>
           </CollapsibleTrigger>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               openNewAgent();
