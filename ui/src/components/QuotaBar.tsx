@@ -43,7 +43,14 @@ export function QuotaBar({
       </div>
 
       {/* track — boxed border, square corners to match the theme */}
-      <div className="relative h-2 w-full border border-border overflow-hidden">
+      <div
+        className="relative h-2 w-full border border-border overflow-hidden"
+        role="progressbar"
+        aria-label={`${label} usage`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(clampedPct)}
+      >
         {/* fill */}
         <div
           className={cn(
@@ -51,12 +58,14 @@ export function QuotaBar({
             fillColor(clampedPct),
           )}
           style={{ width: `${clampedPct}%` }}
+          aria-hidden="true"
         />
         {/* deficit notch — 2px wide, sits at the fill tip */}
         {showDeficitNotch && clampedPct > 0 && (
           <div
             className="absolute inset-y-0 w-[2px] bg-destructive z-10"
             style={{ left: `${notchLeft}%` }}
+            aria-hidden="true"
           />
         )}
       </div>
