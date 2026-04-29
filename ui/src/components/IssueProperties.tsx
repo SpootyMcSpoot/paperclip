@@ -57,6 +57,7 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
         className="text-sm font-mono min-w-0 break-all text-left cursor-pointer hover:text-foreground transition-colors"
         onClick={handleCopy}
         title={copied ? "Copied!" : "Click to copy"}
+        aria-label={copied ? `Copied ${value}` : `Copy ${value} to clipboard`}
       >
         {value}
       </button>
