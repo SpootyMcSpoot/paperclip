@@ -338,7 +338,7 @@ export function NewProjectDialog() {
           {/* Status */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set project status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <StatusBadge status={status} />
               </button>
             </PopoverTrigger>
@@ -346,6 +346,7 @@ export function NewProjectDialog() {
               {projectStatuses.map((s) => (
                 <button
                   key={s.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     s.value === status && "bg-accent"
@@ -379,6 +380,9 @@ export function NewProjectDialog() {
           <Popover open={goalOpen} onOpenChange={setGoalOpen}>
             <PopoverTrigger asChild>
               <button
+                type="button"
+                aria-label={selectedGoals.length > 0 ? "Add another goal" : "Set project goal"}
+                aria-expanded={goalOpen}
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors disabled:opacity-60"
                 disabled={selectedGoals.length > 0 && availableGoals.length === 0}
               >
@@ -389,6 +393,7 @@ export function NewProjectDialog() {
             <PopoverContent className="w-56 p-1" align="start">
               {selectedGoals.length === 0 && (
                 <button
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground"
                   onClick={() => setGoalOpen(false)}
                 >
@@ -398,6 +403,7 @@ export function NewProjectDialog() {
               {availableGoals.map((g) => (
                 <button
                   key={g.id}
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 truncate"
                   onClick={() => {
                     setGoalIds((prev) => [...prev, g.id]);
