@@ -96,6 +96,9 @@ export function ExecutionParticipantPicker({
     <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setSearch(""); }}>
       <PopoverTrigger asChild>
         <button
+          type="button"
+          aria-label={`Set ${label.toLowerCase()}`}
+          aria-expanded={open}
           className={cn(
             "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium transition-colors cursor-pointer",
             values.length > 0
@@ -123,6 +126,8 @@ export function ExecutionParticipantPicker({
         />
         <div className="max-h-48 overflow-y-auto overscroll-contain">
           <button
+            type="button"
+            aria-pressed={values.length === 0}
             className={cn(
               "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
               values.length === 0 && "bg-accent",
@@ -133,6 +138,8 @@ export function ExecutionParticipantPicker({
           </button>
           {currentUserId && (
             <button
+              type="button"
+              aria-pressed={values.includes(`user:${currentUserId}`)}
               className={cn(
                 "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                 values.includes(`user:${currentUserId}`) && "bg-accent",
@@ -145,6 +152,8 @@ export function ExecutionParticipantPicker({
           )}
           {issue.createdByUserId && issue.createdByUserId !== currentUserId && (
             <button
+              type="button"
+              aria-pressed={values.includes(`user:${issue.createdByUserId}`)}
               className={cn(
                 "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                 values.includes(`user:${issue.createdByUserId}`) && "bg-accent",
@@ -163,6 +172,8 @@ export function ExecutionParticipantPicker({
             .map((option) => (
               <button
                 key={option.id}
+                type="button"
+                aria-pressed={values.includes(option.id)}
                 className={cn(
                   "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                   values.includes(option.id) && "bg-accent",
@@ -183,6 +194,8 @@ export function ExecutionParticipantPicker({
               return (
                 <button
                   key={agent.id}
+                  type="button"
+                  aria-pressed={values.includes(encoded)}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     values.includes(encoded) && "bg-accent",
