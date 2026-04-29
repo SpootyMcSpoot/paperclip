@@ -227,6 +227,7 @@ export function PackageFileTree({
                       ref={(el) => { if (el) el.indeterminate = someChecked && !allChecked; }}
                       onChange={() => onToggleCheck?.(node.path, "dir")}
                       className="mr-2 accent-foreground"
+                      aria-label={`Select all files in ${node.name}`}
                     />
                   </label>
                 )}
@@ -234,6 +235,7 @@ export function PackageFileTree({
                   type="button"
                   className="flex min-w-0 items-center gap-2 py-1 text-left"
                   onClick={() => onToggleDir(node.path)}
+                  aria-expanded={expanded}
                 >
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                     {expanded ? (
@@ -304,6 +306,7 @@ export function PackageFileTree({
                   checked={checked}
                   onChange={() => onToggleCheck?.(node.path, "file")}
                   className="mr-2 accent-foreground"
+                  aria-label={`Select file ${node.name}`}
                 />
               </label>
             )}
