@@ -154,8 +154,13 @@ function ComboboxField({
         />
         <Popover open={open && filtered.length > 0} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <button className="rounded-r-md border border-border px-2 py-1.5 hover:bg-accent/50 transition-colors">
-              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            <button
+              type="button"
+              className="rounded-r-md border border-border px-2 py-1.5 hover:bg-accent/50 transition-colors"
+              aria-label="Show suggestions"
+              title="Show suggestions"
+            >
+              <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             </button>
           </PopoverTrigger>
           <PopoverContent
