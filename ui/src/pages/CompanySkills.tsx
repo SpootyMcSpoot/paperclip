@@ -262,18 +262,21 @@ function NewSkillForm({
           onChange={(event) => setName(event.target.value)}
           placeholder="Skill name"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
+          aria-label="Skill name"
         />
         <Input
           value={slug}
           onChange={(event) => setSlug(event.target.value)}
           placeholder="optional-shortname"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
+          aria-label="Skill slug"
         />
         <Textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           placeholder="Short description"
           className="min-h-20 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
+          aria-label="Skill description"
         />
         <div className="flex items-center justify-end gap-2">
           <Button variant="ghost" size="sm" onClick={onCancel} disabled={isPending}>
