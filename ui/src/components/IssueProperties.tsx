@@ -531,6 +531,7 @@ export function IssueProperties({
         value={labelSearch}
         onChange={(e) => setLabelSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search labels"
       />
       <div className="max-h-44 overflow-y-auto overscroll-contain space-y-0.5">
         {(labels ?? [])
@@ -543,6 +544,9 @@ export function IssueProperties({
             return (
               <button
                 key={label.id}
+                type="button"
+                role="option"
+                aria-selected={selected}
                 className={cn(
                   "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-left",
                   selected && "bg-accent"
@@ -563,15 +567,18 @@ export function IssueProperties({
             type="color"
             value={newLabelColor}
             onChange={(e) => setNewLabelColor(e.target.value)}
+            aria-label="Pick label color"
           />
           <input
             className="flex-1 px-2 py-1.5 text-xs bg-transparent outline-none rounded placeholder:text-muted-foreground/50"
             placeholder="New label"
             value={newLabelName}
             onChange={(e) => setNewLabelName(e.target.value)}
+            aria-label="New label name"
           />
         </div>
         <button
+          type="button"
           className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 text-xs rounded border border-border hover:bg-accent/50 disabled:opacity-50"
           disabled={!newLabelName.trim() || createLabel.isPending}
           onClick={() =>
