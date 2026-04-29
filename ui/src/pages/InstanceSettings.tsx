@@ -256,6 +256,7 @@ export function InstanceSettings() {
                             to={buildAgentHref(agent)}
                             className="text-muted-foreground hover:text-foreground"
                             title="Full agent config"
+                            aria-label="Full agent config"
                           >
                             <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                           </Link>
