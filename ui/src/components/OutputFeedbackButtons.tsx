@@ -148,6 +148,7 @@ export function OutputFeedbackButtons({
             placeholder="Add a short note"
             className="min-h-20 resize-y bg-background"
             disabled={disabled || isSaving}
+            aria-label="Reason for downvote"
           />
           <div className="mt-3 flex items-center justify-end gap-2">
             <Button
