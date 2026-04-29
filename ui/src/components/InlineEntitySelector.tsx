@@ -103,6 +103,9 @@ export const InlineEntitySelector = forwardRef<HTMLButtonElement, InlineEntitySe
           <button
             ref={ref}
             type="button"
+            aria-label={currentOption ? `${placeholder} (current: ${currentOption.label})` : placeholder}
+            aria-expanded={open}
+            aria-haspopup="listbox"
             className={cn(
               "inline-flex min-w-0 items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-1 text-sm font-medium text-foreground transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               className,
@@ -193,6 +196,8 @@ export const InlineEntitySelector = forwardRef<HTMLButtonElement, InlineEntitySe
                   <button
                     key={option.id || "__none__"}
                     type="button"
+                    role="option"
+                    aria-selected={isSelected}
                     className={cn(
                       "flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm touch-manipulation",
                       isHighlighted && "bg-accent",
