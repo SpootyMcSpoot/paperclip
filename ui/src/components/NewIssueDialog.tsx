@@ -1563,7 +1563,7 @@ export function NewIssueDialog() {
           {/* Status chip */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set issue status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <CircleDot className={cn("h-3 w-3", currentStatus.color)} aria-hidden="true" />
                 {currentStatus.label}
               </button>
@@ -1572,6 +1572,7 @@ export function NewIssueDialog() {
               {statuses.map((s) => (
                 <button
                   key={s.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     s.value === status && "bg-accent"
@@ -1588,10 +1589,10 @@ export function NewIssueDialog() {
           {/* Priority chip */}
           <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set issue priority" aria-expanded={priorityOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 {currentPriority ? (
                   <>
-                    <currentPriority.icon className={cn("h-3 w-3", currentPriority.color)} />
+                    <currentPriority.icon className={cn("h-3 w-3", currentPriority.color)} aria-hidden="true" />
                     {currentPriority.label}
                   </>
                 ) : (
@@ -1606,13 +1607,14 @@ export function NewIssueDialog() {
               {priorities.map((p) => (
                 <button
                   key={p.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     p.value === priority && "bg-accent"
                   )}
                   onClick={() => { setPriority(p.value); setPriorityOpen(false); }}
                 >
-                  <p.icon className={cn("h-3 w-3", p.color)} />
+                  <p.icon className={cn("h-3 w-3", p.color)} aria-hidden="true" />
                   {p.label}
                 </button>
               ))}
@@ -1634,6 +1636,7 @@ export function NewIssueDialog() {
             multiple
           />
           <button
+            type="button"
             className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground"
             onClick={() => stageFileInputRef.current?.click()}
             disabled={createIssue.isPending}
@@ -1655,11 +1658,11 @@ export function NewIssueDialog() {
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="start">
-              <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
+              <button type="button" className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
                 <Calendar className="h-3 w-3" aria-hidden="true" />
                 Start date
               </button>
-              <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
+              <button type="button" className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
                 <Calendar className="h-3 w-3" aria-hidden="true" />
                 Due date
               </button>
