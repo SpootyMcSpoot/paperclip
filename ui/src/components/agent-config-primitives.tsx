@@ -180,6 +180,7 @@ export function ToggleWithNumber({
             className="w-16 rounded-md border border-border px-2 py-0.5 bg-transparent outline-none text-xs font-mono text-center"
             value={number}
             onChange={(e) => onNumberChange(Number(e.target.value))}
+            aria-label={[numberPrefix, numberLabel].filter(Boolean).join(" ").trim()}
           />
           <span>{numberLabel}</span>
           {numberHint && <HintIcon text={numberHint} />}
