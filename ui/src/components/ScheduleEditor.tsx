@@ -195,7 +195,7 @@ export function ScheduleEditor({
   return (
     <div className="space-y-3">
       <Select value={preset} onValueChange={(v) => handlePresetChange(v as SchedulePreset)}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full" aria-label="Schedule frequency">
           <SelectValue placeholder="Choose frequency..." />
         </SelectTrigger>
         <SelectContent>
@@ -217,6 +217,7 @@ export function ScheduleEditor({
             }}
             placeholder="0 10 * * *"
             className="font-mono text-sm"
+            aria-label="Custom cron expression"
           />
           <p className="text-xs text-muted-foreground">
             Five fields: minute hour day-of-month month day-of-week
@@ -234,7 +235,7 @@ export function ScheduleEditor({
                   emitChange(preset, h, minute, dayOfWeek, dayOfMonth, customCron);
                 }}
               >
-                <SelectTrigger className="w-[120px]">
+                <SelectTrigger className="w-[120px]" aria-label="Hour">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,7 +254,7 @@ export function ScheduleEditor({
                   emitChange(preset, hour, m, dayOfWeek, dayOfMonth, customCron);
                 }}
               >
-                <SelectTrigger className="w-[80px]">
+                <SelectTrigger className="w-[80px]" aria-label="Minute">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -277,7 +278,7 @@ export function ScheduleEditor({
                   emitChange(preset, hour, m, dayOfWeek, dayOfMonth, customCron);
                 }}
               >
-                <SelectTrigger className="w-[80px]">
+                <SelectTrigger className="w-[80px]" aria-label="Minute of hour">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -324,7 +325,7 @@ export function ScheduleEditor({
                   emitChange(preset, hour, minute, dayOfWeek, dom, customCron);
                 }}
               >
-                <SelectTrigger className="w-[80px]">
+                <SelectTrigger className="w-[80px]" aria-label="Day of month">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
