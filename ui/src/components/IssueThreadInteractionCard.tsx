@@ -554,6 +554,7 @@ function SuggestTasksCard({
                 onChange={(event) => setRejectReason(event.target.value)}
                 placeholder="Add a short reason for rejecting this suggestion"
                 className="min-h-24 bg-background text-sm"
+                aria-label="Rejection reason"
               />
               <div className="flex justify-end">
                 <Button
@@ -1101,6 +1102,7 @@ function RequestConfirmationCard({
                 onChange={(event) => setRejectReason(event.target.value)}
                 placeholder={declineReasonPlaceholder}
                 aria-invalid={rejectAttempted && declineReasonInvalid}
+                aria-label={declineReasonPlaceholder ?? "Decline reason"}
                 className={cn(
                   "min-h-24 bg-background text-sm",
                   rejectAttempted && declineReasonInvalid
