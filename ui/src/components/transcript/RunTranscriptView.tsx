@@ -1108,9 +1108,9 @@ function TranscriptEventRow({
     <div className={toneClasses}>
       <div className="flex items-start gap-2">
         {block.tone === "error" ? (
-          <CircleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <CircleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         ) : block.tone === "warn" ? (
-          <TerminalSquare className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <TerminalSquare className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         ) : (
           <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-current/50" />
         )}
