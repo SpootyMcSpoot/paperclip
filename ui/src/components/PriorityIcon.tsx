@@ -70,7 +70,7 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
                 setOpen(false);
               }}
             >
-              <PIcon className={cn("h-3.5 w-3.5", c.color)} />
+              <PIcon className={cn("h-3.5 w-3.5", c.color)} aria-hidden="true" />
               {c.label}
             </Button>
           );

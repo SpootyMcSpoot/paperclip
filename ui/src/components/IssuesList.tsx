@@ -1124,7 +1124,7 @@ export function IssuesList({
                                   aria-label="Paused"
                                   title="Paused"
                                 >
-                                  <CircleSlash2 className="h-3 w-3" />
+                                  <CircleSlash2 className="h-3 w-3" aria-hidden="true" />
                                   Paused
                                 </span>
                               ) : (

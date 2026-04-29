@@ -1172,7 +1172,7 @@ function TranscriptDiffGroup({
         onClick={() => setOpen((v) => !v)}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen((v) => !v); } }}
       >
-        <GitCompare className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} />
+        <GitCompare className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} aria-hidden="true" />
         <span className={cn("text-[11px] font-semibold uppercase tracking-[0.14em] text-blue-700 dark:text-blue-300")}>
           {shortFile}
         </span>
