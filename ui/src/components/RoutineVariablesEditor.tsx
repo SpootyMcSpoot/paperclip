@@ -97,6 +97,7 @@ export function RoutineVariablesEditor({
                     label: event.target.value || null,
                   })))}
                   placeholder={variable.name.replaceAll("_", " ")}
+                  aria-label={`Label for ${variable.name}`}
                 />
               </div>
 
@@ -146,6 +147,7 @@ export function RoutineVariablesEditor({
                       ...current,
                       defaultValue: event.target.value || null,
                     })))}
+                    aria-label={`Default value for ${variable.name}`}
                   />
                 ) : variable.type === "boolean" ? (
                   <Select
@@ -182,6 +184,7 @@ export function RoutineVariablesEditor({
                           })));
                         }}
                         placeholder="high, medium, low"
+                        aria-label={`Options for ${variable.name}`}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -214,6 +217,7 @@ export function RoutineVariablesEditor({
                       defaultValue: event.target.value || null,
                     })))}
                     placeholder={variable.type === "number" ? "42" : "Default value"}
+                    aria-label={`Default value for ${variable.name}`}
                   />
                 )}
               </div>
