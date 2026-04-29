@@ -1225,7 +1225,7 @@ export function CompanySkills() {
                 onClick={handleAddSkillSource}
                 disabled={importSkill.isPending}
               >
-                {importSkill.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : "Add"}
+                {importSkill.isPending ? <RefreshCw className="h-4 w-4 animate-spin" role="img" aria-label="Adding" /> : "Add"}
               </Button>
             </div>
             {scanStatusMessage && (
