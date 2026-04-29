@@ -105,6 +105,7 @@ function KeyResultRow({
             </span>
           ) : (
             <button
+              type="button"
               className="hover:text-foreground cursor-pointer"
               onClick={() => setEditing(true)}
             >
