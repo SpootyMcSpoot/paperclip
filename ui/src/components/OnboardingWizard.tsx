@@ -632,7 +632,9 @@ export function OnboardingWizard() {
         <div className="fixed inset-0 z-50 flex" onKeyDown={handleKeyDown}>
           {/* Close button */}
           <button
+            type="button"
             onClick={handleClose}
+            aria-label="Close onboarding"
             className="absolute top-4 left-4 z-10 rounded-sm p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors"
           >
             <X className="h-5 w-5" aria-hidden="true" />
