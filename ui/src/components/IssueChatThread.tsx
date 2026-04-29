@@ -1704,6 +1704,7 @@ function IssueChatFeedbackButtons({
             placeholder="Add a short note"
             className="min-h-20 resize-y bg-background text-sm"
             disabled={isSaving}
+            aria-label="Reason for downvote"
           />
           <div className="mt-2 flex items-center justify-end gap-2">
             <Button
