@@ -138,6 +138,7 @@ export function BudgetPolicyCard({
           className="mt-2"
           inputMode="decimal"
           placeholder="0.00"
+          aria-label="Budget USD"
         />
       </div>
       <Button

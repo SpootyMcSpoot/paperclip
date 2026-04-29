@@ -85,6 +85,7 @@ export function BudgetIncidentCard({
               onChange={(event) => setDraftAmount(event.target.value)}
               inputMode="decimal"
               placeholder="0.00"
+              aria-label="New budget USD"
             />
             <Button
               className="gap-2"

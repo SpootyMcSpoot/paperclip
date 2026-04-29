@@ -74,6 +74,7 @@ function KeyResultRow({
                 onChange={(e) => setCurrentValue(e.target.value)}
                 className="h-6 w-20 text-xs px-1"
                 autoFocus
+                aria-label="Current value"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSaveValue();
                   if (e.key === "Escape") {
