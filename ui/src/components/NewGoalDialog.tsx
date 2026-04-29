@@ -190,7 +190,7 @@ export function NewGoalDialog() {
           {/* Status */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button type="button" aria-label="Set status" className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <StatusBadge status={status} />
               </button>
             </PopoverTrigger>
@@ -199,6 +199,7 @@ export function NewGoalDialog() {
                 <button
                   key={s}
                   type="button"
+                  aria-pressed={s === status}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 capitalize",
                     s === status && "bg-accent"
@@ -214,7 +215,7 @@ export function NewGoalDialog() {
           {/* Level */}
           <Popover open={levelOpen} onOpenChange={setLevelOpen}>
             <PopoverTrigger asChild>
-              <button type="button" className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set goal level" aria-expanded={levelOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <Layers className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {levelLabels[level] ?? level}
               </button>
@@ -224,6 +225,7 @@ export function NewGoalDialog() {
                 <button
                   key={l}
                   type="button"
+                  aria-pressed={l === level}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     l === level && "bg-accent"
@@ -239,7 +241,7 @@ export function NewGoalDialog() {
           {/* Parent goal */}
           <Popover open={parentOpen} onOpenChange={setParentOpen}>
             <PopoverTrigger asChild>
-              <button type="button" className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set parent goal" aria-expanded={parentOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {currentParent ? currentParent.title : "Parent goal"}
               </button>
@@ -247,6 +249,7 @@ export function NewGoalDialog() {
             <PopoverContent className="w-48 p-1" align="start">
               <button
                 type="button"
+                aria-pressed={!appliedParentId}
                 className={cn(
                   "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                   !appliedParentId && "bg-accent"
@@ -259,6 +262,7 @@ export function NewGoalDialog() {
                 <button
                   key={g.id}
                   type="button"
+                  aria-pressed={g.id === appliedParentId}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 truncate",
                     g.id === appliedParentId && "bg-accent"
