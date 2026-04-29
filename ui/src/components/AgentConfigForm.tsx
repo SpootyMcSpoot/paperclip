@@ -1105,7 +1105,12 @@ function AdapterTypeDropdown({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm hover:bg-accent/50 transition-colors w-full justify-between">
+        <button
+          type="button"
+          aria-label="Select adapter type"
+          aria-expanded={open}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm hover:bg-accent/50 transition-colors w-full justify-between"
+        >
           <span className="inline-flex items-center gap-1.5">
             {value === "opencode_local" ? <OpenCodeLogoIcon className="h-3.5 w-3.5" aria-hidden="true" /> : null}
             <span>{adapterLabels[value] ?? getAdapterLabel(value)}</span>
@@ -1117,6 +1122,7 @@ function AdapterTypeDropdown({
         {adapterList.map((item) => (
           <button
             key={item.value}
+            type="button"
             disabled={item.comingSoon}
             className={cn(
               "flex items-center justify-between w-full px-2 py-1.5 text-sm rounded",
