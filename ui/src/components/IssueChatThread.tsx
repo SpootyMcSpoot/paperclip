@@ -417,7 +417,7 @@ function IssueAssigneePausedNotice({ agent }: { agent: Agent | null }) {
   return (
     <div className="mb-3 rounded-md border border-orange-300/70 bg-orange-50/90 px-3 py-2.5 text-sm text-orange-950 shadow-sm dark:border-orange-500/40 dark:bg-orange-500/10 dark:text-orange-100">
       <div className="flex items-start gap-2">
-        <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" />
+        <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" aria-hidden="true" />
         <p className="min-w-0 leading-5">
           <span className="font-medium">{agent.name}</span> is paused. New runs will not start until the agent is resumed. {pauseDetail}
         </p>
