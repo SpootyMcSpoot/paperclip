@@ -394,12 +394,14 @@ export function RoutineRunVariablesDialog({
                   readOnly
                   disabled
                   value={workspaceBranchAutoValue ?? ""}
+                  aria-label={variable.label || variable.name}
                 />
               ) : variable.type === "textarea" ? (
                 <Textarea
                   rows={4}
                   value={typeof values[variable.name] === "string" ? values[variable.name] as string : ""}
                   onChange={(event) => setValues((current) => ({ ...current, [variable.name]: event.target.value }))}
+                  aria-label={variable.label || variable.name}
                 />
               ) : variable.type === "boolean" ? (
                 <Select
@@ -409,7 +411,7 @@ export function RoutineRunVariablesDialog({
                     [variable.name]: next === "__unset__" ? "" : next === "true",
                   }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={variable.label || variable.name}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -426,7 +428,7 @@ export function RoutineRunVariablesDialog({
                     [variable.name]: next === "__unset__" ? "" : next,
                   }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={variable.label || variable.name}>
                     <SelectValue placeholder="Choose a value" />
                   </SelectTrigger>
                   <SelectContent>
@@ -441,6 +443,7 @@ export function RoutineRunVariablesDialog({
                   type={variable.type === "number" ? "number" : "text"}
                   value={values[variable.name] == null ? "" : String(values[variable.name])}
                   onChange={(event) => setValues((current) => ({ ...current, [variable.name]: event.target.value }))}
+                  aria-label={variable.label || variable.name}
                 />
               )}
             </div>
