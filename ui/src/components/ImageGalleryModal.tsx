@@ -111,8 +111,8 @@ export function ImageGalleryModal({
                   type="button"
                   onClick={goPrev}
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
-                  title="Previous"
-                  aria-label="Previous"
+                  title="Previous image"
+                  aria-label={`Previous image (${currentIndex + 1} of ${images.length})`}
                 >
                   <ChevronLeft className="h-7 w-7" aria-hidden="true" />
                 </button>
@@ -137,8 +137,8 @@ export function ImageGalleryModal({
                   type="button"
                   onClick={goNext}
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
-                  title="Next"
-                  aria-label="Next"
+                  title="Next image"
+                  aria-label={`Next image (${currentIndex + 1} of ${images.length})`}
                 >
                   <ChevronRight className="h-7 w-7" aria-hidden="true" />
                 </button>
