@@ -802,6 +802,7 @@ function IssueChatChainOfThought({
     <div>
       <button
         type="button"
+        aria-expanded={hasContent ? expanded : undefined}
         className="group flex w-full items-center gap-2.5 rounded-lg px-1 py-2 text-left transition-colors hover:bg-accent/5"
         onClick={() => hasContent && setExpanded((v) => !v)}
       >
