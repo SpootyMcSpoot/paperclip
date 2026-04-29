@@ -208,7 +208,7 @@ function TriggerEditor({
                 value={draft.signingMode}
                 onValueChange={(signingMode) => setDraft((current) => ({ ...current, signingMode }))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Webhook signing mode">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -912,7 +912,7 @@ export function RoutineDetail() {
                 value={editDraft.concurrencyPolicy}
                 onValueChange={(concurrencyPolicy) => setEditDraft((current) => ({ ...current, concurrencyPolicy }))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Concurrency policy">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -929,7 +929,7 @@ export function RoutineDetail() {
                 value={editDraft.catchUpPolicy}
                 onValueChange={(catchUpPolicy) => setEditDraft((current) => ({ ...current, catchUpPolicy }))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Catch-up policy">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -988,7 +988,7 @@ export function RoutineDetail() {
               <div className="space-y-1.5">
                 <Label className="text-xs">Kind</Label>
                 <Select value={newTrigger.kind} onValueChange={(kind) => setNewTrigger((current) => ({ ...current, kind }))}>
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Trigger kind">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1014,7 +1014,7 @@ export function RoutineDetail() {
                   <div className="space-y-1.5">
                     <Label className="text-xs">Signing mode</Label>
                     <Select value={newTrigger.signingMode} onValueChange={(signingMode) => setNewTrigger((current) => ({ ...current, signingMode }))}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label="Webhook signing mode">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
