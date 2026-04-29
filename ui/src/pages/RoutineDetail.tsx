@@ -253,8 +253,10 @@ function TriggerEditor({
             size="sm"
             className="text-muted-foreground hover:text-destructive"
             onClick={() => onDelete(trigger.id)}
+            aria-label="Delete trigger"
+            title="Delete trigger"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
           </Button>
         </div>
       </div>
