@@ -151,6 +151,7 @@ export function IssueFiltersPopover({
                   <button
                     key={preset.label}
                     type="button"
+                    aria-pressed={isActive}
                     className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
                       isActive
                         ? "border-primary bg-primary text-primary-foreground"
@@ -272,6 +273,7 @@ export function IssueFiltersPopover({
                         <button
                           key={creator.id}
                           type="button"
+                          aria-pressed={selected}
                           className={`flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left text-sm ${
                             selected ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                           }`}
