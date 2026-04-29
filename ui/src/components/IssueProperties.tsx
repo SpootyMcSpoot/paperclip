@@ -169,7 +169,13 @@ function PropertyPicker({
     return (
       <div>
         <PropertyRow label={label}>
-          <button className={btnCn} onClick={() => onOpenChange(!open)}>
+          <button
+            type="button"
+            className={btnCn}
+            onClick={() => onOpenChange(!open)}
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-expanded={open}
+          >
             {triggerContent}
           </button>
           {extra}
@@ -187,7 +193,14 @@ function PropertyPicker({
     <PropertyRow label={label}>
       <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
-          <button className={btnCn}>{triggerContent}</button>
+          <button
+            type="button"
+            className={btnCn}
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-expanded={open}
+          >
+            {triggerContent}
+          </button>
         </PopoverTrigger>
         <PopoverContent className={cn("p-1", popoverClassName)} align={popoverAlign} collisionPadding={16}>
           {children}
