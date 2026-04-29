@@ -787,6 +787,7 @@ const ObjectField = React.memo(({
     <div className="space-y-3 rounded-lg border p-4">
       <button
         type="button"
+        aria-expanded={!isCollapsed}
         className="flex w-full items-center justify-between"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >

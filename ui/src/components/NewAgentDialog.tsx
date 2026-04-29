@@ -153,6 +153,7 @@ export function NewAgentDialog() {
               {/* Advanced link */}
               <div className="text-center">
                 <button
+                  type="button"
                   className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
                   onClick={handleAdvancedConfig}
                 >
@@ -164,6 +165,7 @@ export function NewAgentDialog() {
             <>
               <div className="space-y-2">
                 <button
+                  type="button"
                   className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setShowAdvancedCards(false)}
                 >
