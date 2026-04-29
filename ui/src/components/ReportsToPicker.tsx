@@ -41,6 +41,9 @@ export function ReportsToPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
+          aria-label={current ? `Reports to ${current.name}. Change manager.` : "Choose manager"}
+          aria-expanded={open}
+          aria-haspopup="listbox"
           className={cn(
             "inline-flex max-w-full min-w-0 items-center gap-1.5 overflow-hidden rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors",
             terminatedManager && "border-amber-600/45 bg-amber-500/5",
@@ -78,6 +81,7 @@ export function ReportsToPicker({
       <PopoverContent className="w-48 p-1" align="start">
         <button
           type="button"
+          aria-pressed={value === null}
           className={cn(
             "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
             value === null && "bg-accent",
@@ -106,6 +110,7 @@ export function ReportsToPicker({
           <button
             type="button"
             key={a.id}
+            aria-pressed={a.id === value}
             className={cn(
               "flex items-center gap-2 w-full min-w-0 px-2 py-1.5 text-xs rounded hover:bg-accent/50 overflow-hidden",
               a.id === value && "bg-accent",
