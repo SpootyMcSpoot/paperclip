@@ -728,6 +728,7 @@ export function IssueDocumentsSection({
               setDraft((current) => current ? { ...current, key: event.target.value.toLowerCase() } : current)
             }
             placeholder="Document key"
+            aria-label="Document key"
           />
           {newDocumentKeyError && (
             <p className="text-xs text-destructive">{newDocumentKeyError}</p>
@@ -739,6 +740,7 @@ export function IssueDocumentsSection({
                 setDraft((current) => current ? { ...current, title: event.target.value } : current)
               }
               placeholder="Optional title"
+              aria-label="Document title"
             />
           )}
           <MarkdownEditor
@@ -1087,6 +1089,7 @@ export function IssueDocumentsSection({
                         setDraft((current) => current ? { ...current, title: event.target.value } : current);
                       }}
                       placeholder="Optional title"
+                      aria-label="Document title"
                     />
                   )}
                   <div
