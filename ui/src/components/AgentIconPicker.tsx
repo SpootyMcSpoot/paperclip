@@ -50,6 +50,7 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
           onChange={(e) => setSearch(e.target.value)}
           className="mb-2 h-8 text-sm"
           autoFocus
+          aria-label="Search icons"
         />
         <div className="grid grid-cols-7 gap-1 max-h-48 overflow-y-auto">
           {filtered.map(([name, Icon]) => {
