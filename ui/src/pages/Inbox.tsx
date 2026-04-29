@@ -1900,6 +1900,7 @@ export function Inbox() {
             }}
             className="h-8 w-full pl-8 text-xs"
             data-page-search-target="true"
+            aria-label="Search inbox"
           />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1947,6 +1948,7 @@ export function Inbox() {
               }}
               className="h-8 w-[220px] pl-8 text-xs"
               data-page-search-target="true"
+              aria-label="Search inbox"
             />
           </div>
           <Button
