@@ -38,15 +38,12 @@ jobs:
 
       - name: Type check
         run: pnpm -r run typecheck
-        continue-on-error: true
 
       - name: Lint
         run: pnpm -r run lint
-        continue-on-error: true
 
       - name: Test
         run: pnpm -r run test
-        continue-on-error: true
 
       - name: Build
         run: pnpm -r run build
