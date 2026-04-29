@@ -189,6 +189,7 @@ function TriggerEditor({
           <Input
             value={draft.label}
             onChange={(event) => setDraft((current) => ({ ...current, label: event.target.value }))}
+            aria-label="Trigger label"
           />
         </div>
         {trigger.kind === "schedule" && (
@@ -208,7 +209,7 @@ function TriggerEditor({
                 value={draft.signingMode}
                 onValueChange={(signingMode) => setDraft((current) => ({ ...current, signingMode }))}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Signing mode">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -224,6 +225,7 @@ function TriggerEditor({
                 <Input
                   value={draft.replayWindowSec}
                   onChange={(event) => setDraft((current) => ({ ...current, replayWindowSec: event.target.value }))}
+                  aria-label="Replay window seconds"
                 />
               </div>
             )}
