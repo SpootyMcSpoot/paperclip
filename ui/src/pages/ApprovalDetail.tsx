@@ -353,6 +353,7 @@ export function ApprovalDetail() {
           onChange={(e) => setCommentBody(e.target.value)}
           placeholder="Add a comment..."
           rows={3}
+          aria-label="Comment"
         />
         <div className="flex justify-end">
           <Button
