@@ -106,6 +106,7 @@ function KeyResultRow({
           ) : (
             <button
               type="button"
+              aria-label={`Edit current value for ${kr.title}`}
               className="hover:text-foreground cursor-pointer"
               onClick={() => setEditing(true)}
             >
