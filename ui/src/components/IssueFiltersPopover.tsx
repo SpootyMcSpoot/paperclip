@@ -264,6 +264,7 @@ export function IssueFiltersPopover({
                       onChange={(event) => setCreatorSearch(event.target.value)}
                       placeholder="Search creators..."
                       className="h-8 pl-7 text-xs"
+                      aria-label="Search creators"
                     />
                   </div>
                   <div className="max-h-32 space-y-0.5 overflow-y-auto">
