@@ -2133,6 +2133,7 @@ function PromptsTab({
                       }}
                       className="font-mono text-sm"
                       placeholder="/absolute/path/to/agent/prompts"
+                      aria-label="Agent root path"
                     />
                     {currentRootPath && (
                       <CopyText text={currentRootPath} className="shrink-0" ariaLabel="Copy root path" title="Copy root path">
@@ -2236,6 +2237,7 @@ function PromptsTab({
                 placeholder="TOOLS.md"
                 className="font-mono text-sm"
                 autoFocus
+                aria-label="New file path"
                 onKeyDown={(event) => {
                   if (event.key === "Escape") {
                     setShowNewFileInput(false);
@@ -4161,6 +4163,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
             value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
             className="h-8 text-sm"
+            aria-label="API key name"
             onKeyDown={(e) => {
               if (e.key === "Enter") createKey.mutate();
             }}
