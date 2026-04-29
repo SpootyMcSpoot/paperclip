@@ -762,6 +762,7 @@ function TranscriptToolCard({
           className="mt-0.5 inline-flex h-5 w-5 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? "Collapse tool details" : "Expand tool details"}
+          aria-expanded={open}
         >
           {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
@@ -888,6 +889,7 @@ function TranscriptCommandGroup({
             setOpen((value) => !value);
           }}
           aria-label={open ? "Collapse command details" : "Expand command details"}
+          aria-expanded={open}
         >
           {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
@@ -1003,6 +1005,7 @@ function TranscriptToolGroup({
           className={cn("inline-flex h-5 w-5 items-center justify-center text-muted-foreground transition-colors hover:text-foreground", subtitle && "mt-0.5")}
           onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
           aria-label={open ? "Collapse tool details" : "Expand tool details"}
+          aria-expanded={open}
         >
           {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
@@ -1336,6 +1339,7 @@ function TranscriptStdoutRow({
           className="inline-flex h-5 w-5 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? "Collapse stdout" : "Expand stdout"}
+          aria-expanded={open}
         >
           {open ? <ChevronDown className="h-4 w-4" aria-hidden="true" /> : <ChevronRight className="h-4 w-4" aria-hidden="true" />}
         </button>
