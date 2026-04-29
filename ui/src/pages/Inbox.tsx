@@ -2176,8 +2176,10 @@ export function Inbox() {
                                   event.stopPropagation();
                                   toggleInboxParentCollapse(collapseParentId);
                                 }}
+                                aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                                aria-expanded={isExpanded}
                               >
-                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                               </button>
                             ) : (
                               <span className="hidden w-4 shrink-0 sm:block" />
@@ -2207,8 +2209,10 @@ export function Inbox() {
                               event.stopPropagation();
                               toggleInboxParentCollapse(collapseParentId);
                             }}
+                            aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                            aria-expanded={isExpanded}
                           >
-                            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                           </button>
                         ) : undefined
                       }

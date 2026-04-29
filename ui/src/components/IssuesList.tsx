@@ -1138,8 +1138,13 @@ export function IssuesList({
                         className={isMutedIssue ? "opacity-70" : undefined}
                         mobileLeading={
                           hasChildren ? (
-                            <button type="button" onClick={toggleCollapse}>
-                              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                            <button
+                              type="button"
+                              onClick={toggleCollapse}
+                              aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                              aria-expanded={isExpanded}
+                            >
+                              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                             </button>
                           ) : (
                             <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
@@ -1154,8 +1159,10 @@ export function IssuesList({
                                 type="button"
                                 className="hidden shrink-0 items-center sm:inline-flex"
                                 onClick={toggleCollapse}
+                                aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                                aria-expanded={isExpanded}
                               >
-                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                               </button>
                             ) : (
                               <span className="hidden w-3.5 shrink-0 sm:block" />
