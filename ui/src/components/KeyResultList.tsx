@@ -50,6 +50,7 @@ function KeyResultRow({
             className="text-xs bg-transparent border border-border rounded px-1.5 py-0.5 cursor-pointer"
             value={kr.status}
             onChange={(e) => handleStatusChange(e.target.value)}
+            aria-label={`Status for ${kr.title}`}
           >
             {KEY_RESULT_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -175,6 +176,7 @@ function AddKeyResultForm({
         onChange={(e) => setTitle(e.target.value)}
         className="h-8 text-sm"
         autoFocus
+        aria-label="Key result title"
       />
       <div className="flex gap-2">
         <Input
@@ -182,23 +184,27 @@ function AddKeyResultForm({
           value={targetValue}
           onChange={(e) => setTargetValue(e.target.value)}
           className="h-8 text-sm flex-1"
+          aria-label="Target value"
         />
         <Input
           placeholder="Start (0)"
           value={startValue}
           onChange={(e) => setStartValue(e.target.value)}
           className="h-8 text-sm w-24"
+          aria-label="Start value"
         />
         <Input
           placeholder="Unit"
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
           className="h-8 text-sm w-24"
+          aria-label="Unit"
         />
         <select
           className="h-8 text-sm bg-transparent border border-border rounded px-2"
           value={metricType}
           onChange={(e) => setMetricType(e.target.value)}
+          aria-label="Metric type"
         >
           {KEY_RESULT_METRIC_TYPES.map((t) => (
             <option key={t} value={t}>
