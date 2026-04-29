@@ -117,6 +117,9 @@ export function ToggleField({
         data-slot="toggle"
         data-testid={toggleTestId}
         type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
         className={cn(
           "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
           checked ? "bg-green-600" : "bg-muted"
@@ -204,6 +207,8 @@ export function CollapsibleSection({
   return (
     <div className={cn(bordered && "border-t border-border")}>
       <button
+        type="button"
+        aria-expanded={open}
         className="flex items-center gap-2 w-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-accent/30 transition-colors"
         onClick={onToggle}
       >
