@@ -732,6 +732,16 @@ export function Costs() {
                             <div
                               className={cn("flex items-start justify-between gap-3", hasBreakdown ? "cursor-pointer select-none" : "")}
                               onClick={() => hasBreakdown && toggleAgent(row.agentId)}
+                              role={hasBreakdown ? "button" : undefined}
+                              tabIndex={hasBreakdown ? 0 : undefined}
+                              aria-expanded={hasBreakdown ? isExpanded : undefined}
+                              aria-label={hasBreakdown ? `Toggle model breakdown for ${row.agentName ?? row.agentId}` : undefined}
+                              onKeyDown={hasBreakdown ? (event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  toggleAgent(row.agentId);
+                                }
+                              } : undefined}
                             >
                               <div className="flex min-w-0 items-center gap-2">
                                 {hasBreakdown ? (
