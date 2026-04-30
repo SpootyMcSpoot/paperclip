@@ -490,12 +490,12 @@ export function DesignGuide() {
       <Section title="Form Elements">
         <div className="grid gap-6 md:grid-cols-2">
           <SubSection title="Input">
-            <Input placeholder="Default input" />
-            <Input placeholder="Disabled input" disabled className="mt-2" />
+            <Input placeholder="Default input" aria-label="Default input example" />
+            <Input placeholder="Disabled input" disabled className="mt-2" aria-label="Disabled input example" />
           </SubSection>
 
           <SubSection title="Textarea">
-            <Textarea placeholder="Write something..." />
+            <Textarea placeholder="Write something..." aria-label="Textarea example" />
           </SubSection>
 
           <SubSection title="Checkbox & Label">
@@ -558,7 +558,7 @@ export function DesignGuide() {
         <div className="grid gap-6 md:grid-cols-2">
           <SubSection title="Default size">
             <Select value={selectValue} onValueChange={setSelectValue}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" aria-label="Status">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -573,7 +573,7 @@ export function DesignGuide() {
           </SubSection>
           <SubSection title="Small trigger">
             <Select defaultValue="high">
-              <SelectTrigger size="sm" className="w-full">
+              <SelectTrigger size="sm" className="w-full" aria-label="Priority">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1007,12 +1007,12 @@ export function DesignGuide() {
             </DialogHeader>
             <div className="space-y-3">
               <div>
-                <Label>Name</Label>
-                <Input placeholder="Enter a name" className="mt-1.5" />
+                <Label htmlFor="dg-dialog-name">Name</Label>
+                <Input id="dg-dialog-name" placeholder="Enter a name" className="mt-1.5" />
               </div>
               <div>
-                <Label>Description</Label>
-                <Textarea placeholder="Describe..." className="mt-1.5" />
+                <Label htmlFor="dg-dialog-desc">Description</Label>
+                <Textarea id="dg-dialog-desc" placeholder="Describe..." className="mt-1.5" />
               </div>
             </div>
             <DialogFooter>
@@ -1204,7 +1204,7 @@ export function DesignGuide() {
             </div>
           </div>
           <div className="space-y-2">
-            <Textarea placeholder="Leave a comment..." rows={3} />
+            <Textarea placeholder="Leave a comment..." rows={3} aria-label="Comment" />
             <Button size="sm">Comment</Button>
           </div>
         </div>
