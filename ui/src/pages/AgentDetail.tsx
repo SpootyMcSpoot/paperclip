@@ -2234,6 +2234,7 @@ function PromptsTab({
                 value={newFilePath}
                 onChange={(event) => setNewFilePath(event.target.value)}
                 placeholder="TOOLS.md"
+                aria-label="New file path"
                 className="font-mono text-sm"
                 autoFocus
                 onKeyDown={(event) => {
@@ -2414,6 +2415,7 @@ function PromptsTab({
               onChange={(event) => setDraft(event.target.value)}
               className="min-h-[420px] w-full min-w-0 rounded-md border border-border bg-transparent px-3 py-2 font-mono text-sm outline-none"
               placeholder="File contents"
+              aria-label="File contents"
             />
           )}
         </div>
@@ -4158,6 +4160,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
         <div className="flex items-center gap-2">
           <Input
             placeholder="Key name (e.g. production)"
+            aria-label="API key name"
             value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
             className="h-8 text-sm"
