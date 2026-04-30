@@ -61,9 +61,24 @@ export function EntityRow({
     );
   }
 
-  return (
-    <div className={classes} onClick={onClick}>
-      {content}
-    </div>
-  );
+  if (onClick) {
+    return (
+      <div
+        className={classes}
+        onClick={onClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onClick();
+          }
+        }}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  return <div className={classes}>{content}</div>;
 }
