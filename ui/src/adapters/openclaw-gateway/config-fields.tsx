@@ -116,6 +116,7 @@ export function OpenClawGatewayConfigFields({
           immediate
           className={inputClass}
           placeholder="ws://127.0.0.1:18789"
+          aria-label="Gateway URL"
         />
       </Field>
 
@@ -150,6 +151,7 @@ export function OpenClawGatewayConfigFields({
               immediate
               className={inputClass}
               placeholder="https://staple.example"
+              aria-label="Staple API URL override"
             />
           </Field>
 
@@ -160,6 +162,7 @@ export function OpenClawGatewayConfigFields({
               immediate
               className={inputClass}
               placeholder="~/.openclaw/workspace/staple-claimed-api-key.json"
+              aria-label="Claimed API key path"
             />
           </Field>
 
@@ -183,6 +186,7 @@ export function OpenClawGatewayConfigFields({
                 immediate
                 className={inputClass}
                 placeholder="staple"
+                aria-label="Session key"
               />
             </Field>
           )}
@@ -201,6 +205,7 @@ export function OpenClawGatewayConfigFields({
               immediate
               className={inputClass}
               placeholder="operator"
+              aria-label="Role"
             />
           </Field>
 
@@ -217,6 +222,7 @@ export function OpenClawGatewayConfigFields({
               immediate
               className={inputClass}
               placeholder="operator.admin"
+              aria-label="Scopes (comma-separated)"
             />
           </Field>
 
@@ -234,6 +240,7 @@ export function OpenClawGatewayConfigFields({
               immediate
               className={inputClass}
               placeholder="120000"
+              aria-label="Wait timeout (ms)"
             />
           </Field>
 
