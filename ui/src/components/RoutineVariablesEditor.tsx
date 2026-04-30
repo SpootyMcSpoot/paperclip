@@ -112,7 +112,7 @@ export function RoutineVariablesEditor({
                     options: type === "select" ? current.options : [],
                   })))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={`Type for ${variable.name}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -157,7 +157,7 @@ export function RoutineVariablesEditor({
                       defaultValue: next === "__unset__" ? null : next === "true",
                     })))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger aria-label={`Default value for ${variable.name}`}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -196,7 +196,7 @@ export function RoutineVariablesEditor({
                           defaultValue: next === "__unset__" ? null : next,
                         })))}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label={`Default option for ${variable.name}`}>
                           <SelectValue placeholder="No default" />
                         </SelectTrigger>
                         <SelectContent>
