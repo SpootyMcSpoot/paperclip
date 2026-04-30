@@ -146,6 +146,7 @@ export function OutputFeedbackButtons({
             value={downvoteReason}
             onChange={(event) => setDownvoteReason(event.target.value)}
             placeholder="Add a short note"
+            aria-label="What could have been better"
             className="min-h-20 resize-y bg-background"
             disabled={disabled || isSaving}
           />
