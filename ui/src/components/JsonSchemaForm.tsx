@@ -509,6 +509,7 @@ const SecretField = React.memo(({
           disabled={disabled}
           className="pr-10"
           aria-invalid={!!error}
+          aria-label={label}
         />
         <Button
           type="button"
@@ -576,6 +577,7 @@ const NumberField = React.memo(({
       placeholder={String(defaultValue ?? "")}
       disabled={disabled}
       aria-invalid={!!error}
+      aria-label={label}
     />
   </FieldWrapper>
 ));
@@ -625,6 +627,7 @@ const StringField = React.memo(({
           disabled={disabled}
           className="min-h-[100px]"
           aria-invalid={!!error}
+          aria-label={label}
         />
       ) : (
         <Input
@@ -634,6 +637,7 @@ const StringField = React.memo(({
           placeholder={String(defaultValue ?? "")}
           disabled={disabled}
           aria-invalid={!!error}
+          aria-label={label}
         />
       )}
     </FieldWrapper>
