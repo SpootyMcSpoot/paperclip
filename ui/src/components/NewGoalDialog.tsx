@@ -157,6 +157,7 @@ export function NewGoalDialog() {
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
             placeholder="Goal title"
+            aria-label="Goal title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
