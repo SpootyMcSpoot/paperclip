@@ -108,6 +108,7 @@ function DatePropertyRow({
           onChange(v ? new Date(v).toISOString() : null);
         }}
         className="h-7 text-xs w-36 px-2"
+        aria-label={rowLabel}
       />
     </PropertyRow>
   );
