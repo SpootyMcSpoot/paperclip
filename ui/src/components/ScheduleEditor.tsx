@@ -216,6 +216,7 @@ export function ScheduleEditor({
               emitChange("custom", hour, minute, dayOfWeek, dayOfMonth, e.target.value);
             }}
             placeholder="0 10 * * *"
+            aria-label="Custom cron expression"
             className="font-mono text-sm"
           />
           <p className="text-xs text-muted-foreground">
