@@ -657,6 +657,7 @@ export function IssueProperties({
         value={assigneeSearch}
         onChange={(e) => setAssigneeSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search assignees"
       />
       <div className="max-h-48 overflow-y-auto overscroll-contain">
         {assigneePickerOptions
@@ -711,6 +712,7 @@ export function IssueProperties({
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label={`Search ${stageType === "review" ? "reviewers" : "approvers"}`}
       />
       <div className="max-h-48 overflow-y-auto overscroll-contain">
         <button
@@ -826,6 +828,7 @@ export function IssueProperties({
         value={projectSearch}
         onChange={(e) => setProjectSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search projects"
       />
       <div className="max-h-48 overflow-y-auto overscroll-contain">
         {projectPickerOptions
@@ -949,6 +952,7 @@ export function IssueProperties({
         value={parentSearch}
         onChange={(e) => setParentSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search parent issues"
       />
       <div className="max-h-48 overflow-y-auto overscroll-contain">
         <button
@@ -1017,6 +1021,7 @@ export function IssueProperties({
         value={blockedBySearch}
         onChange={(e) => setBlockedBySearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search blocking issues"
       />
       <div className="max-h-48 overflow-y-auto overscroll-contain">
         <button

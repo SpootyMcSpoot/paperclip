@@ -107,6 +107,7 @@ export function CommandPalette() {
       }}>
       <CommandInput
         placeholder="Search issues, agents, projects..."
+        aria-label="Search issues, agents, projects"
         value={query}
         onValueChange={setQuery}
       />
