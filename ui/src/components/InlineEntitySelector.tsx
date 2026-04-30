@@ -149,6 +149,7 @@ export const InlineEntitySelector = forwardRef<HTMLButtonElement, InlineEntitySe
             ref={inputRef}
             className="w-full border-b border-border bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground/60"
             placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);

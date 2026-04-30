@@ -1170,6 +1170,7 @@ export function CompanyImport() {
               type="text"
               value={importUrl}
               placeholder="https://github.com/owner/repo/tree/main/company"
+              aria-label="GitHub import URL"
               onChange={(e) => {
                 setImportUrl(e.target.value);
                 setImportPreview(null);
@@ -1205,6 +1206,7 @@ export function CompanyImport() {
               value={newCompanyName}
               onChange={(e) => setNewCompanyName(e.target.value)}
               placeholder="Imported Company"
+              aria-label="New company name"
             />
           </Field>
         )}
