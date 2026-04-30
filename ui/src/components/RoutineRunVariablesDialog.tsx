@@ -409,7 +409,7 @@ export function RoutineRunVariablesDialog({
                     [variable.name]: next === "__unset__" ? "" : next === "true",
                   }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={variable.name}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -426,7 +426,7 @@ export function RoutineRunVariablesDialog({
                     [variable.name]: next === "__unset__" ? "" : next,
                   }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={variable.name}>
                     <SelectValue placeholder="Choose a value" />
                   </SelectTrigger>
                   <SelectContent>
