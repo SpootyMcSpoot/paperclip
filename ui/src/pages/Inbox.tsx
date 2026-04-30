@@ -1926,6 +1926,7 @@ export function Inbox() {
             <Input
               type="search"
               placeholder="Search inbox…"
+              aria-label="Search inbox"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
