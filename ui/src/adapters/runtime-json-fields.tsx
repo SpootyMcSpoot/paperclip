@@ -83,6 +83,7 @@ export function RuntimeServicesJsonField({
           if (!isCreate) setDraft(next);
           updateJsonConfig(isCreate, "runtimeServicesJson", next, set, mark, "workspaceRuntime");
         }}
+        aria-label="Runtime services JSON"
         placeholder={`{\n  "services": [\n    {\n      "name": "preview",\n      "lifecycle": "ephemeral",\n      "metadata": {\n        "purpose": "remote preview"\n      }\n    }\n  ]\n}`}
       />
     </Field>
@@ -115,6 +116,7 @@ export function PayloadTemplateJsonField({
           if (!isCreate) setDraft(next);
           updateJsonConfig(isCreate, "payloadTemplateJson", next, set, mark, "payloadTemplate");
         }}
+        aria-label="Payload template JSON"
         placeholder={`{\n  "agentId": "remote-agent-123",\n  "metadata": {\n    "team": "platform"\n  }\n}`}
       />
     </Field>
