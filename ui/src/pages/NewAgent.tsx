@@ -207,6 +207,7 @@ export function NewAgent() {
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
             placeholder="Agent name"
+            aria-label="Agent name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
@@ -218,6 +219,7 @@ export function NewAgent() {
           <input
             className="w-full bg-transparent outline-none text-sm text-muted-foreground placeholder:text-muted-foreground/40"
             placeholder="Title (e.g. VP of Engineering)"
+            aria-label="Agent title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
