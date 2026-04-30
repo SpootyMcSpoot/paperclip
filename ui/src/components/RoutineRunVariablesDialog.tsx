@@ -394,12 +394,14 @@ export function RoutineRunVariablesDialog({
                   readOnly
                   disabled
                   value={workspaceBranchAutoValue ?? ""}
+                  aria-label={variable.label || variable.name}
                 />
               ) : variable.type === "textarea" ? (
                 <Textarea
                   rows={4}
                   value={typeof values[variable.name] === "string" ? values[variable.name] as string : ""}
                   onChange={(event) => setValues((current) => ({ ...current, [variable.name]: event.target.value }))}
+                  aria-label={variable.label || variable.name}
                 />
               ) : variable.type === "boolean" ? (
                 <Select
@@ -441,6 +443,7 @@ export function RoutineRunVariablesDialog({
                   type={variable.type === "number" ? "number" : "text"}
                   value={values[variable.name] == null ? "" : String(values[variable.name])}
                   onChange={(event) => setValues((current) => ({ ...current, [variable.name]: event.target.value }))}
+                  aria-label={variable.label || variable.name}
                 />
               )}
             </div>
