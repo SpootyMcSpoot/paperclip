@@ -565,6 +565,9 @@ export function OrgChart() {
               <div
                 key={node.id}
                 data-org-card
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${agent?.name ?? node.id}`}
                 className="absolute bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-foreground/20 transition-[box-shadow,border-color] duration-150 cursor-pointer select-none"
                 style={{
                   left: node.x,
@@ -573,6 +576,12 @@ export function OrgChart() {
                   minHeight: CARD_H,
                 }}
                 onClick={() => navigate(agent ? agentUrl(agent) : `/agents/${node.id}`)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    navigate(agent ? agentUrl(agent) : `/agents/${node.id}`);
+                  }
+                }}
                 onClickCapture={(e) => {
                   if (!suppressNextCardClick.current) return;
                   suppressNextCardClick.current = false;
