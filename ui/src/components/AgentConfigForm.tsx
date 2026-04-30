@@ -1282,6 +1282,7 @@ function ModelDropdown({
             <input
               className="w-full px-2 py-1.5 pr-6 text-xs bg-transparent outline-none border-b border-border placeholder:text-muted-foreground/50"
               placeholder={creatable ? "Search models... (type to create)" : "Search models..."}
+              aria-label="Search models"
               value={modelSearch}
               onChange={(e) => setModelSearch(e.target.value)}
               autoFocus
