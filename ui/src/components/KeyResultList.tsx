@@ -60,7 +60,7 @@ function KeyResultRow({
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <Progress value={krProgress} className="flex-1 h-1.5" />
+          <Progress value={krProgress} className="flex-1 h-1.5" aria-label="Key result progress" />
           <span className="text-xs text-muted-foreground shrink-0">
             {krProgress}%
           </span>

@@ -68,7 +68,7 @@ function GoalNode({
       <span className="flex-1 truncate">{goal.title}</span>
       {progress !== undefined && (
         <div className="flex items-center gap-1.5 shrink-0 w-24">
-          <Progress value={progress} className="h-1.5 flex-1" />
+          <Progress value={progress} className="h-1.5 flex-1" aria-label={`${goal.title} progress`} />
           <span className="text-xs text-muted-foreground w-8 text-right">
             {progress}%
           </span>
