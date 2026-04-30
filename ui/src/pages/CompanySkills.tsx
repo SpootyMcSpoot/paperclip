@@ -261,18 +261,21 @@ function NewSkillForm({
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Skill name"
+          aria-label="Skill name"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
         />
         <Input
           value={slug}
           onChange={(event) => setSlug(event.target.value)}
           placeholder="optional-shortname"
+          aria-label="Skill shortname (optional)"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
         />
         <Textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           placeholder="Short description"
+          aria-label="Skill description"
           className="min-h-20 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
         />
         <div className="flex items-center justify-end gap-2">
@@ -1208,6 +1211,7 @@ export function CompanySkills() {
                 value={skillFilter}
                 onChange={(event) => setSkillFilter(event.target.value)}
                 placeholder="Filter skills"
+                aria-label="Filter skills"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
@@ -1217,6 +1221,7 @@ export function CompanySkills() {
                 value={source}
                 onChange={(event) => setSource(event.target.value)}
                 placeholder="Paste path, GitHub URL, or skills.sh command"
+                aria-label="Skill source path or URL"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
               <Button

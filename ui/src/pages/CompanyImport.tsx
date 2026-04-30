@@ -475,6 +475,7 @@ function ConflictResolutionList({
                         className="min-w-0 flex-1 rounded-md border border-border bg-transparent px-2 py-1 font-mono text-xs outline-none focus:border-foreground"
                         value={currentName}
                         onChange={(e) => onRename(item.slug, e.target.value)}
+                        aria-label={`Rename ${item.kind} ${item.originalName}`}
                       />
                     )}
                   </>

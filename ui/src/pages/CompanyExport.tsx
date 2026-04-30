@@ -982,6 +982,7 @@ export function CompanyExport() {
                 value={treeSearch}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Search files..."
+                aria-label="Search package files"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 data-page-search-target="true"
               />
