@@ -694,6 +694,7 @@ export function RoutineDetail() {
           ref={titleInputRef}
           className="flex-1 min-w-0 resize-none overflow-hidden bg-transparent text-xl font-bold outline-none placeholder:text-muted-foreground/50"
           placeholder="Routine title"
+          aria-label="Routine title"
           rows={1}
           value={editDraft.title}
           onChange={(event) => {

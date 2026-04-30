@@ -676,6 +676,7 @@ export function Routines() {
                 ref={titleInputRef}
                 className="w-full resize-none overflow-hidden bg-transparent text-xl font-semibold outline-none placeholder:text-muted-foreground/50"
                 placeholder="Routine title"
+                aria-label="Routine title"
                 rows={1}
                 value={draft.title}
                 onChange={(event) => {
