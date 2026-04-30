@@ -75,6 +75,8 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
                 key={item.label}
                 type="button"
                 onClick={item.onClick}
+                aria-pressed={active}
+                aria-label={item.label}
                 className={cn(
                   "relative flex min-w-0 flex-col items-center justify-center gap-1 rounded-md text-[10px] font-medium transition-colors",
                   active
@@ -106,9 +108,12 @@ export function MobileBottomNav({ visible }: MobileBottomNavProps) {
               {({ isActive }) => (
                 <>
                   <span className="relative">
-                    <Icon className={cn("h-[18px] w-[18px]", isActive && "stroke-[2.3]")} />
+                    <Icon className={cn("h-[18px] w-[18px]", isActive && "stroke-[2.3]")} aria-hidden="true" />
                     {item.badge != null && item.badge > 0 && (
-                      <span className="absolute -right-2 -top-2 rounded-full bg-primary px-1.5 py-0.5 text-[10px] leading-none text-primary-foreground">
+                      <span
+                        className="absolute -right-2 -top-2 rounded-full bg-primary px-1.5 py-0.5 text-[10px] leading-none text-primary-foreground"
+                        aria-label={`${item.badge > 99 ? "more than 99" : item.badge} unread`}
+                      >
                         {item.badge > 99 ? "99+" : item.badge}
                       </span>
                     )}
