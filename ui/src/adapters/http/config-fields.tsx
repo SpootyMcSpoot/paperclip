@@ -32,6 +32,7 @@ export function HttpConfigFields({
         immediate
         className={inputClass}
         placeholder="https://..."
+        aria-label="Webhook URL"
       />
     </Field>
   );

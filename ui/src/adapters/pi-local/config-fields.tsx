@@ -41,6 +41,7 @@ export function PiLocalConfigFields({
           immediate
           className={inputClass}
           placeholder="/absolute/path/to/AGENTS.md"
+          aria-label="Agent instructions file"
         />
         <ChoosePathButton />
       </div>
