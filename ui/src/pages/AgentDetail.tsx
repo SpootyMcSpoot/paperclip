@@ -2833,6 +2833,8 @@ function AgentSkillsTab({
                     <div
                       role="button"
                       tabIndex={0}
+                      aria-expanded={unmanagedOpen}
+                      aria-label="Toggle user-installed skills"
                       className="flex cursor-pointer items-center gap-2 border-b border-border bg-muted/40 px-3 py-2 select-none"
                       onClick={() => setUnmanagedOpen((v) => !v)}
                       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setUnmanagedOpen((v) => !v); } }}
