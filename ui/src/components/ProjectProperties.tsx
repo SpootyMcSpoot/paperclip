@@ -516,6 +516,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
               immediate
               className="w-full rounded border border-border bg-transparent px-2 py-1 text-sm outline-none"
               placeholder="Project name"
+              aria-label="Project name"
             />
           ) : (
             <span className="text-sm">{project.name}</span>
@@ -836,6 +837,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                   value={workspaceCwd}
                   onChange={(e) => setWorkspaceCwd(e.target.value)}
                   placeholder="/absolute/path/to/workspace"
+                  aria-label="Workspace absolute path"
                 />
                 <ChoosePathButton />
               </div>
@@ -871,6 +873,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                 value={workspaceRepoUrl}
                 onChange={(e) => setWorkspaceRepoUrl(e.target.value)}
                 placeholder="https://github.com/org/repo"
+                aria-label="Workspace repository URL"
               />
               <div className="flex items-center gap-2">
                 <Button
@@ -1054,6 +1057,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                             immediate
                             className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                             placeholder="origin/main"
+                            aria-label="Base ref"
                           />
                         </div>
                         <div>
@@ -1078,6 +1082,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                             immediate
                             className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                             placeholder="{{issue.identifier}}-{{slug}}"
+                            aria-label="Branch template"
                           />
                         </div>
                         <div>
@@ -1102,6 +1107,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                             immediate
                             className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                             placeholder=".staple/worktrees"
+                            aria-label="Worktree parent directory"
                           />
                         </div>
                         <div>
@@ -1126,6 +1132,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                             immediate
                             className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                             placeholder="bash ./scripts/provision-worktree.sh"
+                            aria-label="Provision command"
                           />
                         </div>
                         <div>
@@ -1150,6 +1157,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                             immediate
                             className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                             placeholder="bash ./scripts/teardown-worktree.sh"
+                            aria-label="Teardown command"
                           />
                         </div>
                         <p className="text-[11px] text-muted-foreground">
