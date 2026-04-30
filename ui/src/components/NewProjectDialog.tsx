@@ -253,6 +253,7 @@ export function NewProjectDialog() {
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
             placeholder="Project name"
+            aria-label="Project name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
@@ -301,6 +302,7 @@ export function NewProjectDialog() {
               value={workspaceRepoUrl}
               onChange={(e) => { setWorkspaceRepoUrl(e.target.value); setWorkspaceError(null); }}
               placeholder="https://github.com/org/repo"
+              aria-label="Repo URL"
             />
           </div>
 
@@ -323,6 +325,7 @@ export function NewProjectDialog() {
                 value={workspaceLocalPath}
                 onChange={(e) => { setWorkspaceLocalPath(e.target.value); setWorkspaceError(null); }}
                 placeholder="/absolute/path/to/workspace"
+                aria-label="Local folder path"
               />
               <ChoosePathButton />
             </div>
@@ -430,6 +433,7 @@ export function NewProjectDialog() {
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
               placeholder="Target date"
+              aria-label="Target date"
             />
           </div>
         </div>
