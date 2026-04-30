@@ -3234,11 +3234,22 @@ export function IssueDetail() {
             {imageAttachments.map((attachment) => (
               <div
                 key={attachment.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${attachment.originalFilename ?? "attachment"} in gallery`}
                 className="group relative aspect-square rounded-lg overflow-hidden border border-border bg-accent/10 cursor-pointer"
                 onClick={() => {
                   const idx = imageAttachments.findIndex((a) => a.id === attachment.id);
                   setGalleryIndex(idx >= 0 ? idx : 0);
                   setGalleryOpen(true);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    const idx = imageAttachments.findIndex((a) => a.id === attachment.id);
+                    setGalleryIndex(idx >= 0 ? idx : 0);
+                    setGalleryOpen(true);
+                  }
                 }}
               >
                 <img
