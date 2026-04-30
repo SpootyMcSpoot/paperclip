@@ -261,6 +261,7 @@ function NewSkillForm({
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Skill name"
+          aria-label="Skill name"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
           aria-label="Skill name"
         />
@@ -268,6 +269,7 @@ function NewSkillForm({
           value={slug}
           onChange={(event) => setSlug(event.target.value)}
           placeholder="optional-shortname"
+          aria-label="Skill slug"
           className="h-9 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
           aria-label="Skill slug"
         />
@@ -275,6 +277,7 @@ function NewSkillForm({
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           placeholder="Short description"
+          aria-label="Skill description"
           className="min-h-20 rounded-none border-0 border-b border-border px-0 shadow-none focus-visible:ring-0"
           aria-label="Skill description"
         />
