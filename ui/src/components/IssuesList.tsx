@@ -1246,6 +1246,7 @@ export function IssuesList({
                                     <input
                                       className="mb-1 w-full border-b border-border bg-transparent px-2 py-1.5 text-xs outline-none placeholder:text-muted-foreground/50"
                                       placeholder="Search assignees..."
+                                      aria-label="Search assignees"
                                       value={assigneeSearch}
                                       onChange={(e) => setAssigneeSearch(e.target.value)}
                                       autoFocus
