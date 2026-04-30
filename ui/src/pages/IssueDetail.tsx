@@ -3476,6 +3476,7 @@ export function IssueDetail() {
                 value={treeControlReason}
                 onChange={(event) => setTreeControlReason(event.target.value)}
                 placeholder="Explain why this subtree control is being applied..."
+                aria-label="Subtree control reason"
                 className="min-h-[88px]"
               />
             </div>
