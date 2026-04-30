@@ -97,6 +97,15 @@ function GoalNode({
           className={classes}
           style={{ paddingLeft: `${depth * 16 + 12}px` }}
           onClick={() => onSelect?.(goal)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              onSelect?.(goal);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={`Select goal: ${goal.title}`}
         >
           {inner}
         </div>
