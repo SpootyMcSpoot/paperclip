@@ -606,6 +606,7 @@ export function CompanySettings() {
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
               value={companyName}
+              aria-label="Company name"
               onChange={(e) => setCompanyName(e.target.value)}
             />
           </Field>
@@ -618,6 +619,7 @@ export function CompanySettings() {
               type="text"
               value={description}
               placeholder="Optional company description"
+              aria-label="Company description"
               onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
@@ -702,6 +704,7 @@ export function CompanySettings() {
                       }
                     }}
                     placeholder="Auto"
+                    aria-label="Brand color hex value"
                     className="w-28 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-mono outline-none"
                   />
                   {brandColor && (
