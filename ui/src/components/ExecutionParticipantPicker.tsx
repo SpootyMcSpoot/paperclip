@@ -120,6 +120,7 @@ export function ExecutionParticipantPicker({
         <input
           className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
           placeholder={`Search ${label.toLowerCase()}...`}
+          aria-label={`Search ${label.toLowerCase()}`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           autoFocus
