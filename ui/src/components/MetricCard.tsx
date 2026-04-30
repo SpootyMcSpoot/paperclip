@@ -43,7 +43,19 @@ export function MetricCard({ icon: Icon, value, label, description, to, onClick 
 
   if (onClick) {
     return (
-      <div className="h-full" onClick={onClick}>
+      <div
+        className="h-full"
+        onClick={onClick}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onClick();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={label}
+      >
         {inner}
       </div>
     );
