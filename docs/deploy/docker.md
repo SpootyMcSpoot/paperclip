@@ -8,7 +8,7 @@ Run Staple in Docker without installing Node or pnpm locally.
 ## Compose Quickstart (Recommended)
 
 ```sh
-docker compose -f docker-compose.quickstart.yml up --build
+docker compose -f docker/docker-compose.quickstart.yml up --build
 ```
 
 Open [http://localhost:3100](http://localhost:3100).
@@ -21,9 +21,11 @@ Defaults:
 Override with environment variables:
 
 ```sh
-STAPLE_PORT=3200 STAPLE_DATA_DIR=./data/pc \
-  docker compose -f docker-compose.quickstart.yml up --build
+STAPLE_PORT=3200 STAPLE_DATA_DIR=../data/pc \
+  docker compose -f docker/docker-compose.quickstart.yml up --build
 ```
+
+**Note:** `STAPLE_DATA_DIR` is resolved relative to the compose file (`docker/`), so `../data/pc` maps to `data/pc` in the project root.
 
 ## Manual Docker Build
 

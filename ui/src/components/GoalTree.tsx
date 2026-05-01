@@ -41,18 +41,22 @@ function GoalNode({
     <>
       {hasChildren ? (
         <button
+          type="button"
           className="p-0.5"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             setExpanded(!expanded);
           }}
+          aria-label={expanded ? `Collapse ${goal.title}` : `Expand ${goal.title}`}
+          aria-expanded={expanded}
         >
           <ChevronRight
             className={cn(
               "h-3 w-3 transition-transform",
               expanded && "rotate-90",
             )}
+            aria-hidden="true"
           />
         </button>
       ) : (
@@ -64,7 +68,7 @@ function GoalNode({
       <span className="flex-1 truncate">{goal.title}</span>
       {progress !== undefined && (
         <div className="flex items-center gap-1.5 shrink-0 w-24">
-          <Progress value={progress} className="h-1.5 flex-1" />
+          <Progress value={progress} className="h-1.5 flex-1" aria-label={`${goal.title} progress`} />
           <span className="text-xs text-muted-foreground w-8 text-right">
             {progress}%
           </span>
@@ -93,6 +97,15 @@ function GoalNode({
           className={classes}
           style={{ paddingLeft: `${depth * 16 + 12}px` }}
           onClick={() => onSelect?.(goal)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              onSelect?.(goal);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={`Select goal: ${goal.title}`}
         >
           {inner}
         </div>
