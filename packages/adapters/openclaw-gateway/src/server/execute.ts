@@ -3,7 +3,14 @@ import type {
   AdapterExecutionResult,
   AdapterRuntimeServiceReport,
 } from "@stapleai/adapter-utils";
-import { asNumber, asString, buildStapleEnv, parseObject } from "@stapleai/adapter-utils/server-utils";
+import {
+  asNumber,
+  asString,
+  buildStapleEnv,
+  parseObject,
+  renderStapleWakePrompt,
+  stringifyStapleWakePayload,
+} from "@stapleai/adapter-utils/server-utils";
 import crypto, { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 
@@ -126,16 +133,26 @@ function normalizeSessionKeyStrategy(value: unknown): SessionKeyStrategy {
   return "issue";
 }
 
-function resolveSessionKey(input: {
+function prefixSessionKeyForAgent(sessionKey: string, agentId: string | null): string {
+  if (!agentId || sessionKey.startsWith("agent:")) return sessionKey;
+  return `agent:${agentId}:${sessionKey}`;
+}
+
+export function resolveSessionKey(input: {
   strategy: SessionKeyStrategy;
   configuredSessionKey: string | null;
+  agentId: string | null;
   runId: string;
   issueId: string | null;
 }): string {
   const fallback = input.configuredSessionKey ?? "staple";
-  if (input.strategy === "run") return `staple:run:${input.runId}`;
-  if (input.strategy === "issue" && input.issueId) return `staple:issue:${input.issueId}`;
-  return fallback;
+  if (input.strategy === "run") {
+    return prefixSessionKeyForAgent(`staple:run:${input.runId}`, input.agentId);
+  }
+  if (input.strategy === "issue" && input.issueId) {
+    return prefixSessionKeyForAgent(`staple:issue:${input.issueId}`, input.agentId);
+  }
+  return prefixSessionKeyForAgent(fallback, input.agentId);
 }
 
 function isLoopbackHost(hostname: string): boolean {
@@ -313,6 +330,12 @@ function resolveStapleApiUrlOverride(value: unknown): string | null {
   }
 }
 
+const DEFAULT_CLAIMED_API_KEY_PATH = "~/.openclaw/workspace/staple-claimed-api-key.json";
+
+function resolveClaimedApiKeyPath(value: unknown): string {
+  return nonEmpty(value) ?? DEFAULT_CLAIMED_API_KEY_PATH;
+}
+
 function buildStapleEnvForWake(ctx: AdapterExecutionContext, wakePayload: WakePayload): Record<string, string> {
   const stapleApiUrlOverride = resolveStapleApiUrlOverride(ctx.config.stapleApiUrl);
   const stapleEnv: Record<string, string> = {
@@ -335,7 +358,11 @@ function buildStapleEnvForWake(ctx: AdapterExecutionContext, wakePayload: WakePa
   return stapleEnv;
 }
 
-function buildWakeText(payload: WakePayload, stapleEnv: Record<string, string>): string {
+function buildWakeText(
+  payload: WakePayload,
+  stapleEnv: Record<string, string>,
+  structuredWakePrompt: string,
+): string {
   const claimedApiKeyPath = "~/.openclaw/workspace/staple-claimed-api-key.json";
   const orderedKeys = [
     "STAPLE_RUN_ID",
@@ -390,20 +417,30 @@ function buildWakeText(payload: WakePayload, stapleEnv: Record<string, string>):
     "1) GET /api/agents/me",
     `2) Determine issueId: STAPLE_TASK_ID if present, otherwise issue_id (${issueIdHint}).`,
     "3) If issueId exists:",
-    "   - POST /api/issues/{issueId}/checkout with {\"agentId\":\"$STAPLE_AGENT_ID\",\"expectedStatuses\":[\"todo\",\"backlog\",\"blocked\"]}",
+    "   - POST /api/issues/{issueId}/checkout with {\"agentId\":\"$STAPLE_AGENT_ID\",\"expectedStatuses\":[\"todo\",\"backlog\",\"blocked\",\"in_review\"]}",
     "   - GET /api/issues/{issueId}",
     "   - GET /api/issues/{issueId}/comments",
-    "   - Execute the issue instructions exactly.",
+    "   - Execute the issue instructions exactly. If the issue is actionable, take concrete action in this run; do not stop at a plan unless planning was requested.",
+    "   - Leave durable progress with a clear next action. Use child issues for long or parallel delegated work instead of polling agents, sessions, or processes.",
+    "   - Create child issues directly when you know what needs to be done; use POST /api/issues/{issueId}/interactions with kind suggest_tasks, ask_user_questions, or request_confirmation when the board/user must choose, answer, or confirm before you can continue.",
+    "   - For plan approval, update the plan document first, then create request_confirmation targeting the latest plan revision with idempotencyKey confirmation:{issueId}:plan:{revisionId}; wait for acceptance before creating implementation subtasks.",
+    "   - If blocked, PATCH /api/issues/{issueId} with {\"status\":\"blocked\",\"comment\":\"what is blocked, who owns the unblock, and the next action\"}.",
     "   - If instructions require a comment, POST /api/issues/{issueId}/comments with {\"body\":\"...\"}.",
     "   - PATCH /api/issues/{issueId} with {\"status\":\"done\",\"comment\":\"what changed and why\"}.",
     "4) If issueId does not exist:",
-    "   - GET /api/companies/$STAPLE_COMPANY_ID/issues?assigneeAgentId=$STAPLE_AGENT_ID&status=todo,in_progress,blocked",
-    "   - Pick in_progress first, then todo, then blocked, then execute step 3.",
+    "   - GET /api/companies/$STAPLE_COMPANY_ID/issues?assigneeAgentId=$STAPLE_AGENT_ID&status=todo,in_progress,in_review,blocked",
+    "   - Pick in_progress first, then in_review when you were woken by a comment, then todo, then blocked, then execute step 3.",
     "",
     "Useful endpoints for issue work:",
     "- POST /api/issues/{issueId}/comments",
     "- PATCH /api/issues/{issueId}",
     "- POST /api/companies/{companyId}/issues (when asked to create a new issue)",
+    ...(structuredWakePrompt
+      ? [
+          "",
+          structuredWakePrompt,
+        ]
+      : []),
     "",
     "Complete the workflow in this run.",
   ];
@@ -413,6 +450,17 @@ function buildWakeText(payload: WakePayload, stapleEnv: Record<string, string>):
 function appendWakeText(baseText: string, wakeText: string): string {
   const trimmedBase = baseText.trim();
   return trimmedBase.length > 0 ? `${trimmedBase}\n\n${wakeText}` : wakeText;
+}
+
+function joinWakePayloadSections(structuredWakePrompt: string, structuredWakeJson: string): string {
+  const sections = [
+    structuredWakePrompt.trim(),
+    "Structured wake payload JSON:",
+    "```json",
+    structuredWakeJson,
+    "```",
+  ].filter((entry) => entry.trim().length > 0);
+  return sections.join("\n");
 }
 
 function buildStandardStaplePayload(
@@ -447,6 +495,10 @@ function buildStandardStaplePayload(
     approvalStatus: wakePayload.approvalStatus,
     apiUrl: stapleEnv.STAPLE_API_URL ?? null,
   };
+  const structuredWake = parseObject(ctx.context.stapleWake);
+  if (Object.keys(structuredWake).length > 0) {
+    standardStaple.wake = structuredWake;
+  }
 
   if (workspace) {
     standardStaple.workspace = workspace;
@@ -605,6 +657,7 @@ class GatewayWsClient {
       this.resolveChallenge = resolve;
       this.rejectChallenge = reject;
     });
+    this.challengePromise.catch(() => {});
   }
 
   async connect(
@@ -1052,13 +1105,22 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
 
   const wakePayload = buildWakePayload(ctx);
   const stapleEnv = buildStapleEnvForWake(ctx, wakePayload);
-  const wakeText = buildWakeText(wakePayload, stapleEnv);
+  const structuredWakePrompt = renderStapleWakePrompt(ctx.context.stapleWake);
+  const structuredWakeJson = stringifyStapleWakePayload(ctx.context.stapleWake);
+  const wakeText = buildWakeText(
+    wakePayload,
+    stapleEnv,
+    structuredWakeJson
+      ? joinWakePayloadSections(structuredWakePrompt, structuredWakeJson)
+      : structuredWakePrompt,
+  );
 
   const sessionKeyStrategy = normalizeSessionKeyStrategy(ctx.config.sessionKeyStrategy);
   const configuredSessionKey = nonEmpty(ctx.config.sessionKey);
   const sessionKey = resolveSessionKey({
     strategy: sessionKeyStrategy,
     configuredSessionKey,
+    agentId: nonEmpty(ctx.config.agentId),
     runId: ctx.runId,
     issueId: wakePayload.issueId,
   });
@@ -1074,6 +1136,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     idempotencyKey: ctx.runId,
   };
   delete agentParams.text;
+  agentParams.staple = staplePayload;
 
   const configuredAgentId = nonEmpty(ctx.config.agentId);
   if (configuredAgentId && !nonEmpty(agentParams.agentId)) {

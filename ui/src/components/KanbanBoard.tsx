@@ -64,40 +64,23 @@ function KanbanColumn({
   liveIssueIds?: Set<string>;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
+
   const isEmpty = issues.length === 0;
 
-  if (isEmpty) {
-    return (
-      <div className="flex flex-col min-w-[48px] w-[48px] shrink-0">
-        <div className="flex flex-col items-center gap-1 px-1 py-2 mb-1">
-          <StatusIcon status={status} />
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground text-center leading-tight">
-            {statusLabel(status)}
-          </span>
-          <span className="text-[10px] text-muted-foreground tabular-nums">
-            0
-          </span>
-        </div>
-        <div
-          ref={setNodeRef}
-          className={`flex-1 min-h-[120px] rounded-md transition-colors ${
-            isOver ? "bg-accent/40" : "bg-muted/10"
-          }`}
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col min-w-[260px] w-[260px] shrink-0">
-      <div className="flex items-center gap-2 px-2 py-2 mb-1">
+    <div className={`flex flex-col shrink-0 transition-[width,min-width] ${isEmpty && !isOver ? "min-w-[48px] w-[48px]" : "min-w-[260px] w-[260px]"}`}>
+      <div className={`flex items-center gap-2 px-2 py-2 mb-1 ${isEmpty && !isOver ? "justify-center" : ""}`}>
         <StatusIcon status={status} />
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {statusLabel(status)}
-        </span>
-        <span className="text-xs text-muted-foreground ml-auto tabular-nums">
-          {issues.length}
-        </span>
+        {(!isEmpty || isOver) && (
+          <>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {statusLabel(status)}
+            </span>
+            <span className="text-xs text-muted-foreground/60 ml-auto tabular-nums">
+              {issues.length}
+            </span>
+          </>
+        )}
       </div>
       <div
         ref={setNodeRef}
@@ -167,6 +150,7 @@ function KanbanCard({
     >
       <Link
         to={`/issues/${issue.identifier ?? issue.id}`}
+        disableIssueQuicklook
         className="block no-underline text-inherit"
         onClick={(e) => {
           // Prevent navigation during drag
@@ -178,9 +162,19 @@ function KanbanCard({
             {issue.identifier ?? issue.id.slice(0, 8)}
           </span>
           {isLive && (
-            <span className="relative flex h-2 w-2 shrink-0 mt-0.5">
-              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
+            <span
+              className="relative flex h-2 w-2 shrink-0 mt-0.5"
+              role="status"
+              aria-label="Live updating"
+            >
+              <span
+                className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
+                aria-hidden="true"
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"
+                aria-hidden="true"
+              />
             </span>
           )}
         </div>
@@ -215,7 +209,7 @@ export function KanbanBoard({
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
   const columnIssues = useMemo(() => {

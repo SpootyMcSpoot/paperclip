@@ -120,7 +120,7 @@ function LiveWidgetPreview({
           </div>
           <span className="inline-flex items-center gap-1 rounded-full border border-border/70 bg-background/70 px-2.5 py-1 text-[11px] text-muted-foreground">
             Open run
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3 w-3" aria-hidden="true" />
           </span>
         </div>
         <div className="max-h-[460px] overflow-y-auto pr-1">
@@ -169,7 +169,7 @@ function DashboardPreview({
               </div>
             </div>
             <span className="rounded-full border border-border/70 bg-background/70 px-2 py-1 text-[10px] text-muted-foreground">
-              <ExternalLink className="h-2.5 w-2.5" />
+              <ExternalLink className="h-2.5 w-2.5" aria-hidden="true" />
             </span>
           </div>
           <div className="mt-3 rounded-lg border border-border/60 bg-background/60 px-3 py-2 text-xs text-cyan-700 dark:text-cyan-300">
@@ -205,7 +205,7 @@ export function RunTranscriptUxLab() {
           <aside className="border-b border-border/60 bg-background/75 p-5 lg:border-b-0 lg:border-r">
             <div className="mb-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-300">
-                <FlaskConical className="h-3.5 w-3.5" />
+                <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
                 UX Lab
               </div>
               <h1 className="mt-4 text-2xl font-semibold tracking-tight">Run Transcript Fixtures</h1>
@@ -231,7 +231,7 @@ export function RunTranscriptUxLab() {
                   >
                     <div className="flex items-start gap-3">
                       <span className="rounded-lg border border-current/15 p-2 text-cyan-700 dark:text-cyan-300">
-                        <Icon className="h-4 w-4" />
+                        <Icon className="h-4 w-4" aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">

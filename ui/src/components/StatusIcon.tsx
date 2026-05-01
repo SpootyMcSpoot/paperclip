@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { IssueBlockerAttention } from "@stapleai/shared";
 import { cn } from "../lib/utils";
 import { issueStatusIcon, issueStatusIconDefault } from "../lib/status-colors";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -11,24 +12,23 @@ function statusLabel(status: string): string {
   return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/** Returns the inner shape icon for a given status (WCAG 1.4.1 compliance). */
 function StatusShapeIcon({ status }: { status: string }) {
   const cls = "absolute inset-0 m-auto h-2.5 w-2.5";
   switch (status) {
     case "done":
-      return <Check className={cls} strokeWidth={3} />;
+      return <Check className={cls} strokeWidth={3} aria-hidden />;
     case "cancelled":
-      return <X className={cls} strokeWidth={3} />;
+      return <X className={cls} strokeWidth={3} aria-hidden />;
     case "backlog":
-      return <Minus className={cls} strokeWidth={3} />;
+      return <Minus className={cls} strokeWidth={3} aria-hidden />;
     case "todo":
-      return <Clock className={cls} strokeWidth={3} />;
+      return <Clock className={cls} strokeWidth={3} aria-hidden />;
     case "in_progress":
-      return <Loader2 className={cls} strokeWidth={3} />;
+      return <Loader2 className={cls} strokeWidth={3} aria-hidden />;
     case "in_review":
-      return <Eye className={cls} strokeWidth={3} />;
+      return <Eye className={cls} strokeWidth={3} aria-hidden />;
     case "blocked":
-      return <Pause className={cls} strokeWidth={3} />;
+      return <Pause className={cls} strokeWidth={3} aria-hidden />;
     default:
       return null;
   }
@@ -36,14 +36,48 @@ function StatusShapeIcon({ status }: { status: string }) {
 
 interface StatusIconProps {
   status: string;
+  blockerAttention?: IssueBlockerAttention | null;
   onChange?: (status: string) => void;
   className?: string;
   showLabel?: boolean;
 }
 
-export function StatusIcon({ status, onChange, className, showLabel }: StatusIconProps) {
+function blockedAttentionLabel(blockerAttention: IssueBlockerAttention | null | undefined) {
+  if (!blockerAttention || blockerAttention.state === "none") return "Blocked";
+
+  if (blockerAttention.reason === "active_child") {
+    const count = blockerAttention.coveredBlockerCount;
+    if (count === 1 && blockerAttention.sampleBlockerIdentifier) {
+      return `Blocked · waiting on active sub-issue ${blockerAttention.sampleBlockerIdentifier}`;
+    }
+    if (count === 1) return "Blocked · waiting on 1 active sub-issue";
+    return `Blocked · waiting on ${count} active sub-issues`;
+  }
+
+  if (blockerAttention.reason === "active_dependency") {
+    const count = blockerAttention.coveredBlockerCount;
+    if (count === 1 && blockerAttention.sampleBlockerIdentifier) {
+      return `Blocked · covered by active dependency ${blockerAttention.sampleBlockerIdentifier}`;
+    }
+    if (count === 1) return "Blocked · covered by 1 active dependency";
+    return `Blocked · covered by ${count} active dependencies`;
+  }
+
+  if (blockerAttention.reason === "attention_required") {
+    const count = blockerAttention.unresolvedBlockerCount;
+    return `Blocked · ${count} unresolved ${count === 1 ? "blocker needs" : "blockers need"} attention`;
+  }
+
+  return "Blocked";
+}
+
+export function StatusIcon({ status, blockerAttention, onChange, className, showLabel }: StatusIconProps) {
   const [open, setOpen] = useState(false);
-  const colorClass = issueStatusIcon[status] ?? issueStatusIconDefault;
+  const isCoveredBlocked = status === "blocked" && blockerAttention?.state === "covered";
+  const colorClass = isCoveredBlocked
+    ? "text-cyan-600 border-cyan-600 dark:text-cyan-400 dark:border-cyan-400"
+    : issueStatusIcon[status] ?? issueStatusIconDefault;
+  const ariaLabel = status === "blocked" ? blockedAttentionLabel(blockerAttention) : statusLabel(status);
 
   const circle = (
     <span
@@ -53,15 +87,26 @@ export function StatusIcon({ status, onChange, className, showLabel }: StatusIco
         onChange && !showLabel && "cursor-pointer",
         className
       )}
+      data-blocker-attention-state={isCoveredBlocked ? "covered" : undefined}
+      aria-label={ariaLabel}
+      title={ariaLabel}
     >
       <StatusShapeIcon status={status} />
+      {isCoveredBlocked && (
+        <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full border border-background bg-current" />
+      )}
     </span>
   );
 
   if (!onChange) return showLabel ? <span className="inline-flex items-center gap-1.5">{circle}<span className="text-sm">{statusLabel(status)}</span></span> : circle;
 
   const trigger = showLabel ? (
-    <button className="inline-flex items-center gap-1.5 cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 py-0.5 transition-colors">
+    <button
+      type="button"
+      aria-label={`Change status (current: ${statusLabel(status)})`}
+      aria-expanded={open}
+      className="inline-flex items-center gap-1.5 cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 py-0.5 transition-colors"
+    >
       {circle}
       <span className="text-sm">{statusLabel(status)}</span>
     </button>

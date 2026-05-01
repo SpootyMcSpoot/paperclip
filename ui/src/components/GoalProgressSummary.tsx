@@ -12,7 +12,7 @@ function ProgressRow({ label, value }: { label: string; value: number }) {
         <span>{label}</span>
         <span>{value}%</span>
       </div>
-      <Progress value={value} />
+      <Progress value={value} aria-label={label} />
     </div>
   );
 }
@@ -25,7 +25,7 @@ export function GoalProgressSummary({ progress }: GoalProgressSummaryProps) {
           <span className="text-sm font-medium">Overall Progress</span>
           <span className="text-sm font-semibold">{progress.overallProgress}%</span>
         </div>
-        <Progress value={progress.overallProgress} className="h-3" />
+        <Progress value={progress.overallProgress} className="h-3" aria-label="Overall progress" />
       </div>
 
       <div className="grid grid-cols-3 gap-4 pt-1">

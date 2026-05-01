@@ -2,11 +2,7 @@ import { useState } from "react";
 import { Link } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import type { Goal } from "@stapleai/shared";
-import {
-  GOAL_STATUSES,
-  GOAL_LEVELS,
-  GOAL_PROGRESS_WEIGHTS,
-} from "@stapleai/shared";
+import { GOAL_STATUSES, GOAL_LEVELS, GOAL_PROGRESS_WEIGHTS } from "@stapleai/shared";
 import { agentsApi } from "../api/agents";
 import { goalsApi } from "../api/goals";
 import { useCompany } from "../context/CompanyContext";
@@ -35,11 +31,9 @@ function PropertyRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 py-1.5">
-      <span className="text-xs text-muted-foreground shrink-0 w-20">
-        {label}
-      </span>
-      <div className="flex items-center gap-1.5 min-w-0">{children}</div>
+    <div className="flex items-start gap-3 py-1.5">
+      <span className="text-xs text-muted-foreground shrink-0 w-20 mt-0.5">{label}</span>
+      <div className="flex items-center gap-1.5 min-w-0 flex-1 flex-wrap">{children}</div>
     </div>
   );
 }
@@ -63,7 +57,11 @@ function PickerButton({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="cursor-pointer hover:opacity-80 transition-opacity">
+        <button
+          type="button"
+          aria-expanded={open}
+          className="cursor-pointer hover:opacity-80 transition-opacity"
+        >
           {children}
         </button>
       </PopoverTrigger>
@@ -110,6 +108,7 @@ function DatePropertyRow({
           onChange(v ? new Date(v).toISOString() : null);
         }}
         className="h-7 text-xs w-36 px-2"
+        aria-label={rowLabel}
       />
     </PropertyRow>
   );
