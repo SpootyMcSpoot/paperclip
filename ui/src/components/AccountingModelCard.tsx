@@ -48,7 +48,7 @@ export function AccountingModelCard() {
             >
               <div className="mb-3 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background/80">
-                  <Icon className="h-4 w-4 text-foreground" />
+                  <Icon className="h-4 w-4 text-foreground" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="text-sm font-semibold">{surface.title}</div>

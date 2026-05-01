@@ -26,16 +26,9 @@ const [ceo] = await db
     role: "ceo",
     title: "Chief Executive Officer",
     status: "idle",
-    adapterType: "litellm_gateway",
-    adapterConfig: {
-      baseUrl: "http://localhost:4000",
-      model: "qwen35-coder",
-      maxTokens: 4096,
-      temperature: 0.7,
-      timeoutSec: 300,
-    },
+    adapterType: "process",
+    adapterConfig: { command: "echo", args: ["hello from ceo"] },
     budgetMonthlyCents: 15000,
-    permissions: { canCreateAgents: true },
   })
   .returning();
 

@@ -31,11 +31,12 @@ Gateway connect identity fields:
 
 Request behavior fields:
 - payloadTemplate (object, optional): additional fields merged into gateway agent params
-- workspaceRuntime (object, optional): desired runtime service intents; Staple forwards these in a standardized staple.workspaceRuntime block for remote execution environments
+- workspaceRuntime (object, optional): reserved workspace runtime metadata; workspace runtime services are manually controlled from the workspace UI and are not auto-started by heartbeats
 - timeoutSec (number, optional): adapter timeout in seconds (default 120)
 - waitTimeoutMs (number, optional): agent.wait timeout override (default timeoutSec * 1000)
 - autoPairOnFirstConnect (boolean, optional): on first "pairing required", attempt device.pair.list/device.pair.approve via shared auth, then retry once (default true)
 - stapleApiUrl (string, optional): absolute Staple base URL advertised in wake text
+- claimedApiKeyPath (string, optional): path to the claimed API key JSON file read by the agent at wake time (default ~/.openclaw/workspace/staple-claimed-api-key.json)
 
 Session routing fields:
 - sessionKeyStrategy (string, optional): issue (default), fixed, or run
@@ -45,7 +46,7 @@ Standard outbound payload additions:
 - staple (object): standardized Staple context added to every gateway agent request
 - staple.workspace (object, optional): resolved execution workspace for this run
 - staple.workspaces (array, optional): additional workspace hints Staple exposed to the run
-- staple.workspaceRuntime (object, optional): normalized runtime service intent config for the workspace
+- staple.workspaceRuntime (object, optional): reserved workspace runtime metadata when explicitly supplied outside normal heartbeat execution
 
 Standard result metadata supported:
 - meta.runtimeServices (array, optional): normalized adapter-managed runtime service reports

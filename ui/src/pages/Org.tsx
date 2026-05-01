@@ -50,15 +50,19 @@ function OrgTreeNode({
       >
         {hasChildren ? (
           <button
+            type="button"
             className="p-0.5"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setExpanded(!expanded);
             }}
+            aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+            aria-expanded={expanded}
           >
             <ChevronRight
               className={cn("h-3 w-3 transition-transform", expanded && "rotate-90")}
+              aria-hidden="true"
             />
           </button>
         ) : (

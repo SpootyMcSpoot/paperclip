@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDialog } from "../context/DialogContext";
 import { useCompany } from "../context/CompanyContext";
+import { accessApi } from "../api/access";
 import { projectsApi } from "../api/projects";
+import { agentsApi } from "../api/agents";
 import { goalsApi } from "../api/goals";
 import { assetsApi } from "../api/assets";
+import { buildMarkdownMentionOptions } from "../lib/company-members";
 import { queryKeys } from "../lib/queryKeys";
 import {
   Dialog,
@@ -23,13 +26,16 @@ import {
   Calendar,
   Plus,
   X,
-  FolderOpen,
-  Github,
-  GitBranch,
+  HelpCircle,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { PROJECT_COLORS } from "@stapleai/shared";
 import { cn } from "../lib/utils";
-import { MarkdownEditor, type MarkdownEditorRef } from "./MarkdownEditor";
+import { MarkdownEditor, type MarkdownEditorRef, type MentionOption } from "./MarkdownEditor";
 import { StatusBadge } from "./StatusBadge";
 import { ChoosePathButton } from "./PathInstructionsModal";
 
@@ -41,8 +47,6 @@ const projectStatuses = [
   { value: "cancelled", label: "Cancelled" },
 ];
 
-type WorkspaceSetup = "none" | "local" | "repo" | "both";
-
 export function NewProjectDialog() {
   const { newProjectOpen, closeNewProject } = useDialog();
   const { selectedCompanyId, selectedCompany } = useCompany();
@@ -53,7 +57,6 @@ export function NewProjectDialog() {
   const [goalIds, setGoalIds] = useState<string[]>([]);
   const [targetDate, setTargetDate] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [workspaceSetup, setWorkspaceSetup] = useState<WorkspaceSetup>("none");
   const [workspaceLocalPath, setWorkspaceLocalPath] = useState("");
   const [workspaceRepoUrl, setWorkspaceRepoUrl] = useState("");
   const [workspaceError, setWorkspaceError] = useState<string | null>(null);
@@ -67,6 +70,25 @@ export function NewProjectDialog() {
     queryFn: () => goalsApi.list(selectedCompanyId!),
     enabled: !!selectedCompanyId && newProjectOpen,
   });
+
+  const { data: agents } = useQuery({
+    queryKey: queryKeys.agents.list(selectedCompanyId!),
+    queryFn: () => agentsApi.list(selectedCompanyId!),
+    enabled: !!selectedCompanyId && newProjectOpen,
+  });
+
+  const { data: companyMembers } = useQuery({
+    queryKey: queryKeys.access.companyUserDirectory(selectedCompanyId!),
+    queryFn: () => accessApi.listUserDirectory(selectedCompanyId!),
+    enabled: !!selectedCompanyId && newProjectOpen,
+  });
+
+  const mentionOptions = useMemo<MentionOption[]>(() => {
+    return buildMarkdownMentionOptions({
+      agents,
+      members: companyMembers?.users,
+    });
+  }, [agents, companyMembers?.users]);
 
   const createProject = useMutation({
     mutationFn: (data: Record<string, unknown>) =>
@@ -87,7 +109,6 @@ export function NewProjectDialog() {
     setGoalIds([]);
     setTargetDate("");
     setExpanded(false);
-    setWorkspaceSetup("none");
     setWorkspaceLocalPath("");
     setWorkspaceRepoUrl("");
     setWorkspaceError(null);
@@ -95,11 +116,10 @@ export function NewProjectDialog() {
 
   const isAbsolutePath = (value: string) => value.startsWith("/") || /^[A-Za-z]:[\\/]/.test(value);
 
-  const isGitHubRepoUrl = (value: string) => {
+  const looksLikeRepoUrl = (value: string) => {
     try {
       const parsed = new URL(value);
-      const host = parsed.hostname.toLowerCase();
-      if (host !== "github.com" && host !== "www.github.com") return false;
+      if (parsed.protocol !== "https:") return false;
       const segments = parsed.pathname.split("/").filter(Boolean);
       return segments.length >= 2;
     } catch {
@@ -124,24 +144,17 @@ export function NewProjectDialog() {
     }
   };
 
-  const toggleWorkspaceSetup = (next: WorkspaceSetup) => {
-    setWorkspaceSetup((prev) => (prev === next ? "none" : next));
-    setWorkspaceError(null);
-  };
-
   async function handleSubmit() {
     if (!selectedCompanyId || !name.trim()) return;
-    const localRequired = workspaceSetup === "local" || workspaceSetup === "both";
-    const repoRequired = workspaceSetup === "repo" || workspaceSetup === "both";
     const localPath = workspaceLocalPath.trim();
     const repoUrl = workspaceRepoUrl.trim();
 
-    if (localRequired && !isAbsolutePath(localPath)) {
+    if (localPath && !isAbsolutePath(localPath)) {
       setWorkspaceError("Local folder must be a full absolute path.");
       return;
     }
-    if (repoRequired && !isGitHubRepoUrl(repoUrl)) {
-      setWorkspaceError("Repo must use a valid GitHub repo URL.");
+    if (repoUrl && !looksLikeRepoUrl(repoUrl)) {
+      setWorkspaceError("Repo must use a valid GitHub or GitHub Enterprise repo URL.");
       return;
     }
 
@@ -157,28 +170,15 @@ export function NewProjectDialog() {
         ...(targetDate ? { targetDate } : {}),
       });
 
-      const workspacePayloads: Array<Record<string, unknown>> = [];
-      if (localRequired && repoRequired) {
-        workspacePayloads.push({
-          name: deriveWorkspaceNameFromPath(localPath),
-          cwd: localPath,
-          repoUrl,
-        });
-      } else if (localRequired) {
-        workspacePayloads.push({
-          name: deriveWorkspaceNameFromPath(localPath),
-          cwd: localPath,
-        });
-      } else if (repoRequired) {
-        workspacePayloads.push({
-          name: deriveWorkspaceNameFromRepo(repoUrl),
-          repoUrl,
-        });
-      }
-      for (const workspacePayload of workspacePayloads) {
-        await projectsApi.createWorkspace(created.id, {
-          ...workspacePayload,
-        });
+      if (localPath || repoUrl) {
+        const workspacePayload: Record<string, unknown> = {
+          name: localPath
+            ? deriveWorkspaceNameFromPath(localPath)
+            : deriveWorkspaceNameFromRepo(repoUrl),
+          ...(localPath ? { cwd: localPath } : {}),
+          ...(repoUrl ? { repoUrl } : {}),
+        };
+        await projectsApi.createWorkspace(created.id, workspacePayload);
       }
 
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.list(selectedCompanyId) });
@@ -232,16 +232,18 @@ export function NewProjectDialog() {
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => { reset(); closeNewProject(); }}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
@@ -251,6 +253,7 @@ export function NewProjectDialog() {
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
             placeholder="Project name"
+            aria-label="Project name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
@@ -271,6 +274,7 @@ export function NewProjectDialog() {
             onChange={setDescription}
             placeholder="Add description..."
             bordered={false}
+            mentions={mentionOptions}
             contentClassName={cn("text-sm text-muted-foreground", expanded ? "min-h-[220px]" : "min-h-[120px]")}
             imageUploadHandler={async (file) => {
               const asset = await uploadDescriptionImage.mutateAsync(file);
@@ -279,81 +283,54 @@ export function NewProjectDialog() {
           />
         </div>
 
-        <div className="px-4 pb-3 space-y-3 border-t border-border">
-          <div className="pt-3">
-            <p className="text-sm font-medium">Where will work be done on this project?</p>
-            <p className="text-xs text-muted-foreground">Add a repo and/or local folder for this project.</p>
-          </div>
-          <div className="grid gap-2 sm:grid-cols-3">
-            <button
-              type="button"
-              className={cn(
-                "rounded-lg border px-3 py-3 text-left transition-colors",
-                workspaceSetup === "local" ? "border-foreground bg-accent/40" : "border-border hover:bg-accent/30",
-              )}
-              onClick={() => toggleWorkspaceSetup("local")}
-            >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <FolderOpen className="h-4 w-4" />
-                A local folder
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Use a full path on this machine.</p>
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "rounded-lg border px-3 py-3 text-left transition-colors",
-                workspaceSetup === "repo" ? "border-foreground bg-accent/40" : "border-border hover:bg-accent/30",
-              )}
-              onClick={() => toggleWorkspaceSetup("repo")}
-            >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Github className="h-4 w-4" />
-                A repo
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Paste a GitHub URL.</p>
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "rounded-lg border px-3 py-3 text-left transition-colors",
-                workspaceSetup === "both" ? "border-foreground bg-accent/40" : "border-border hover:bg-accent/30",
-              )}
-              onClick={() => toggleWorkspaceSetup("both")}
-            >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <GitBranch className="h-4 w-4" />
-                Both
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Configure both repo and local folder.</p>
-            </button>
+        <div className="px-4 pt-3 pb-3 space-y-3 border-t border-border">
+          <div>
+            <div className="mb-1 flex items-center gap-1.5">
+              <label className="block text-xs text-muted-foreground">Repo URL</label>
+              <span className="text-xs text-muted-foreground/50">optional</span>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[240px] text-xs">
+                  Link a GitHub repository so agents can clone, read, and push code for this project.
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <input
+              className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs outline-none"
+              value={workspaceRepoUrl}
+              onChange={(e) => { setWorkspaceRepoUrl(e.target.value); setWorkspaceError(null); }}
+              placeholder="https://github.com/org/repo"
+              aria-label="Repo URL"
+            />
           </div>
 
-          {(workspaceSetup === "local" || workspaceSetup === "both") && (
-            <div className="rounded-md border border-border p-2">
-              <label className="mb-1 block text-xs text-muted-foreground">Local folder (full path)</label>
-              <div className="flex items-center gap-2">
-                <input
-                  className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
-                  value={workspaceLocalPath}
-                  onChange={(e) => setWorkspaceLocalPath(e.target.value)}
-                  placeholder="/absolute/path/to/workspace"
-                />
-                <ChoosePathButton />
-              </div>
+          <div>
+            <div className="mb-1 flex items-center gap-1.5">
+              <label className="block text-xs text-muted-foreground">Local folder</label>
+              <span className="text-xs text-muted-foreground/50">optional</span>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[240px] text-xs">
+                  Set an absolute path on this machine where local agents will read and write files for this project.
+                </TooltipContent>
+              </Tooltip>
             </div>
-          )}
-          {(workspaceSetup === "repo" || workspaceSetup === "both") && (
-            <div className="rounded-md border border-border p-2">
-              <label className="mb-1 block text-xs text-muted-foreground">Repo URL</label>
+            <div className="flex items-center gap-2">
               <input
-                className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs outline-none"
-                value={workspaceRepoUrl}
-                onChange={(e) => setWorkspaceRepoUrl(e.target.value)}
-                placeholder="https://github.com/org/repo"
+                className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
+                value={workspaceLocalPath}
+                onChange={(e) => { setWorkspaceLocalPath(e.target.value); setWorkspaceError(null); }}
+                placeholder="/absolute/path/to/workspace"
+                aria-label="Local folder path"
               />
+              <ChoosePathButton />
             </div>
-          )}
+          </div>
+
           {workspaceError && (
             <p className="text-xs text-destructive">{workspaceError}</p>
           )}
@@ -364,7 +341,7 @@ export function NewProjectDialog() {
           {/* Status */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set project status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <StatusBadge status={status} />
               </button>
             </PopoverTrigger>
@@ -372,6 +349,7 @@ export function NewProjectDialog() {
               {projectStatuses.map((s) => (
                 <button
                   key={s.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     s.value === status && "bg-accent"
@@ -389,7 +367,7 @@ export function NewProjectDialog() {
               key={goal.id}
               className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs"
             >
-              <Target className="h-3 w-3 text-muted-foreground" />
+              <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
               <span className="max-w-[160px] truncate">{goal.title}</span>
               <button
                 className="text-muted-foreground hover:text-foreground"
@@ -397,7 +375,7 @@ export function NewProjectDialog() {
                 aria-label={`Remove goal ${goal.title}`}
                 type="button"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ))}
@@ -405,16 +383,20 @@ export function NewProjectDialog() {
           <Popover open={goalOpen} onOpenChange={setGoalOpen}>
             <PopoverTrigger asChild>
               <button
+                type="button"
+                aria-label={selectedGoals.length > 0 ? "Add another goal" : "Set project goal"}
+                aria-expanded={goalOpen}
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors disabled:opacity-60"
                 disabled={selectedGoals.length > 0 && availableGoals.length === 0}
               >
-                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" /> : <Target className="h-3 w-3 text-muted-foreground" />}
+                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" aria-hidden="true" /> : <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />}
                 {selectedGoals.length > 0 ? "+ Goal" : "Goal"}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-1" align="start">
               {selectedGoals.length === 0 && (
                 <button
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground"
                   onClick={() => setGoalOpen(false)}
                 >
@@ -424,6 +406,7 @@ export function NewProjectDialog() {
               {availableGoals.map((g) => (
                 <button
                   key={g.id}
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 truncate"
                   onClick={() => {
                     setGoalIds((prev) => [...prev, g.id]);
@@ -443,13 +426,14 @@ export function NewProjectDialog() {
 
           {/* Target date */}
           <div className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs">
-            <Calendar className="h-3 w-3 text-muted-foreground" />
+            <Calendar className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <input
               type="date"
               className="bg-transparent outline-none text-xs w-24"
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
               placeholder="Target date"
+              aria-label="Target date"
             />
           </div>
         </div>

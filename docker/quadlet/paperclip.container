@@ -1,0 +1,23 @@
+[Unit]
+Description=Staple AI Agent Orchestrator
+Requires=staple-db.service
+After=staple-db.service
+
+[Container]
+Image=staple-local
+ContainerName=staple
+Pod=staple.pod
+Volume=%h/.local/share/staple:/staple:Z
+Environment=HOST=0.0.0.0
+Environment=STAPLE_HOME=/staple
+Environment=STAPLE_DEPLOYMENT_MODE=authenticated
+Environment=STAPLE_DEPLOYMENT_EXPOSURE=private
+Environment=STAPLE_PUBLIC_URL=http://localhost:3100
+EnvironmentFile=%h/.config/containers/systemd/staple.env
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=120
+
+[Install]
+WantedBy=default.target

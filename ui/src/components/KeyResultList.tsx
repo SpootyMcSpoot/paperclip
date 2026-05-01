@@ -50,6 +50,7 @@ function KeyResultRow({
             className="text-xs bg-transparent border border-border rounded px-1.5 py-0.5 cursor-pointer"
             value={kr.status}
             onChange={(e) => handleStatusChange(e.target.value)}
+            aria-label={`Status for ${kr.title}`}
           >
             {KEY_RESULT_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -59,7 +60,7 @@ function KeyResultRow({
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <Progress value={krProgress} className="flex-1 h-1.5" />
+          <Progress value={krProgress} className="flex-1 h-1.5" aria-label="Key result progress" />
           <span className="text-xs text-muted-foreground shrink-0">
             {krProgress}%
           </span>
@@ -82,23 +83,31 @@ function KeyResultRow({
                 }}
               />
               <button
+                type="button"
                 onClick={handleSaveValue}
                 className="p-0.5 hover:text-foreground"
+                aria-label="Save value"
+                title="Save"
               >
-                <Check className="h-3 w-3" />
+                <Check className="h-3 w-3" aria-hidden="true" />
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setCurrentValue(kr.currentValue);
                   setEditing(false);
                 }}
                 className="p-0.5 hover:text-foreground"
+                aria-label="Cancel edit"
+                title="Cancel"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ) : (
             <button
+              type="button"
+              aria-label={`Edit current value for ${kr.title}`}
               className="hover:text-foreground cursor-pointer"
               onClick={() => setEditing(true)}
             >
@@ -112,10 +121,13 @@ function KeyResultRow({
         </div>
       </div>
       <button
+        type="button"
         onClick={() => onRemove(kr.id)}
         className="p-1 text-muted-foreground hover:text-destructive shrink-0"
+        aria-label={`Remove key result ${kr.title}`}
+        title="Remove key result"
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
     </div>
   );
@@ -164,6 +176,7 @@ function AddKeyResultForm({
         onChange={(e) => setTitle(e.target.value)}
         className="h-8 text-sm"
         autoFocus
+        aria-label="Key result title"
       />
       <div className="flex gap-2">
         <Input
@@ -171,23 +184,27 @@ function AddKeyResultForm({
           value={targetValue}
           onChange={(e) => setTargetValue(e.target.value)}
           className="h-8 text-sm flex-1"
+          aria-label="Target value"
         />
         <Input
           placeholder="Start (0)"
           value={startValue}
           onChange={(e) => setStartValue(e.target.value)}
           className="h-8 text-sm w-24"
+          aria-label="Start value"
         />
         <Input
           placeholder="Unit"
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
           className="h-8 text-sm w-24"
+          aria-label="Unit"
         />
         <select
           className="h-8 text-sm bg-transparent border border-border rounded px-2"
           value={metricType}
           onChange={(e) => setMetricType(e.target.value)}
+          aria-label="Metric type"
         >
           {KEY_RESULT_METRIC_TYPES.map((t) => (
             <option key={t} value={t}>
@@ -236,7 +253,7 @@ export function KeyResultList({
           onClick={() => setShowForm(true)}
           disabled={showForm}
         >
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
+          <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
           Key Result
         </Button>
       </div>

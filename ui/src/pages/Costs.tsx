@@ -88,7 +88,7 @@ function MetricTile({
           <div className="mt-1 text-xs leading-5 text-muted-foreground">{subtitle}</div>
         </div>
         <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-border">
-          <Icon className="h-4 w-4 text-muted-foreground" />
+          <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </div>
       </div>
     </div>
@@ -732,12 +732,22 @@ export function Costs() {
                             <div
                               className={cn("flex items-start justify-between gap-3", hasBreakdown ? "cursor-pointer select-none" : "")}
                               onClick={() => hasBreakdown && toggleAgent(row.agentId)}
+                              role={hasBreakdown ? "button" : undefined}
+                              tabIndex={hasBreakdown ? 0 : undefined}
+                              aria-expanded={hasBreakdown ? isExpanded : undefined}
+                              aria-label={hasBreakdown ? `Toggle model breakdown for ${row.agentName ?? row.agentId}` : undefined}
+                              onKeyDown={hasBreakdown ? (event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  toggleAgent(row.agentId);
+                                }
+                              } : undefined}
                             >
                               <div className="flex min-w-0 items-center gap-2">
                                 {hasBreakdown ? (
                                   isExpanded
-                                    ? <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
-                                    : <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                                    ? <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
+                                    : <ChevronRight className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
                                 ) : (
                                   <span className="h-3 w-3 shrink-0" />
                                 )}
