@@ -50,6 +50,7 @@ describe("ADAPTER_SESSION_MANAGEMENT registry", () => {
   it("contains all known legacy sessioned adapters", () => {
     // Pin set so a future rename or removal breaks loudly here.
     expect([...LEGACY_SESSIONED_ADAPTER_TYPES].sort()).toEqual([
+      "acpx_local",
       "claude_local",
       "codex_local",
       "cursor",
