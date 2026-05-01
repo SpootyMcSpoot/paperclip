@@ -51,16 +51,17 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
 
   return (
     <div className="flex items-start gap-1.5 min-w-0 flex-1">
-      <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+      <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" aria-hidden="true" />
       <button
         type="button"
         className="text-sm font-mono min-w-0 break-all text-left cursor-pointer hover:text-foreground transition-colors"
         onClick={handleCopy}
         title={copied ? "Copied!" : "Click to copy"}
+        aria-label={copied ? `Copied ${value}` : `Copy ${value} to clipboard`}
       >
         {value}
       </button>
-      {copied && <Check className="h-3 w-3 text-green-500 shrink-0 mt-0.5" />}
+      {copied && <Check className="h-3 w-3 text-green-500 shrink-0 mt-0.5" aria-hidden="true" />}
     </div>
   );
 }
@@ -168,7 +169,13 @@ function PropertyPicker({
     return (
       <div>
         <PropertyRow label={label}>
-          <button className={btnCn} onClick={() => onOpenChange(!open)}>
+          <button
+            type="button"
+            className={btnCn}
+            onClick={() => onOpenChange(!open)}
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-expanded={open}
+          >
             {triggerContent}
           </button>
           {extra}
@@ -186,7 +193,14 @@ function PropertyPicker({
     <PropertyRow label={label}>
       <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
-          <button className={btnCn}>{triggerContent}</button>
+          <button
+            type="button"
+            className={btnCn}
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-expanded={open}
+          >
+            {triggerContent}
+          </button>
         </PopoverTrigger>
         <PopoverContent className={cn("p-1", popoverClassName)} align={popoverAlign} collisionPadding={16}>
           {children}
@@ -493,7 +507,7 @@ export function IssueProperties({
     </div>
   ) : (
     <>
-      <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+      <Tag className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">No labels</span>
     </>
   );
@@ -505,7 +519,7 @@ export function IssueProperties({
       aria-label="Add label"
       title="Add label"
     >
-      <Plus className="h-3 w-3" />
+      <Plus className="h-3 w-3" aria-hidden="true" />
     </button>
   ) : undefined;
 
@@ -517,6 +531,7 @@ export function IssueProperties({
         value={labelSearch}
         onChange={(e) => setLabelSearch(e.target.value)}
         autoFocus={!inline}
+        aria-label="Search labels"
       />
       <div className="max-h-44 overflow-y-auto overscroll-contain space-y-0.5">
         {(labels ?? [])
@@ -529,6 +544,9 @@ export function IssueProperties({
             return (
               <button
                 key={label.id}
+                type="button"
+                role="option"
+                aria-selected={selected}
                 className={cn(
                   "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-left",
                   selected && "bg-accent"
@@ -549,15 +567,18 @@ export function IssueProperties({
             type="color"
             value={newLabelColor}
             onChange={(e) => setNewLabelColor(e.target.value)}
+            aria-label="Pick label color"
           />
           <input
             className="flex-1 px-2 py-1.5 text-xs bg-transparent outline-none rounded placeholder:text-muted-foreground/50"
             placeholder="New label"
             value={newLabelName}
             onChange={(e) => setNewLabelName(e.target.value)}
+            aria-label="New label name"
           />
         </div>
         <button
+          type="button"
           className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 text-xs rounded border border-border hover:bg-accent/50 disabled:opacity-50"
           disabled={!newLabelName.trim() || createLabel.isPending}
           onClick={() =>
@@ -567,7 +588,7 @@ export function IssueProperties({
             })
           }
         >
-          <Plus className="h-3 w-3" />
+          <Plus className="h-3 w-3" aria-hidden="true" />
           {createLabel.isPending ? "Creating…" : "Create label"}
         </button>
       </div>
@@ -578,12 +599,12 @@ export function IssueProperties({
     <Identity name={assignee.name} size="sm" />
   ) : assigneeUserLabel ? (
     <>
-      <User className="h-3.5 w-3.5 text-muted-foreground" />
+      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm">{assigneeUserLabel}</span>
     </>
   ) : (
     <>
-      <User className="h-3.5 w-3.5 text-muted-foreground" />
+      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">Unassigned</span>
     </>
   );
@@ -665,9 +686,9 @@ export function IssueProperties({
               }}
             >
               {option.kind === "agent" ? (
-                <AgentIcon icon={option.agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
+                <AgentIcon icon={option.agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" aria-hidden="true" />
               ) : option.kind === "user" ? (
-                <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+                <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               ) : null}
               {option.label}
             </button>
@@ -709,7 +730,7 @@ export function IssueProperties({
             )}
             onClick={() => toggleExecutionParticipant(stageType, `user:${currentUserId}`)}
           >
-            <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+            <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
             Assign to me
           </button>
         )}
@@ -721,7 +742,7 @@ export function IssueProperties({
             )}
             onClick={() => toggleExecutionParticipant(stageType, `user:${issue.createdByUserId}`)}
           >
-            <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+            <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
             {creatorUserLabel ? creatorUserLabel : "Requester"}
           </button>
         )}
@@ -739,7 +760,7 @@ export function IssueProperties({
               )}
               onClick={() => toggleExecutionParticipant(stageType, option.id)}
             >
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               {option.label}
             </button>
           ))}
@@ -759,7 +780,7 @@ export function IssueProperties({
                 )}
                 onClick={() => toggleExecutionParticipant(stageType, encoded)}
               >
-                <AgentIcon icon={agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
+                <AgentIcon icon={agent.icon} className="shrink-0 h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {agent.name}
               </button>
             );
@@ -778,7 +799,7 @@ export function IssueProperties({
     </>
   ) : (
     <>
-      <Hexagon className="h-3.5 w-3.5 text-muted-foreground" />
+      <Hexagon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
       <span className="text-sm text-muted-foreground">No project</span>
     </>
   );
@@ -898,8 +919,10 @@ export function IssueProperties({
       to={`/issues/${parentIdentifier ?? issue.parentId}`}
       className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
       onClick={(e) => e.stopPropagation()}
+      aria-label="Open parent issue"
+      title="Open parent issue"
     >
-      <ArrowUpRight className="h-3 w-3" />
+      <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
     </Link>
   ) : undefined;
   const parentOptions = (allIssues ?? [])
@@ -1033,7 +1056,7 @@ export function IssueProperties({
       className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
       onClick={onClick}
     >
-      <Plus className="h-3 w-3" />
+      <Plus className="h-3 w-3" aria-hidden="true" />
       Add blocker
     </button>
   );
@@ -1083,8 +1106,10 @@ export function IssueProperties({
               to={`/agents/${issue.assigneeAgentId}`}
               className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Open assignee agent"
+              title="Open assignee agent"
             >
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
             </Link>
           ) : undefined}
         >
@@ -1104,8 +1129,10 @@ export function IssueProperties({
               to={projectLink(issue.projectId)!}
               className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Open project"
+              title="Open project"
             >
-              <ArrowUpRight className="h-3 w-3" />
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
             </Link>
           ) : undefined}
         >
@@ -1187,7 +1214,7 @@ export function IssueProperties({
                 className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
                 onClick={onAddSubIssue}
               >
-                <Plus className="h-3 w-3" />
+                <Plus className="h-3 w-3" aria-hidden="true" />
               Add sub-issue
               </button>
             ) : null}
@@ -1268,7 +1295,7 @@ export function IssueProperties({
                   className="inline-flex min-w-0 items-start gap-1 text-sm font-mono text-emerald-700 hover:text-emerald-800 hover:underline dark:text-emerald-300 dark:hover:text-emerald-200"
                 >
                   <span className="min-w-0 break-all">{liveWorkspaceService.url}</span>
-                  <ExternalLink className="mt-1 h-3 w-3 shrink-0" />
+                  <ExternalLink className="mt-1 h-3 w-3 shrink-0" aria-hidden="true" />
                 </a>
               </PropertyRow>
             )}
@@ -1279,7 +1306,7 @@ export function IssueProperties({
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
                   View workspace
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </Link>
               </PropertyRow>
             )}
@@ -1290,7 +1317,7 @@ export function IssueProperties({
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
                   View workspace tasks
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </Link>
               </PropertyRow>
             )}
@@ -1328,7 +1355,7 @@ export function IssueProperties({
               </Link>
             ) : (
               <>
-                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                 <span className="text-sm">{creatorUserLabel ?? "User"}</span>
               </>
             )}

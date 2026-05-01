@@ -124,8 +124,9 @@ export function NewAgentDialog() {
               setShowAdvancedCards(false);
               closeNewAgent();
             }}
+            aria-label="Close dialog"
           >
-            <span className="text-lg leading-none">&times;</span>
+            <span className="text-lg leading-none" aria-hidden="true">&times;</span>
           </Button>
         </div>
 
@@ -135,7 +136,7 @@ export function NewAgentDialog() {
               {/* Recommendation */}
               <div className="text-center space-y-3">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent">
-                  <Bot className="h-6 w-6 text-foreground" />
+                  <Bot className="h-6 w-6 text-foreground" aria-hidden="true" />
                 </div>
                 <p className="text-sm text-muted-foreground">
                   We recommend letting your CEO handle agent setup — they know the
@@ -145,13 +146,14 @@ export function NewAgentDialog() {
               </div>
 
               <Button className="w-full" size="lg" onClick={handleAskCeo}>
-                <Bot className="h-4 w-4 mr-2" />
+                <Bot className="h-4 w-4 mr-2" aria-hidden="true" />
                 Ask the CEO to create a new agent
               </Button>
 
               {/* Advanced link */}
               <div className="text-center">
                 <button
+                  type="button"
                   className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
                   onClick={handleAdvancedConfig}
                 >
@@ -163,10 +165,12 @@ export function NewAgentDialog() {
             <>
               <div className="space-y-2">
                 <button
+                  type="button"
+                  aria-label="Back to agent type selection"
                   className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setShowAdvancedCards(false)}
                 >
-                  <ArrowLeft className="h-3.5 w-3.5" />
+                  <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
                   Back
                 </button>
                 <p className="text-sm text-muted-foreground">
@@ -178,6 +182,8 @@ export function NewAgentDialog() {
                 {adapterGrid.map((opt) => (
                   <button
                     key={opt.value}
+                    type="button"
+                    aria-label={opt.comingSoon ? `${opt.label} (${opt.disabledLabel ?? "coming soon"})` : `Choose ${opt.label} adapter`}
                     className={cn(
                       "flex flex-col items-center gap-1.5 rounded-md border border-border p-3 text-xs transition-colors hover:bg-accent/50 relative",
                       opt.comingSoon && "opacity-40 cursor-not-allowed",
@@ -193,7 +199,7 @@ export function NewAgentDialog() {
                         Recommended
                       </span>
                     )}
-                    <opt.icon className="h-4 w-4" />
+                    <opt.icon className="h-4 w-4" aria-hidden="true" />
                     <span className="font-medium">{opt.label}</span>
                     <span className="text-muted-foreground text-[10px]">
                       {opt.desc}

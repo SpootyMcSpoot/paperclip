@@ -68,7 +68,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               {selectedCompany?.name ?? "Select company"}
             </span>
           </span>
-          <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
+          <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
@@ -78,7 +78,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/company/settings/invites" onClick={closeNavigationChrome}>
-            <UserPlus className="size-4" />
+            <UserPlus className="size-4" aria-hidden="true" />
             <span className="truncate">
               {selectedCompany ? `Invite people to ${selectedCompany.name}` : "Invite people"}
             </span>
@@ -86,7 +86,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/company/settings" onClick={closeNavigationChrome}>
-            <Settings className="size-4" />
+            <Settings className="size-4" aria-hidden="true" />
             <span>Company settings</span>
           </Link>
         </DropdownMenuItem>
@@ -98,7 +98,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               onClick={() => signOutMutation.mutate()}
               disabled={signOutMutation.isPending}
             >
-              <LogOut className="size-4" />
+              <LogOut className="size-4" aria-hidden="true" />
               <span>{signOutMutation.isPending ? "Signing out..." : "Sign out"}</span>
             </DropdownMenuItem>
           </>

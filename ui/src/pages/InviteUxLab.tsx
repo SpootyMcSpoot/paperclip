@@ -456,7 +456,7 @@ function AuthScreenPreview({ mode, error }: { mode: "sign_in" | "sign_up"; error
         <div className="flex min-h-[420px] flex-col justify-center bg-background px-8 py-10">
           <div className="mx-auto w-full max-w-md">
             <div className="mb-8 flex items-center gap-2">
-              <FlaskConical className="h-4 w-4 text-muted-foreground" />
+              <FlaskConical className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <span className="text-sm font-medium">Staple</span>
             </div>
             <h3 className="text-xl font-semibold">
@@ -529,7 +529,7 @@ function CompanyInvitesPreview() {
       <Card className="rounded-[28px] shadow-none">
         <CardHeader className="space-y-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MailPlus className="h-4 w-4" />
+            <MailPlus className="h-4 w-4" aria-hidden="true" />
             Company Invites
           </div>
           <div>
@@ -589,7 +589,7 @@ function CompanyInvitesPreview() {
                 </div>
               </div>
               <div className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
-                <Check className="h-3.5 w-3.5" />
+                <Check className="h-3.5 w-3.5" aria-hidden="true" />
                 Copied
               </div>
             </div>
@@ -601,7 +601,7 @@ function CompanyInvitesPreview() {
             </button>
             <div className="flex flex-wrap gap-2">
               <Button type="button" size="sm" variant="outline">
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 Open invite
               </Button>
             </div>
@@ -701,7 +701,7 @@ export function InviteUxLab() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_320px]">
           <div className="p-6 sm:p-7">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-300">
-              <FlaskConical className="h-3.5 w-3.5" />
+              <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
               Invite UX Lab
             </div>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight">Invite and signup UX review surface</h1>
@@ -754,45 +754,45 @@ export function InviteUxLab() {
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <StatusCard
-            icon={<Loader2 className="h-4 w-4 animate-spin" />}
+            icon={<Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
             title="Loading invite"
             body="Shown while invite summary, deployment mode, or auth session data is still loading."
           />
           <StatusCard
-            icon={<Clock3 className="h-4 w-4" />}
+            icon={<Clock3 className="h-4 w-4" aria-hidden="true" />}
             title="Checking your access"
             body="Shown after sign-in while the app verifies whether the current user already belongs to the invited company."
           />
           <StatusCard
-            icon={<KeyRound className="h-4 w-4" />}
+            icon={<KeyRound className="h-4 w-4" aria-hidden="true" />}
             title="Invalid invite token"
             body="The token is missing entirely, so the page short-circuits before any invite lookup."
             tone="error"
           />
           <StatusCard
-            icon={<Link2 className="h-4 w-4" />}
+            icon={<Link2 className="h-4 w-4" aria-hidden="true" />}
             title="Invite not available"
             body="Used for expired, revoked, already-consumed, or otherwise missing invites."
             tone="warn"
           />
           <StatusCard
-            icon={<ShieldCheck className="h-4 w-4" />}
+            icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
             title="Bootstrap complete"
             body="Result screen for bootstrap CEO invites after setup has been accepted successfully."
             tone="success"
           />
           <StatusCard
-            icon={<ArrowRight className="h-4 w-4" />}
+            icon={<ArrowRight className="h-4 w-4" aria-hidden="true" />}
             title="Auto-accept in progress"
             body="Signed-in human users skip the extra button click and move straight into join submission."
           />
           <StatusCard
-            icon={<Users className="h-4 w-4" />}
+            icon={<Users className="h-4 w-4" aria-hidden="true" />}
             title="Already a member"
             body="Acceptance stays disabled and the page redirects into the company once membership is confirmed."
           />
           <StatusCard
-            icon={<UserPlus className="h-4 w-4" />}
+            icon={<UserPlus className="h-4 w-4" aria-hidden="true" />}
             title="Invite result surfaces"
             body="Both pending-approval and joined-now confirmations are included below with claim and onboarding extras."
             tone="success"

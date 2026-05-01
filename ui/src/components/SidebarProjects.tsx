@@ -190,12 +190,14 @@ export function SidebarProjects() {
                 "h-3 w-3 text-muted-foreground/60 transition-transform opacity-0 group-hover:opacity-100",
                 open && "rotate-90"
               )}
+              aria-hidden="true"
             />
             <span className="text-[10px] font-medium uppercase tracking-widest font-mono text-muted-foreground/60">
               Projects
             </span>
           </CollapsibleTrigger>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               openNewProject();
@@ -203,7 +205,7 @@ export function SidebarProjects() {
             className="flex items-center justify-center h-4 w-4 rounded text-muted-foreground/60 hover:text-foreground hover:bg-accent/50 transition-colors"
             aria-label="New project"
           >
-            <Plus className="h-3 w-3" />
+            <Plus className="h-3 w-3" aria-hidden="true" />
           </button>
         </div>
       </div>

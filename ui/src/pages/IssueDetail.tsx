@@ -114,7 +114,7 @@ import {
   MoreHorizontal,
   MoreVertical,
   PauseCircle,
-  Staple,
+  Paperclip,
   PlayCircle,
   Plus,
   Repeat,
@@ -389,20 +389,20 @@ function IssueDetailLoadingState({
               ) : null}
               {headerSeed.originKind === "routine_execution" && headerSeed.originId ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:text-violet-400 shrink-0">
-                  <Repeat className="h-3 w-3" />
+                  <Repeat className="h-3 w-3" aria-hidden="true" />
                   Routine
                 </span>
               ) : null}
               {headerSeed.projectId ? (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground rounded px-1 -mx-1 py-0.5 min-w-0">
-                  <Hexagon className="h-3 w-3 shrink-0" />
+                  <Hexagon className="h-3 w-3 shrink-0" aria-hidden="true" />
                   <span className="truncate">
                     {headerSeed.projectName ?? headerSeed.projectId.slice(0, 8)}
                   </span>
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
-                  <Hexagon className="h-3 w-3 shrink-0" />
+                  <Hexagon className="h-3 w-3 shrink-0" aria-hidden="true" />
                   No project
                 </span>
               )}
@@ -489,7 +489,7 @@ function InboxMobileToolbar({
         }}
         aria-label="Back to inbox"
       >
-        <ArrowLeft className="h-5 w-5" />
+        <ArrowLeft className="h-5 w-5" aria-hidden="true" />
       </Button>
 
       <div className="ml-auto flex items-center gap-0.5">
@@ -501,14 +501,14 @@ function InboxMobileToolbar({
             disabled={archivePending}
             aria-label="Archive from inbox"
           >
-            <Archive className="h-5 w-5" />
+            <Archive className="h-5 w-5" aria-hidden="true" />
           </Button>
         )}
 
         <Popover open={menuOpen} onOpenChange={setMenuOpen}>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon-sm" aria-label="More actions">
-              <MoreVertical className="h-5 w-5" />
+              <MoreVertical className="h-5 w-5" aria-hidden="true" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-44 p-1" align="end">
@@ -516,14 +516,14 @@ function InboxMobileToolbar({
               className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
               onClick={() => { onCopy(); setMenuOpen(false); }}
             >
-              <Copy className="h-3 w-3" />
+              <Copy className="h-3 w-3" aria-hidden="true" />
               Copy as markdown
             </button>
             <button
               className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
               onClick={() => { onProperties(); setMenuOpen(false); }}
             >
-              <SlidersHorizontal className="h-3 w-3" />
+              <SlidersHorizontal className="h-3 w-3" aria-hidden="true" />
               Properties
             </button>
             {issueIdProp && (
@@ -531,7 +531,7 @@ function InboxMobileToolbar({
                 className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-destructive"
                 onClick={() => { onHide(); setMenuOpen(false); }}
               >
-                <EyeOff className="h-3 w-3" />
+                <EyeOff className="h-3 w-3" aria-hidden="true" />
                 Hide this issue
               </button>
             )}
@@ -2738,7 +2738,7 @@ export function IssueDetail() {
           attachmentDragActive && "border-primary bg-primary/5",
         )}
       >
-        <Paperclip className="h-3.5 w-3.5 mr-1.5" />
+        <Paperclip className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
         {uploadAttachment.isPending || importMarkdownDocument.isPending ? "Uploading..." : (
           <>
             <span className="hidden sm:inline">Upload attachment</span>
@@ -2756,7 +2756,7 @@ export function IssueDetail() {
         <nav className="flex items-center gap-1 text-xs text-muted-foreground flex-wrap">
           {[...ancestors].reverse().map((ancestor, i) => (
             <span key={ancestor.id} className="flex items-center gap-1">
-              {i > 0 && <ChevronRight className="h-3 w-3 shrink-0" />}
+              {i > 0 && <ChevronRight className="h-3 w-3 shrink-0" aria-hidden="true" />}
               <Link
                 to={createIssueDetailPath(ancestor.identifier ?? ancestor.id)}
                 state={resolvedIssueDetailState ?? location.state}
@@ -2773,14 +2773,14 @@ export function IssueDetail() {
               </Link>
             </span>
           ))}
-          <ChevronRight className="h-3 w-3 shrink-0" />
+          <ChevronRight className="h-3 w-3 shrink-0" aria-hidden="true" />
           <span className="text-foreground/60 truncate max-w-[200px]">{issue.title}</span>
         </nav>
       )}
 
       {issue.hiddenAt && (
         <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          <EyeOff className="h-4 w-4 shrink-0" />
+          <EyeOff className="h-4 w-4 shrink-0" aria-hidden="true" />
           This issue is hidden
         </div>
       )}
@@ -2880,7 +2880,7 @@ export function IssueDetail() {
               to={`/routines/${issue.originId}`}
               className="inline-flex items-center gap-1 rounded-full bg-violet-500/10 border border-violet-500/30 px-2 py-0.5 text-[10px] font-medium text-violet-600 dark:text-violet-400 shrink-0 hover:bg-violet-500/20 transition-colors"
             >
-              <Repeat className="h-3 w-3" />
+              <Repeat className="h-3 w-3" aria-hidden="true" />
               Routine
             </Link>
           )}
@@ -2890,12 +2890,12 @@ export function IssueDetail() {
               to={`/projects/${issue.projectId}`}
               className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors rounded px-1 -mx-1 py-0.5 min-w-0"
             >
-              <Hexagon className="h-3 w-3 shrink-0" />
+              <Hexagon className="h-3 w-3 shrink-0" aria-hidden="true" />
               <span className="truncate">{resolvedProject?.name ?? issue.project?.name ?? issue.projectId.slice(0, 8)}</span>
             </Link>
           ) : (
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground opacity-50 px-1 -mx-1 py-0.5">
-              <Hexagon className="h-3 w-3 shrink-0" />
+              <Hexagon className="h-3 w-3 shrink-0" aria-hidden="true" />
               No project
             </span>
           )}
@@ -2928,16 +2928,18 @@ export function IssueDetail() {
                 size="icon-xs"
                 onClick={copyIssueToClipboard}
                 title="Copy issue as markdown"
+                aria-label={copied ? "Copied issue" : "Copy issue as markdown"}
               >
-                {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? <Check className="h-4 w-4 text-green-500" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
               </Button>
               <Button
                 variant="ghost"
                 size="icon-xs"
                 onClick={() => setMobilePropsOpen(true)}
                 title="Properties"
+                aria-label="Open properties"
               >
-                <SlidersHorizontal className="h-4 w-4" />
+                <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
           )}
@@ -2954,7 +2956,7 @@ export function IssueDetail() {
                 title="Archive from inbox"
                 aria-label="Archive from inbox"
               >
-                <Archive className="h-4 w-4" />
+                <Archive className="h-4 w-4" aria-hidden="true" />
               </Button>
             )}
             <Button
@@ -2962,8 +2964,9 @@ export function IssueDetail() {
               size="icon-xs"
               onClick={copyIssueToClipboard}
               title="Copy issue as markdown"
+              aria-label={copied ? "Copied issue" : "Copy issue as markdown"}
             >
-              {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+              {copied ? <Check className="h-4 w-4 text-green-500" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
@@ -2974,8 +2977,9 @@ export function IssueDetail() {
               )}
               onClick={() => setPanelVisible(true)}
               title="Show properties"
+              aria-label="Show properties panel"
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
             </Button>
 
             <Popover open={moreOpen} onOpenChange={setMoreOpen}>
@@ -2993,7 +2997,7 @@ export function IssueDetail() {
                     }
                   }}
                 >
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </PopoverTrigger>
             <PopoverContent className="w-52 p-1" align="end">
@@ -3008,7 +3012,7 @@ export function IssueDetail() {
                       setMoreOpen(false);
                     }}
                   >
-                    <PauseCircle className="h-3 w-3" />
+                    <PauseCircle className="h-3 w-3" aria-hidden="true" />
                     Pause subtree...
                   </button>
                   {canResumeSubtree ? (
@@ -3021,7 +3025,7 @@ export function IssueDetail() {
                         setMoreOpen(false);
                       }}
                     >
-                      <PlayCircle className="h-3 w-3" />
+                      <PlayCircle className="h-3 w-3" aria-hidden="true" />
                       Resume subtree
                     </button>
                   ) : null}
@@ -3034,7 +3038,7 @@ export function IssueDetail() {
                       setMoreOpen(false);
                     }}
                   >
-                    <XCircle className="h-3 w-3" />
+                    <XCircle className="h-3 w-3" aria-hidden="true" />
                     Cancel subtree...
                   </button>
                   {canRestoreSubtree ? (
@@ -3048,7 +3052,7 @@ export function IssueDetail() {
                         setMoreOpen(false);
                       }}
                     >
-                      <Repeat className="h-3 w-3" />
+                      <Repeat className="h-3 w-3" aria-hidden="true" />
                       Restore subtree...
                     </button>
                   ) : null}
@@ -3064,7 +3068,7 @@ export function IssueDetail() {
                   setMoreOpen(false);
                 }}
               >
-                <EyeOff className="h-3 w-3" />
+                <EyeOff className="h-3 w-3" aria-hidden="true" />
                 Hide this Issue
               </button>
             </PopoverContent>
@@ -3165,7 +3169,7 @@ export function IssueDetail() {
       ) : (
         <div className="flex flex-wrap items-center justify-end gap-2 min-w-0">
           <Button variant="outline" size="sm" onClick={openNewSubIssue} className="shrink-0 shadow-none">
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             New Sub-issue
           </Button>
         </div>
@@ -3230,11 +3234,22 @@ export function IssueDetail() {
             {imageAttachments.map((attachment) => (
               <div
                 key={attachment.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${attachment.originalFilename ?? "attachment"} in gallery`}
                 className="group relative aspect-square rounded-lg overflow-hidden border border-border bg-accent/10 cursor-pointer"
                 onClick={() => {
                   const idx = imageAttachments.findIndex((a) => a.id === attachment.id);
                   setGalleryIndex(idx >= 0 ? idx : 0);
                   setGalleryOpen(true);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    const idx = imageAttachments.findIndex((a) => a.id === attachment.id);
+                    setGalleryIndex(idx >= 0 ? idx : 0);
+                    setGalleryOpen(true);
+                  }
                 }}
               >
                 <img
@@ -3285,7 +3300,7 @@ export function IssueDetail() {
                     }}
                     title="Delete attachment"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -3314,7 +3329,7 @@ export function IssueDetail() {
                     disabled={deleteAttachment.isPending}
                     title="Delete attachment"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
@@ -3345,15 +3360,15 @@ export function IssueDetail() {
       <Tabs value={detailTab} onValueChange={setDetailTab} className="space-y-3">
         <TabsList variant="line" className="w-full justify-start gap-1">
           <TabsTrigger value="chat" className="gap-1.5">
-            <MessageSquare className="h-3.5 w-3.5" />
+            <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
             Chat
           </TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5">
-            <ActivityIcon className="h-3.5 w-3.5" />
+            <ActivityIcon className="h-3.5 w-3.5" aria-hidden="true" />
             Activity
           </TabsTrigger>
           <TabsTrigger value="related-work" className="gap-1.5">
-            <ListTree className="h-3.5 w-3.5" />
+            <ListTree className="h-3.5 w-3.5" aria-hidden="true" />
             Related work
           </TabsTrigger>
           {issuePluginTabItems.map((item) => (
@@ -3500,7 +3515,7 @@ export function IssueDetail() {
                     {treePreviewAffectedAgentRows.map(({ agentId, agent }) => (
                       <div key={agentId} className="flex items-center gap-2 rounded-sm px-1 py-1 text-sm hover:bg-accent/50">
                         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border bg-background">
-                          <AgentIcon icon={agent?.icon} className="h-3.5 w-3.5 text-muted-foreground" />
+                          <AgentIcon icon={agent?.icon} className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                         </span>
                         <span className="min-w-0 flex-1 truncate">{agent?.name ?? agentId.slice(0, 8)}</span>
                       </div>

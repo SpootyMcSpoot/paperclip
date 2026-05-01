@@ -217,6 +217,7 @@ export function ScheduleEditor({
             }}
             placeholder="0 10 * * *"
             className="font-mono text-sm"
+            aria-label="Custom cron expression"
           />
           <p className="text-xs text-muted-foreground">
             Five fields: minute hour day-of-month month day-of-week

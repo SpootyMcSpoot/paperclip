@@ -234,7 +234,7 @@ export function NewAgent() {
                 )}
                 disabled={isFirstAgent}
               >
-                <Shield className="h-3 w-3 text-muted-foreground" />
+                <Shield className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {roleLabels[effectiveRole] ?? effectiveRole}
               </button>
             </PopoverTrigger>

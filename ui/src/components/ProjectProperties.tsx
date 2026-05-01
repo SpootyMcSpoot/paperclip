@@ -60,7 +60,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "saving") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-        <Loader2 className="h-3 w-3 animate-spin" />
+        <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
         Saving
       </span>
     );
@@ -68,7 +68,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "saved") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-green-600 dark:text-green-400">
-        <Check className="h-3 w-3" />
+        <Check className="h-3 w-3" aria-hidden="true" />
         Saved
       </span>
     );
@@ -76,7 +76,7 @@ function SaveIndicator({ state }: { state: ProjectFieldSaveState }) {
   if (state === "error") {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] text-destructive">
-        <AlertCircle className="h-3 w-3" />
+        <AlertCircle className="h-3 w-3" aria-hidden="true" />
         Failed
       </span>
     );
@@ -128,6 +128,9 @@ function ProjectStatusPicker({ status, onChange }: { status: string; onChange: (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          type="button"
+          aria-label={`Change status (current: ${status.replace("_", " ")})`}
+          aria-expanded={open}
           className={cn(
             "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap shrink-0 cursor-pointer hover:opacity-80 transition-opacity",
             colorClass,
@@ -178,7 +181,7 @@ function ArchiveDangerZone({
       </p>
       {archivePending ? (
         <Button size="sm" variant="destructive" disabled>
-          <Loader2 className="h-3 w-3 animate-spin mr-1" />
+          <Loader2 className="h-3 w-3 animate-spin mr-1" aria-hidden="true" />
           {isArchive ? "Archiving..." : "Unarchiving..."}
         </Button>
       ) : confirming ? (
@@ -211,9 +214,9 @@ function ArchiveDangerZone({
           onClick={() => setConfirming(true)}
         >
           {isArchive ? (
-            <><Archive className="h-3 w-3 mr-1" />{action} project</>
+            <><Archive className="h-3 w-3 mr-1" aria-hidden="true" />{action} project</>
           ) : (
-            <><ArchiveRestore className="h-3 w-3 mr-1" />{action} project</>
+            <><ArchiveRestore className="h-3 w-3 mr-1" aria-hidden="true" />{action} project</>
           )}
         </Button>
       )}
@@ -576,7 +579,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={() => removeGoal(goal.id)}
                       aria-label={`Remove goal ${goal.title}`}
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-3 w-3" aria-hidden="true" />
                     </button>
                   )}
                 </span>
@@ -592,7 +595,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                   className={cn("h-6 w-fit px-2", linkedGoals.length > 0 && "ml-1")}
                   disabled={availableGoals.length === 0}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
+                  <Plus className="h-3 w-3 mr-1" aria-hidden="true" />
                   Goal
                 </Button>
               </PopoverTrigger>
@@ -605,6 +608,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                   availableGoals.map((goal) => (
                     <button
                       key={goal.id}
+                      type="button"
                       className="flex items-center w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
                       onClick={() => addGoal(goal.id)}
                     >
@@ -682,13 +686,13 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       rel="noreferrer"
                       className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:underline"
                     >
-                      <Github className="h-3 w-3 shrink-0" />
+                      <Github className="h-3 w-3 shrink-0" aria-hidden="true" />
                       <span className="break-all min-w-0">{formatRepoUrl(codebase.repoUrl)}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
+                      <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
                     </a>
                   ) : (
                     <div className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-                      <Github className="h-3 w-3 shrink-0" />
+                      <Github className="h-3 w-3 shrink-0" aria-hidden="true" />
                       <span className="break-all min-w-0">{codebase.repoUrl}</span>
                     </div>
                   )}
@@ -711,7 +715,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={clearRepoWorkspace}
                       aria-label="Clear repo"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -765,7 +769,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       onClick={clearLocalWorkspace}
                       aria-label="Clear local folder"
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
                     </Button>
                   ) : null}
                 </div>

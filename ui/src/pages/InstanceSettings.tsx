@@ -167,7 +167,7 @@ export function InstanceSettings() {
     <div className="max-w-5xl space-y-6">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Settings className="h-5 w-5 text-muted-foreground" />
+          <Settings className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">Scheduler Heartbeats</h1>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -256,8 +256,9 @@ export function InstanceSettings() {
                             to={buildAgentHref(agent)}
                             className="text-muted-foreground hover:text-foreground"
                             title="Full agent config"
+                            aria-label="Full agent config"
                           >
-                            <ExternalLink className="h-3.5 w-3.5" />
+                            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                           </Link>
                           <Button
                             variant="ghost"

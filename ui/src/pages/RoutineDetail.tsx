@@ -171,7 +171,7 @@ function TriggerEditor({
     <div className="rounded-lg border border-border p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium">
-          {trigger.kind === "schedule" ? <Clock3 className="h-3.5 w-3.5" /> : trigger.kind === "webhook" ? <Webhook className="h-3.5 w-3.5" /> : <Zap className="h-3.5 w-3.5" />}
+          {trigger.kind === "schedule" ? <Clock3 className="h-3.5 w-3.5" aria-hidden="true" /> : trigger.kind === "webhook" ? <Webhook className="h-3.5 w-3.5" aria-hidden="true" /> : <Zap className="h-3.5 w-3.5" aria-hidden="true" />}
           {trigger.label ?? trigger.kind}
         </div>
         <span className="text-xs text-muted-foreground">
@@ -236,7 +236,7 @@ function TriggerEditor({
         <div className="ml-auto flex items-center gap-2">
           {trigger.kind === "webhook" && (
             <Button variant="outline" size="sm" onClick={() => onRotate(trigger.id)}>
-              <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+              <RefreshCw className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               Rotate secret
             </Button>
           )}
@@ -245,7 +245,7 @@ function TriggerEditor({
             size="sm"
             onClick={() => onSave(trigger.id, buildRoutineTriggerPatch(trigger, draft, getLocalTimezone()))}
           >
-            <Save className="mr-1.5 h-3.5 w-3.5" />
+            <Save className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             Save trigger
           </Button>
           <Button
@@ -253,8 +253,10 @@ function TriggerEditor({
             size="sm"
             className="text-muted-foreground hover:text-destructive"
             onClick={() => onDelete(trigger.id)}
+            aria-label="Delete trigger"
+            title="Delete trigger"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
           </Button>
         </div>
       </div>
@@ -759,14 +761,14 @@ export function RoutineDetail() {
             <div className="flex items-center gap-2">
               <Input value={secretMessage.webhookUrl} readOnly className="flex-1" />
               <Button variant="outline" size="sm" onClick={() => copySecretValue("Webhook URL", secretMessage.webhookUrl)}>
-                <Copy className="h-3.5 w-3.5 mr-1" />
+                <Copy className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                 URL
               </Button>
             </div>
             <div className="flex items-center gap-2">
               <Input value={secretMessage.webhookSecret} readOnly className="flex-1" />
               <Button variant="outline" size="sm" onClick={() => copySecretValue("Webhook secret", secretMessage.webhookSecret)}>
-                <Copy className="h-3.5 w-3.5 mr-1" />
+                <Copy className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                 Secret
               </Button>
             </div>
@@ -808,7 +810,7 @@ export function RoutineDetail() {
               option ? (
                 currentAssignee ? (
                   <>
-                    <AgentIcon icon={currentAssignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <AgentIcon icon={currentAssignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                     <span className="truncate">{option.label}</span>
                   </>
                 ) : (
@@ -823,7 +825,7 @@ export function RoutineDetail() {
               const assignee = agentById.get(option.id);
               return (
                 <>
-                  {assignee ? <AgentIcon icon={assignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null}
+                  {assignee ? <AgentIcon icon={assignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null}
                   <span className="truncate">{option.label}</span>
                 </>
               );
@@ -900,7 +902,7 @@ export function RoutineDetail() {
       <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
         <CollapsibleTrigger className="flex w-full items-center justify-between text-left">
           <span className="text-sm font-medium">Advanced delivery settings</span>
-          {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+          {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-3">
           <div className="grid gap-4 md:grid-cols-2">
@@ -953,7 +955,7 @@ export function RoutineDetail() {
           onClick={() => saveRoutine.mutate()}
           disabled={saveRoutine.isPending || !editDraft.title.trim()}
         >
-          <Save className="mr-2 h-4 w-4" />
+          <Save className="mr-2 h-4 w-4" aria-hidden="true" />
           Save routine
         </Button>
       </div>
@@ -964,16 +966,16 @@ export function RoutineDetail() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList variant="line" className="w-full justify-start gap-1">
           <TabsTrigger value="triggers" className="gap-1.5">
-            <Clock3 className="h-3.5 w-3.5" />
+            <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
             Triggers
           </TabsTrigger>
           <TabsTrigger value="runs" className="gap-1.5">
-            <Play className="h-3.5 w-3.5" />
+            <Play className="h-3.5 w-3.5" aria-hidden="true" />
             Runs
             {hasLiveRun && <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />}
           </TabsTrigger>
 <TabsTrigger value="activity" className="gap-1.5">
-            <ActivityIcon className="h-3.5 w-3.5" />
+            <ActivityIcon className="h-3.5 w-3.5" aria-hidden="true" />
             Activity
           </TabsTrigger>
         </TabsList>

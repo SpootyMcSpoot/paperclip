@@ -123,7 +123,7 @@ export function OutputFeedbackButtons({
           className={cn(visibleVote === "up" && "border-green-600/50 bg-green-500/10 text-green-700")}
           onClick={() => handleVote("up")}
         >
-          <ThumbsUp className="mr-1.5 h-3.5 w-3.5" />
+          <ThumbsUp className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
           Helpful
         </Button>
         <Button
@@ -134,7 +134,7 @@ export function OutputFeedbackButtons({
           className={cn(visibleVote === "down" && "border-amber-600/50 bg-amber-500/10 text-amber-800")}
           onClick={() => handleVote("down")}
         >
-          <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
+          <ThumbsDown className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
           Needs work
         </Button>
         {rightSlot ? <div className="ml-auto">{rightSlot}</div> : null}
@@ -148,6 +148,7 @@ export function OutputFeedbackButtons({
             placeholder="Add a short note"
             className="min-h-20 resize-y bg-background"
             disabled={disabled || isSaving}
+            aria-label="What could have been better?"
           />
           <div className="mt-3 flex items-center justify-end gap-2">
             <Button

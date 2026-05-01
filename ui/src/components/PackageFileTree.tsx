@@ -227,6 +227,7 @@ export function PackageFileTree({
                       ref={(el) => { if (el) el.indeterminate = someChecked && !allChecked; }}
                       onChange={() => onToggleCheck?.(node.path, "dir")}
                       className="mr-2 accent-foreground"
+                      aria-label={`Select all files in ${node.name}`}
                     />
                   </label>
                 )}
@@ -234,12 +235,13 @@ export function PackageFileTree({
                   type="button"
                   className="flex min-w-0 items-center gap-2 py-1 text-left"
                   onClick={() => onToggleDir(node.path)}
+                  aria-expanded={expanded}
                 >
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                     {expanded ? (
-                      <FolderOpen className="h-3.5 w-3.5" />
+                      <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                     ) : (
-                      <Folder className="h-3.5 w-3.5" />
+                      <Folder className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
                   </span>
                   <span className={cn("min-w-0", wrapLabels ? "break-all leading-4" : "truncate")}>
@@ -250,11 +252,13 @@ export function PackageFileTree({
                   type="button"
                   className="flex h-9 w-9 items-center justify-center self-center rounded-sm text-muted-foreground opacity-70 transition-[background-color,color,opacity] hover:bg-accent hover:text-foreground group-hover:opacity-100"
                   onClick={() => onToggleDir(node.path)}
+                  aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+                  aria-expanded={expanded}
                 >
                   {expanded ? (
-                    <ChevronDown className="h-3.5 w-3.5" />
+                    <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
                   ) : (
-                    <ChevronRight className="h-3.5 w-3.5" />
+                    <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
                   )}
                 </button>
               </div>
@@ -284,6 +288,9 @@ export function PackageFileTree({
         return (
           <div
             key={node.path}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${node.name}`}
             className={cn(
               "flex w-full items-center gap-1 pr-3 text-left text-sm text-muted-foreground hover:bg-accent/30 hover:text-foreground cursor-pointer",
               TREE_ROW_HEIGHT_CLASS,
@@ -294,6 +301,12 @@ export function PackageFileTree({
               paddingInlineStart: `${TREE_BASE_INDENT + depth * TREE_STEP_INDENT - 8}px`,
             }}
             onClick={() => onSelectFile(node.path)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onSelectFile(node.path);
+              }
+            }}
           >
             {showCheckboxes && (
               <label className="flex items-center pl-2">
@@ -302,6 +315,7 @@ export function PackageFileTree({
                   checked={checked}
                   onChange={() => onToggleCheck?.(node.path, "file")}
                   className="mr-2 accent-foreground"
+                  aria-label={`Select file ${node.name}`}
                 />
               </label>
             )}
@@ -311,7 +325,7 @@ export function PackageFileTree({
               onClick={() => onSelectFile(node.path)}
             >
               <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                <FileIcon className="h-3.5 w-3.5" />
+                <FileIcon className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
               <span className={cn("min-w-0", wrapLabels ? "break-all leading-4" : "truncate")}>
                 {node.name}

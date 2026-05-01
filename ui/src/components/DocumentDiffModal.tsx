@@ -189,7 +189,7 @@ export function DocumentDiffModal({
                 value={effectiveLeftId ?? ""}
                 onValueChange={(value) => setLeftRevisionId(value)}
               >
-                <SelectTrigger className="h-7 w-60 text-xs border-border/60">
+                <SelectTrigger className="h-7 w-60 text-xs border-border/60" aria-label="Old revision">
                   <SelectValue placeholder="Select revision" />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,7 +207,7 @@ export function DocumentDiffModal({
                 value={effectiveRightId ?? ""}
                 onValueChange={(value) => setRightRevisionId(value)}
               >
-                <SelectTrigger className="h-7 w-60 text-xs border-border/60">
+                <SelectTrigger className="h-7 w-60 text-xs border-border/60" aria-label="New revision">
                   <SelectValue placeholder="Select revision" />
                 </SelectTrigger>
                 <SelectContent>

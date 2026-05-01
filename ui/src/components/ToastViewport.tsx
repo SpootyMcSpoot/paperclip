@@ -37,8 +37,12 @@ function AnimatedToast({
     return () => cancelAnimationFrame(frame);
   }, []);
 
+  const isError = toast.tone === "error";
+
   return (
     <li
+      role={isError ? "alert" : undefined}
+      aria-live={isError ? "assertive" : undefined}
       className={cn(
         "pointer-events-auto rounded-sm border shadow-lg backdrop-blur-xl transition-[transform,opacity] duration-200 ease-out",
         visible
@@ -72,7 +76,7 @@ function AnimatedToast({
           onClick={() => onDismiss(toast.id)}
           className="mt-0.5 shrink-0 rounded p-1 opacity-50 hover:bg-black/10 hover:opacity-100 dark:hover:bg-white/10"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </div>
     </li>

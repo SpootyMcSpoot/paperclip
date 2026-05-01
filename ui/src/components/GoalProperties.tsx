@@ -57,7 +57,11 @@ function PickerButton({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="cursor-pointer hover:opacity-80 transition-opacity">
+        <button
+          type="button"
+          aria-expanded={open}
+          className="cursor-pointer hover:opacity-80 transition-opacity"
+        >
           {children}
         </button>
       </PopoverTrigger>
@@ -104,6 +108,7 @@ function DatePropertyRow({
           onChange(v ? new Date(v).toISOString() : null);
         }}
         className="h-7 text-xs w-36 px-2"
+        aria-label={rowLabel}
       />
     </PropertyRow>
   );

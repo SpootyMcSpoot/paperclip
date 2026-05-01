@@ -108,8 +108,8 @@ export function IssueFiltersPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant={buttonVariant} size={iconOnly ? "icon" : "sm"} className={`text-xs ${iconOnly ? "relative h-8 w-8 shrink-0" : ""} ${activeFilterCount > 0 ? "text-blue-600 dark:text-blue-400" : ""}`} title={iconOnly ? (activeFilterCount > 0 ? `Filters: ${activeFilterCount}` : "Filter") : undefined}>
-          <Filter className={iconOnly ? "h-3.5 w-3.5" : "h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1"} />
+        <Button variant={buttonVariant} size={iconOnly ? "icon" : "sm"} className={`text-xs ${iconOnly ? "relative h-8 w-8 shrink-0" : ""} ${activeFilterCount > 0 ? "text-blue-600 dark:text-blue-400" : ""}`} title={iconOnly ? (activeFilterCount > 0 ? `Filters: ${activeFilterCount}` : "Filter") : undefined} aria-label={activeFilterCount > 0 ? `Filters: ${activeFilterCount}` : "Filter"}>
+          <Filter className={iconOnly ? "h-3.5 w-3.5" : "h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1"} aria-hidden="true" />
           {!iconOnly && <span className="hidden sm:inline">{activeFilterCount > 0 ? `Filters: ${activeFilterCount}` : "Filter"}</span>}
           {!iconOnly && activeFilterCount > 0 ? <span className="ml-0.5 text-[10px] font-medium sm:hidden">{activeFilterCount}</span> : null}
           {iconOnly && activeFilterCount > 0 ? <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white">{activeFilterCount}</span> : null}
@@ -151,6 +151,7 @@ export function IssueFiltersPopover({
                   <button
                     key={preset.label}
                     type="button"
+                    aria-pressed={isActive}
                     className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
                       isActive
                         ? "border-primary bg-primary text-primary-foreground"
@@ -219,7 +220,7 @@ export function IssueFiltersPopover({
                         checked={state.assignees.includes("__me")}
                         onCheckedChange={() => onChange({ assignees: toggleIssueFilterValue(state.assignees, "__me") })}
                       />
-                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                      <User className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                       <span className="text-sm">Me</span>
                     </label>
                   ) : null}
@@ -242,7 +243,7 @@ export function IssueFiltersPopover({
                     <div className="flex flex-wrap gap-1">
                       {selectedCreatorOptions.map((creator) => (
                         <Badge key={creator.id} variant="secondary" className="gap-1 pr-1">
-                          {creator.kind === "agent" ? <Bot className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                          {creator.kind === "agent" ? <Bot className="h-3 w-3" aria-hidden="true" /> : <User className="h-3 w-3" aria-hidden="true" />}
                           <span>{creator.label}</span>
                           <button
                             type="button"
@@ -250,14 +251,14 @@ export function IssueFiltersPopover({
                             onClick={() => onChange({ creators: state.creators.filter((value) => value !== creator.id) })}
                             aria-label={`Remove creator ${creator.label}`}
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3 w-3" aria-hidden="true" />
                           </button>
                         </Badge>
                       ))}
                     </div>
                   ) : null}
                   <div className="relative">
-                    <Search className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+                    <Search className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                     <Input
                       value={creatorSearch}
                       onChange={(event) => setCreatorSearch(event.target.value)}
@@ -272,14 +273,15 @@ export function IssueFiltersPopover({
                         <button
                           key={creator.id}
                           type="button"
+                          aria-pressed={selected}
                           className={`flex w-full items-center gap-2 rounded-sm px-2 py-1 text-left text-sm ${
                             selected ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                           }`}
                           onClick={() => onChange({ creators: toggleIssueFilterValue(state.creators, creator.id) })}
                         >
-                          {creator.kind === "agent" ? <Bot className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
+                          {creator.kind === "agent" ? <Bot className="h-3.5 w-3.5" aria-hidden="true" /> : <User className="h-3.5 w-3.5" aria-hidden="true" />}
                           <span className="min-w-0 flex-1 truncate">{creator.label}</span>
-                          {selected ? <X className="h-3 w-3" /> : null}
+                          {selected ? <X className="h-3 w-3" aria-hidden="true" /> : null}
                         </button>
                       );
                     }) : (
@@ -336,7 +338,7 @@ export function IssueFiltersPopover({
                           checked={state.workspaces.includes(workspace.id)}
                           onCheckedChange={() => onChange({ workspaces: toggleIssueFilterValue(state.workspaces, workspace.id) })}
                         />
-                        <HardDrive className="h-3.5 w-3.5 text-muted-foreground" />
+                        <HardDrive className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                         <span className="text-sm">{workspace.name}</span>
                       </label>
                     ))}

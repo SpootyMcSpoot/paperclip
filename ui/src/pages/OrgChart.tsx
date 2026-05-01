@@ -445,13 +445,13 @@ export function OrgChart() {
       <div className="mb-2 flex shrink-0 flex-wrap items-center justify-start gap-2">
         <Link to="/company/import">
           <Button variant="outline" size="sm">
-            <Upload className="mr-1.5 h-3.5 w-3.5" />
+            <Upload className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             Import company
           </Button>
         </Link>
         <Link to="/company/export">
           <Button variant="outline" size="sm">
-            <Download className="mr-1.5 h-3.5 w-3.5" />
+            <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             Export company
           </Button>
         </Link>
@@ -491,7 +491,7 @@ export function OrgChart() {
             title="Zoom in"
             aria-label="Zoom in"
           >
-            <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Plus className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
           <button
             className="flex size-9 items-center justify-center rounded border border-border bg-background text-sm transition-colors hover:bg-accent sm:size-7"
@@ -507,7 +507,7 @@ export function OrgChart() {
             title="Zoom out"
             aria-label="Zoom out"
           >
-            <Minus className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Minus className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
           <button
             className="flex size-9 items-center justify-center rounded border border-border bg-background text-[10px] transition-colors hover:bg-accent sm:size-7"
@@ -515,7 +515,7 @@ export function OrgChart() {
             title="Fit to screen"
             aria-label="Fit chart to screen"
           >
-            <Maximize2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+            <Maximize2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
           </button>
         </div>
 
@@ -565,6 +565,9 @@ export function OrgChart() {
               <div
                 key={node.id}
                 data-org-card
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${agent?.name ?? node.id}`}
                 className="absolute bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-foreground/20 transition-[box-shadow,border-color] duration-150 cursor-pointer select-none"
                 style={{
                   left: node.x,
@@ -573,6 +576,12 @@ export function OrgChart() {
                   minHeight: CARD_H,
                 }}
                 onClick={() => navigate(agent ? agentUrl(agent) : `/agents/${node.id}`)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    navigate(agent ? agentUrl(agent) : `/agents/${node.id}`);
+                  }
+                }}
                 onClickCapture={(e) => {
                   if (!suppressNextCardClick.current) return;
                   suppressNextCardClick.current = false;
@@ -584,7 +593,7 @@ export function OrgChart() {
                   {/* Agent icon + status dot */}
                   <div className="relative shrink-0">
                     <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center">
-                      <AgentIcon icon={agent?.icon} className="h-4.5 w-4.5 text-foreground/70" />
+                      <AgentIcon icon={agent?.icon} className="h-4.5 w-4.5 text-foreground/70" aria-hidden="true" />
                     </div>
                     <span
                       className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card"

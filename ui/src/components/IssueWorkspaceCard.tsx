@@ -86,9 +86,10 @@ function CopyableInline({ value, label, mono }: { value: string; label?: string;
         type="button"
         className="shrink-0 p-0.5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground opacity-0 group-hover/copy:opacity-100 focus:opacity-100"
         onClick={handleCopy}
+        aria-label={copied ? "Copied" : "Copy to clipboard"}
         title={copied ? "Copied!" : "Copy"}
       >
-        {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+        {copied ? <Check className="h-3 w-3 text-green-500" aria-hidden="true" /> : <Copy className="h-3 w-3" aria-hidden="true" />}
       </button>
     </span>
   );
@@ -373,7 +374,7 @@ export function IssueWorkspaceCard({
       {/* Header row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />
+          <GitBranch className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
           {activeNonDefaultWorkspace && workspace
             ? workspaceModeLabel(workspace.mode)
             : configuredWorkspaceLabel(currentSelection, selectedReusableExecutionWorkspace)}
@@ -388,7 +389,7 @@ export function IssueWorkspaceCard({
                 className="h-6 px-2 text-xs text-muted-foreground"
                 onClick={handleCancel}
               >
-                <X className="h-3 w-3 mr-1" />Cancel
+                <X className="h-3 w-3 mr-1" aria-hidden="true" />Cancel
               </Button>
               <Button
                 size="sm"
@@ -406,7 +407,7 @@ export function IssueWorkspaceCard({
               className="h-6 px-2 text-xs text-muted-foreground"
               onClick={() => setEditing(true)}
             >
-              <Pencil className="h-3 w-3 mr-1" />Edit
+              <Pencil className="h-3 w-3 mr-1" aria-hidden="true" />Edit
             </Button>
           )}
         </div>
@@ -417,13 +418,13 @@ export function IssueWorkspaceCard({
         <div className="space-y-1.5 text-xs">
           {workspace?.branchName && (
             <div className="flex items-center gap-1.5">
-              <GitBranch className="h-3 w-3 text-muted-foreground shrink-0" />
+              <GitBranch className="h-3 w-3 text-muted-foreground shrink-0" aria-hidden="true" />
               <CopyableInline value={workspace.branchName} mono />
             </div>
           )}
           {workspace?.cwd && (
             <div className="flex items-center gap-1.5">
-              <FolderOpen className="h-3 w-3 text-muted-foreground shrink-0" />
+              <FolderOpen className="h-3 w-3 text-muted-foreground shrink-0" aria-hidden="true" />
               <CopyableInline value={workspace.cwd} mono />
             </div>
           )}

@@ -77,8 +77,8 @@ function AdapterRow({
             <Badge variant="outline">{adapter.source === "external" ? "External" : "Built-in"}</Badge>
             {adapter.source === "external" && (
               adapter.isLocalPath
-                ? <span title="Installed from local path"><FolderOpen className="h-4 w-4 text-amber-500" /></span>
-                : <span title="Installed from npm"><Package className="h-4 w-4 text-red-500" /></span>
+                ? <span title="Installed from local path"><FolderOpen className="h-4 w-4 text-amber-500" aria-hidden="true" /></span>
+                : <span title="Installed from npm"><Package className="h-4 w-4 text-red-500" aria-hidden="true" /></span>
             )}
             {adapter.version && (
               <Badge variant="secondary" className="font-mono text-[10px]">
@@ -116,10 +116,11 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8"
               title="Reinstall adapter (pull latest from npm)"
+              aria-label="Reinstall adapter"
               disabled={isReinstalling}
               onClick={() => onReinstall(adapter.type)}
             >
-              <Download className={cn("h-4 w-4", isReinstalling && "animate-bounce")} />
+              <Download className={cn("h-4 w-4", isReinstalling && "animate-bounce")} aria-hidden="true" />
             </Button>
           )}
           {onReload && (
@@ -128,10 +129,11 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8"
               title="Reload adapter (hot-swap)"
+              aria-label="Reload adapter"
               disabled={isReloading}
               onClick={() => onReload(adapter.type)}
             >
-              <RefreshCw className={cn("h-4 w-4", isReloading && "animate-spin")} />
+              <RefreshCw className={cn("h-4 w-4", isReloading && "animate-spin")} aria-hidden="true" />
             </Button>
           )}
           <Button
@@ -141,10 +143,14 @@ function AdapterRow({
             title={adapter.disabled
               ? (toggleTitleEnabled ?? "Show in agent menus")
               : (toggleTitleDisabled ?? "Hide from agent menus")}
+            aria-label={adapter.disabled
+              ? (toggleTitleEnabled ?? "Show in agent menus")
+              : (toggleTitleDisabled ?? "Hide from agent menus")}
+            aria-pressed={!adapter.disabled}
             disabled={isToggling}
             onClick={() => onToggle(adapter.type, !adapter.disabled)}
           >
-            <Power className={cn("h-4 w-4", !adapter.disabled ? "text-green-600" : "text-muted-foreground")} />
+            <Power className={cn("h-4 w-4", !adapter.disabled ? "text-green-600" : "text-muted-foreground")} aria-hidden="true" />
           </Button>
           {canRemove && (
             <Button
@@ -152,9 +158,10 @@ function AdapterRow({
               size="icon-sm"
               className="h-8 w-8 text-destructive hover:text-destructive"
               title="Remove adapter"
+              aria-label="Remove adapter"
               onClick={() => onRemove(adapter.type)}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
         </div>
@@ -397,7 +404,7 @@ export function AdapterManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Cpu className="h-6 w-6 text-muted-foreground" />
+          <Cpu className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-xl font-semibold">Adapters</h1>
           <Badge variant="outline" className="text-amber-600 border-amber-400">
             Alpha
@@ -407,7 +414,7 @@ export function AdapterManager() {
         <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" aria-hidden="true" />
               Install Adapter
             </Button>
           </DialogTrigger>
@@ -431,7 +438,7 @@ export function AdapterManager() {
                   )}
                   onClick={() => setIsLocalPath(false)}
                 >
-                  <Package className="h-3.5 w-3.5" />
+                  <Package className="h-3.5 w-3.5" aria-hidden="true" />
                   npm package
                 </button>
                 <button
@@ -444,7 +451,7 @@ export function AdapterManager() {
                   )}
                   onClick={() => setIsLocalPath(true)}
                 >
-                  <FolderOpen className="h-3.5 w-3.5" />
+                  <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                   Local path
                 </button>
               </div>
@@ -513,7 +520,7 @@ export function AdapterManager() {
       {/* Alpha notice */}
       <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" />
           <div className="space-y-1 text-sm">
             <p className="font-medium text-foreground">External adapters are alpha.</p>
             <p className="text-muted-foreground">
@@ -527,14 +534,14 @@ export function AdapterManager() {
       {/* External adapters */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-muted-foreground" />
+          <Cpu className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">External Adapters</h2>
         </div>
 
         {externalAdapters.length === 0 ? (
           <Card className="bg-muted/30">
             <CardContent className="flex flex-col items-center justify-center py-10">
-              <Cpu className="h-10 w-10 text-muted-foreground mb-4" />
+              <Cpu className="h-10 w-10 text-muted-foreground mb-4" aria-hidden="true" />
               <p className="text-sm font-medium">No external adapters installed</p>
               <p className="text-xs text-muted-foreground mt-1">
                 Install an adapter package to extend model support.
@@ -582,7 +589,7 @@ export function AdapterManager() {
       {/* Built-in adapters */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-muted-foreground" />
+          <Cpu className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h2 className="text-base font-semibold">Built-in Adapters</h2>
         </div>
 

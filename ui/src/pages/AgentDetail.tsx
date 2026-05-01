@@ -330,7 +330,7 @@ export function RunInvocationCard({
       {hasAdvancedDetails && (
         <Collapsible>
           <CollapsibleTrigger className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors group">
-            <ChevronRight className="h-3 w-3 transition-transform group-data-[state=open]:rotate-90" />
+            <ChevronRight className="h-3 w-3 transition-transform group-data-[state=open]:rotate-90" aria-hidden="true" />
             Details
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-2 space-y-2">
@@ -915,8 +915,13 @@ export function AgentDetail() {
             value={agent.icon}
             onChange={(icon) => updateIcon.mutate(icon)}
           >
-            <button className="shrink-0 flex items-center justify-center h-12 w-12 rounded-lg bg-accent hover:bg-accent/80 transition-colors">
-              <AgentIcon icon={agent.icon} className="h-6 w-6" />
+            <button
+              type="button"
+              className="shrink-0 flex items-center justify-center h-12 w-12 rounded-lg bg-accent hover:bg-accent/80 transition-colors"
+              aria-label="Change agent icon"
+              title="Change agent icon"
+            >
+              <AgentIcon icon={agent.icon} className="h-6 w-6" aria-hidden="true" />
             </button>
           </AgentIconPicker>
           <div className="min-w-0">
@@ -933,7 +938,7 @@ export function AgentDetail() {
             size="sm"
             onClick={() => openNewIssue({ assigneeAgentId: agent.id })}
           >
-            <Plus className="h-3.5 w-3.5 sm:mr-1" />
+            <Plus className="h-3.5 w-3.5 sm:mr-1" aria-hidden="true" />
             <span className="hidden sm:inline">Assign Task</span>
           </Button>
           <RunButton
@@ -964,8 +969,8 @@ export function AgentDetail() {
           {/* Overflow menu */}
           <Popover open={moreOpen} onOpenChange={setMoreOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon-xs">
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="ghost" size="icon-xs" aria-label="More agent actions">
+                <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="end">
@@ -976,7 +981,7 @@ export function AgentDetail() {
                   setMoreOpen(false);
                 }}
               >
-                <Copy className="h-3 w-3" />
+                <Copy className="h-3 w-3" aria-hidden="true" />
                 Copy Agent ID
               </button>
               <button
@@ -986,7 +991,7 @@ export function AgentDetail() {
                   setMoreOpen(false);
                 }}
               >
-                <RotateCcw className="h-3 w-3" />
+                <RotateCcw className="h-3 w-3" aria-hidden="true" />
                 Reset Sessions
               </button>
               <button
@@ -996,7 +1001,7 @@ export function AgentDetail() {
                   setMoreOpen(false);
                 }}
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-3 w-3" aria-hidden="true" />
                 Terminate
               </button>
             </PopoverContent>
@@ -1034,7 +1039,7 @@ export function AgentDetail() {
             onClick={() => agentAction.mutate("approve")}
             disabled={agentAction.isPending}
           >
-            <CheckCircle2 className="h-3.5 w-3.5 sm:mr-1" />
+            <CheckCircle2 className="h-3.5 w-3.5 sm:mr-1" aria-hidden="true" />
             <span>Approve agent</span>
           </Button>
         </div>
@@ -1231,7 +1236,7 @@ function LatestRunCard({ runs, agentId }: { runs: HeartbeatRun[]; agentId: strin
         )}
       >
         <div className="flex items-center gap-2">
-          <StatusIcon className={cn("h-3.5 w-3.5", statusInfo.color, run.status === "running" && "animate-spin")} />
+          <StatusIcon className={cn("h-3.5 w-3.5", statusInfo.color, run.status === "running" && "animate-spin")} aria-hidden="true" />
           <StatusBadge status={run.status} />
           <span className="font-mono text-xs text-muted-foreground">{run.id.slice(0, 8)}</span>
           <span className={cn(
@@ -1477,8 +1482,8 @@ function AgentConfigurePage({
           onClick={() => setRevisionsOpen((v) => !v)}
         >
           {revisionsOpen
-            ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+            ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+            : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
           }
           Configuration Revisions
           <span className="text-xs font-normal text-muted-foreground">{configRevisions?.length ?? 0}</span>
@@ -2027,7 +2032,7 @@ function PromptsTab({
 
       <Collapsible defaultOpen={currentMode === "external"}>
         <CollapsibleTrigger className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors group">
-          <ChevronRight className="h-3 w-3 transition-transform group-data-[state=open]:rotate-90" />
+          <ChevronRight className="h-3 w-3 transition-transform group-data-[state=open]:rotate-90" aria-hidden="true" />
           Advanced
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-4 pb-6">
@@ -2038,7 +2043,7 @@ function PromptsTab({
                   Mode
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       Managed: Staple stores and serves the instructions bundle. External: you provide a path on disk where the instructions live.
@@ -2093,7 +2098,7 @@ function PromptsTab({
                   Root path
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       The absolute directory on disk where the instructions bundle lives. In managed mode this is set by Staple automatically.
@@ -2104,8 +2109,8 @@ function PromptsTab({
                   <div className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground pt-1.5">
                     <span className="min-w-0 truncate" title={currentRootPath || undefined}>{currentRootPath || "(managed)"}</span>
                     {currentRootPath && (
-                      <CopyText text={currentRootPath} className="shrink-0">
-                        <Copy className="h-3.5 w-3.5" />
+                      <CopyText text={currentRootPath} className="shrink-0" ariaLabel="Copy root path" title="Copy root path">
+                        <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                       </CopyText>
                     )}
                   </div>
@@ -2130,8 +2135,8 @@ function PromptsTab({
                       placeholder="/absolute/path/to/agent/prompts"
                     />
                     {currentRootPath && (
-                      <CopyText text={currentRootPath} className="shrink-0">
-                        <Copy className="h-3.5 w-3.5" />
+                      <CopyText text={currentRootPath} className="shrink-0" ariaLabel="Copy root path" title="Copy root path">
+                        <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                       </CopyText>
                     )}
                   </div>
@@ -2142,7 +2147,7 @@ function PromptsTab({
                   Entry file
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" aria-hidden="true" />
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={4}>
                       The main file the agent reads first when loading instructions. Defaults to AGENTS.md.
@@ -2202,8 +2207,10 @@ function PromptsTab({
                   variant="outline"
                   className="h-7 w-7"
                   onClick={() => setShowNewFileInput(true)}
+                  aria-label="Add file"
+                  title="Add file"
                 >
-                  +
+                  <span aria-hidden="true">+</span>
                 </Button>
               )}
               {isMobile && (
@@ -2213,8 +2220,10 @@ function PromptsTab({
                   variant="ghost"
                   className="h-7 w-7"
                   onClick={() => setShowFilePanel(false)}
+                  aria-label="Close file panel"
+                  title="Close"
                 >
-                  ✕
+                  <span aria-hidden="true">✕</span>
                 </Button>
               )}
             </div>
@@ -2331,8 +2340,10 @@ function PromptsTab({
                   variant="outline"
                   className="h-7 w-7 shrink-0"
                   onClick={() => setShowFilePanel(true)}
+                  aria-label="Show file panel"
+                  title="Show files"
                 >
-                  <FolderOpen className="h-3.5 w-3.5" />
+                  <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               )}
               <div className="min-w-0">
@@ -2355,7 +2366,7 @@ function PromptsTab({
                   copiedLabel="Copied"
                   className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-accent hover:text-foreground"
                 >
-                  <Copy className="h-3.5 w-3.5" />
+                  <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                 </CopyText>
               )}
               {selectedFileExists && !selectedFileSummary?.deprecated && selectedOrEntryFile !== currentEntryFile && (
@@ -2672,7 +2683,7 @@ function AgentSkillsTab({
         </Link>
         {saveStatusLabel ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            {syncSkills.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {syncSkills.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
             <span>{saveStatusLabel}</span>
           </div>
         ) : null}
@@ -2829,7 +2840,7 @@ function AgentSkillsTab({
                       <span className="text-xs font-medium text-muted-foreground">
                         ({unmanagedSkillRows.length}) User-installed skills, not managed by Staple
                       </span>
-                      {unmanagedOpen ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
+                      {unmanagedOpen ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />}
                     </div>
                     {unmanagedOpen && unmanagedSkillRows.map(renderSkillRow)}
                   </section>
@@ -2894,7 +2905,7 @@ function RunListItem({ run, isSelected, agentId }: { run: HeartbeatRun; isSelect
       )}
     >
       <div className="flex items-center gap-2">
-        <StatusIcon className={cn("h-3.5 w-3.5 shrink-0", statusInfo.color, run.status === "running" && "animate-spin")} />
+        <StatusIcon className={cn("h-3.5 w-3.5 shrink-0", statusInfo.color, run.status === "running" && "animate-spin")} aria-hidden="true" />
         <span className="font-mono text-xs text-muted-foreground">
           {run.id.slice(0, 8)}
         </span>
@@ -2967,7 +2978,7 @@ function RunsTab({
             to={`/agents/${agentRouteId}/runs`}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors no-underline"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
             Back to runs
           </Link>
           <RunDetail key={selectedRun.id} run={selectedRun} agentRouteId={agentRouteId} adapterType={adapterType} adapterConfig={adapterConfig} />
@@ -3188,7 +3199,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   onClick={() => resumeRun.mutate()}
                   disabled={resumeRun.isPending}
                 >
-                  <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                  <RotateCcw className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                   {resumeRun.isPending ? "Resuming…" : "Resume"}
                 </Button>
               )}
@@ -3200,7 +3211,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   onClick={() => retryRun.mutate()}
                   disabled={retryRun.isPending}
                 >
-                  <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                  <RotateCcw className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                   {retryRun.isPending ? "Retrying…" : "Retry"}
                 </Button>
               )}
@@ -3369,7 +3380,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
               className="flex items-center gap-1.5 w-full px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setSessionOpen((v) => !v)}
             >
-              <ChevronRight className={cn("h-3 w-3 transition-transform", sessionOpen && "rotate-90")} />
+              <ChevronRight className={cn("h-3 w-3 transition-transform", sessionOpen && "rotate-90")} aria-hidden="true" />
               Session
               {sessionChanged && <span className="text-yellow-400 ml-1">(changed)</span>}
             </button>
@@ -4109,16 +4120,18 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
               size="icon-sm"
               onClick={() => setTokenVisible((v) => !v)}
               title={tokenVisible ? "Hide" : "Show"}
+              aria-label={tokenVisible ? "Hide token" : "Show token"}
             >
-              {tokenVisible ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              {tokenVisible ? <EyeOff className="h-3.5 w-3.5" aria-hidden="true" /> : <Eye className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={copyToken}
               title="Copy"
+              aria-label="Copy token"
             >
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
             {copied && <span className="text-xs text-green-400">Copied!</span>}
           </div>
@@ -4136,7 +4149,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
       {/* Create new key */}
       <div className="border border-border rounded-lg p-4 space-y-3">
         <h3 className="text-xs font-medium text-muted-foreground flex items-center gap-2">
-          <Key className="h-3.5 w-3.5" />
+          <Key className="h-3.5 w-3.5" aria-hidden="true" />
           Create API Key
         </h3>
         <p className="text-xs text-muted-foreground">
@@ -4157,7 +4170,7 @@ function KeysTab({ agentId, companyId }: { agentId: string; companyId?: string }
             onClick={() => createKey.mutate()}
             disabled={createKey.isPending}
           >
-            <Plus className="h-3.5 w-3.5 mr-1" />
+            <Plus className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
             Create
           </Button>
         </div>

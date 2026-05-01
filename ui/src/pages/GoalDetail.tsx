@@ -42,8 +42,9 @@ export function GoalPropertiesToggleButton({
       )}
       onClick={onShowProperties}
       title="Show properties"
+      aria-label="Show properties panel"
     >
-      <SlidersHorizontal className="h-4 w-4" />
+      <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
     </Button>
   );
 }
@@ -241,7 +242,7 @@ export function GoalDetail() {
               variant="outline"
               onClick={() => openNewGoal({ parentId: goalId })}
             >
-              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
               Sub Goal
             </Button>
           </div>

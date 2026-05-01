@@ -83,12 +83,12 @@ export function CloudAccessGate() {
     (isProtectedMode && sessionQuery.isLoading) ||
     (isProtectedMode && !!sessionQuery.data && boardAccessQuery.isLoading)
   ) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading...</div>;
+    return <div role="status" aria-live="polite" className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading...</div>;
   }
 
   if (healthQuery.error || boardAccessQuery.error) {
     return (
-      <div className="mx-auto max-w-xl py-10 text-sm text-destructive">
+      <div role="alert" className="mx-auto max-w-xl py-10 text-sm text-destructive">
         {healthQuery.error instanceof Error
           ? healthQuery.error.message
           : boardAccessQuery.error instanceof Error

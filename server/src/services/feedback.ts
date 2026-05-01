@@ -1092,9 +1092,18 @@ async function buildAgentContext(
       .select()
       .from(companySkills)
       .where(eq(companySkills.companyId, companyId));
-  const matchedSkills = availableSkills
-    .filter((skill) => desiredSkillRefs.some((reference) => matchesSkillReference(skill, reference)))
-    .slice(0, MAX_SKILLS);
+  const orderedMatches: typeof availableSkills = [];
+  const claimedSkillIds = new Set<string>();
+  for (const reference of desiredSkillRefs) {
+    const skill = availableSkills.find(
+      (candidate) => !claimedSkillIds.has(candidate.id) && matchesSkillReference(candidate, reference),
+    );
+    if (skill) {
+      orderedMatches.push(skill);
+      claimedSkillIds.add(skill.id);
+    }
+  }
+  const matchedSkills = orderedMatches.slice(0, MAX_SKILLS);
   const unresolvedSkillRefs = desiredSkillRefs.filter(
     (reference) => !matchedSkills.some((skill) => matchesSkillReference(skill, reference)),
   );

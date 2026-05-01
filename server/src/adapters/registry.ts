@@ -253,6 +253,30 @@ const piLocalAdapter: ServerAdapterModule = {
 // intentional until hermes ships a matching AdapterExecutionContext type.
 const executeHermesLocal = hermesExecute as unknown as ServerAdapterModule["execute"];
 
+// hermes-paperclip-adapter still emits the upstream "paperclip_required" origin
+// literal; remap to our local "staple_required" so the snapshot conforms to
+// AdapterSkillSnapshot from packages/adapter-utils.
+type HermesSkillFn<A extends unknown[]> = (...args: A) => Promise<{ entries?: Array<{ origin?: string }> } & Record<string, unknown>>;
+function remapHermesOrigin<R>(snapshot: R): R {
+  const s = snapshot as unknown as { entries?: Array<{ origin?: string }> };
+  if (s && Array.isArray(s.entries)) {
+    for (const entry of s.entries) {
+      if (entry && entry.origin === "paperclip_required") {
+        entry.origin = "staple_required";
+      }
+    }
+  }
+  return snapshot;
+}
+const wrapHermesSkillFn = <A extends unknown[], R>(fn: HermesSkillFn<A>) =>
+  (async (...args: A) => remapHermesOrigin(await fn(...args))) as unknown as R;
+const hermesListSkillsAdapted = wrapHermesSkillFn<Parameters<NonNullable<ServerAdapterModule["listSkills"]>>, NonNullable<ServerAdapterModule["listSkills"]>>(
+  hermesListSkills as unknown as HermesSkillFn<Parameters<NonNullable<ServerAdapterModule["listSkills"]>>>,
+);
+const hermesSyncSkillsAdapted = wrapHermesSkillFn<Parameters<NonNullable<ServerAdapterModule["syncSkills"]>>, NonNullable<ServerAdapterModule["syncSkills"]>>(
+  hermesSyncSkills as unknown as HermesSkillFn<Parameters<NonNullable<ServerAdapterModule["syncSkills"]>>>,
+);
+
 const hermesLocalAdapter: ServerAdapterModule = {
   type: "hermes_local",
   execute: async (ctx) => {
@@ -305,8 +329,8 @@ const hermesLocalAdapter: ServerAdapterModule = {
   },
   testEnvironment: (ctx) => hermesTestEnvironment(normalizeHermesConfig(ctx) as never),
   sessionCodec: hermesSessionCodec,
-  listSkills: hermesListSkills,
-  syncSkills: hermesSyncSkills,
+  listSkills: hermesListSkillsAdapted,
+  syncSkills: hermesSyncSkillsAdapted,
   models: hermesModels,
   supportsLocalAgentJwt: true,
   supportsInstructionsBundle: false,

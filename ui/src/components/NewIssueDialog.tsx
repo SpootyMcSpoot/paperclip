@@ -47,7 +47,7 @@ import {
   AlertTriangle,
   Tag,
   Calendar,
-  Staple,
+  Paperclip,
   FileText,
   Loader2,
   ListTree,
@@ -977,6 +977,10 @@ export function NewIssueDialog() {
             <Popover open={companyOpen} onOpenChange={setCompanyOpen}>
               <PopoverTrigger asChild>
                 <button
+                  type="button"
+                  aria-label={dialogCompany?.name ? `Switch company (current: ${dialogCompany.name})` : "Switch company"}
+                  aria-expanded={companyOpen}
+                  aria-haspopup="listbox"
                   className={cn(
                     "px-1.5 py-0.5 rounded text-xs font-semibold cursor-pointer hover:opacity-80 transition-opacity",
                     !dialogCompany?.brandColor && "bg-muted",
@@ -998,6 +1002,9 @@ export function NewIssueDialog() {
                 {companies.filter((c) => c.status !== "archived").map((c) => (
                   <button
                     key={c.id}
+                    type="button"
+                    role="option"
+                    aria-selected={c.id === effectiveCompanyId}
                     className={cn(
                       "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                       c.id === effectiveCompanyId && "bg-accent",
@@ -1038,8 +1045,9 @@ export function NewIssueDialog() {
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
               disabled={createIssue.isPending}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
@@ -1047,8 +1055,9 @@ export function NewIssueDialog() {
               className="text-muted-foreground"
               onClick={() => closeNewIssue()}
               disabled={createIssue.isPending}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
@@ -1127,7 +1136,7 @@ export function NewIssueDialog() {
                   option ? (
                     currentAssignee ? (
                       <>
-                        <AgentIcon icon={currentAssignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        <AgentIcon icon={currentAssignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                         <span className="truncate">{option.label}</span>
                       </>
                     ) : (
@@ -1144,7 +1153,7 @@ export function NewIssueDialog() {
                     : null;
                   return (
                     <>
-                      {assignee ? <AgentIcon icon={assignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null}
+                      {assignee ? <AgentIcon icon={assignee.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null}
                       <span className="truncate">{option.label}</span>
                     </>
                   );
@@ -1199,9 +1208,10 @@ export function NewIssueDialog() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-accent/50 transition-colors"
+                    aria-label="Add reviewer or approver"
                     title="Add reviewer or approver"
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-44 p-1" align="start">
@@ -1216,7 +1226,7 @@ export function NewIssueDialog() {
                       setParticipantMenuOpen(false);
                     }}
                   >
-                    <Eye className="h-3 w-3" />
+                    <Eye className="h-3 w-3" aria-hidden="true" />
                     Reviewer
                   </button>
                   <button
@@ -1230,7 +1240,7 @@ export function NewIssueDialog() {
                       setParticipantMenuOpen(false);
                     }}
                   >
-                    <ShieldCheck className="h-3 w-3" />
+                    <ShieldCheck className="h-3 w-3" aria-hidden="true" />
                     Approver
                   </button>
                 </PopoverContent>
@@ -1241,7 +1251,7 @@ export function NewIssueDialog() {
             {/* Reviewer row */}
             {showReviewerRow && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <span className="w-6 shrink-0 flex items-center justify-center"><Eye className="h-3.5 w-3.5" /></span>
+                <span className="w-6 shrink-0 flex items-center justify-center"><Eye className="h-3.5 w-3.5" aria-hidden="true" /></span>
                 <InlineEntitySelector
                 value={reviewerValue}
                 options={assigneeOptions}
@@ -1259,7 +1269,7 @@ export function NewIssueDialog() {
                         const reviewer = parseAssigneeValue(option.id).assigneeAgentId
                           ? (agents ?? []).find((a) => a.id === parseAssigneeValue(option.id).assigneeAgentId)
                           : null;
-                        return reviewer ? <AgentIcon icon={reviewer.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null;
+                        return reviewer ? <AgentIcon icon={reviewer.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null;
                       })()}
                       <span className="truncate">{option.label}</span>
                     </>
@@ -1274,7 +1284,7 @@ export function NewIssueDialog() {
                     : null;
                   return (
                     <>
-                      {reviewer ? <AgentIcon icon={reviewer.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null}
+                      {reviewer ? <AgentIcon icon={reviewer.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null}
                       <span className="truncate">{option.label}</span>
                     </>
                   );
@@ -1286,7 +1296,7 @@ export function NewIssueDialog() {
             {/* Approver row */}
             {showApproverRow && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <span className="w-6 shrink-0 flex items-center justify-center"><ShieldCheck className="h-3.5 w-3.5" /></span>
+                <span className="w-6 shrink-0 flex items-center justify-center"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /></span>
                 <InlineEntitySelector
                 value={approverValue}
                 options={assigneeOptions}
@@ -1304,7 +1314,7 @@ export function NewIssueDialog() {
                         const approver = parseAssigneeValue(option.id).assigneeAgentId
                           ? (agents ?? []).find((a) => a.id === parseAssigneeValue(option.id).assigneeAgentId)
                           : null;
-                        return approver ? <AgentIcon icon={approver.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null;
+                        return approver ? <AgentIcon icon={approver.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null;
                       })()}
                       <span className="truncate">{option.label}</span>
                     </>
@@ -1319,7 +1329,7 @@ export function NewIssueDialog() {
                     : null;
                   return (
                     <>
-                      {approver ? <AgentIcon icon={approver.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" /> : null}
+                      {approver ? <AgentIcon icon={approver.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null}
                       <span className="truncate">{option.label}</span>
                     </>
                   );
@@ -1333,7 +1343,7 @@ export function NewIssueDialog() {
             <div className="px-4 pb-2">
             <div className="max-w-full rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
-                <ListTree className="h-3.5 w-3.5 shrink-0" />
+                <ListTree className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 <span className="shrink-0">Sub-issue of</span>
                 <span className="font-medium text-foreground">{parentIssueLabel}</span>
               </div>
@@ -1403,7 +1413,7 @@ export function NewIssueDialog() {
               className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setAssigneeOptionsOpen((open) => !open)}
             >
-              {assigneeOptionsOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+              {assigneeOptionsOpen ? <ChevronDown className="h-3 w-3" aria-hidden="true" /> : <ChevronRight className="h-3 w-3" aria-hidden="true" />}
               {assigneeOptionsTitle}
             </button>
             {assigneeOptionsOpen && (
@@ -1496,7 +1506,7 @@ export function NewIssueDialog() {
                             <span className="truncate text-sm">{file.file.name}</span>
                           </div>
                           <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                            <FileText className="h-3.5 w-3.5" />
+                            <FileText className="h-3.5 w-3.5" aria-hidden="true" />
                             <span>{file.title || file.file.name}</span>
                             <span>•</span>
                             <span>{formatFileSize(file.file)}</span>
@@ -1509,8 +1519,9 @@ export function NewIssueDialog() {
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
                           title="Remove document"
+                          aria-label="Remove document"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className="h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       </div>
                     ))}
@@ -1526,7 +1537,7 @@ export function NewIssueDialog() {
                       <div key={file.id} className="flex items-start justify-between gap-3 rounded-md border border-border/70 px-3 py-2">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                            <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                             <span className="truncate text-sm">{file.file.name}</span>
                           </div>
                           <div className="mt-1 text-[11px] text-muted-foreground">
@@ -1540,8 +1551,9 @@ export function NewIssueDialog() {
                           onClick={() => removeStagedFile(file.id)}
                           disabled={createIssue.isPending}
                           title="Remove attachment"
+                          aria-label="Remove attachment"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <X className="h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       </div>
                     ))}
@@ -1558,8 +1570,8 @@ export function NewIssueDialog() {
           {/* Status chip */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <CircleDot className={cn("h-3 w-3", currentStatus.color)} />
+              <button type="button" aria-label="Set issue status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+                <CircleDot className={cn("h-3 w-3", currentStatus.color)} aria-hidden="true" />
                 {currentStatus.label}
               </button>
             </PopoverTrigger>
@@ -1567,13 +1579,14 @@ export function NewIssueDialog() {
               {statuses.map((s) => (
                 <button
                   key={s.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     s.value === status && "bg-accent"
                   )}
                   onClick={() => { setStatus(s.value); setStatusOpen(false); }}
                 >
-                  <CircleDot className={cn("h-3 w-3", s.color)} />
+                  <CircleDot className={cn("h-3 w-3", s.color)} aria-hidden="true" />
                   {s.label}
                 </button>
               ))}
@@ -1583,15 +1596,15 @@ export function NewIssueDialog() {
           {/* Priority chip */}
           <Popover open={priorityOpen} onOpenChange={setPriorityOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set issue priority" aria-expanded={priorityOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 {currentPriority ? (
                   <>
-                    <currentPriority.icon className={cn("h-3 w-3", currentPriority.color)} />
+                    <currentPriority.icon className={cn("h-3 w-3", currentPriority.color)} aria-hidden="true" />
                     {currentPriority.label}
                   </>
                 ) : (
                   <>
-                    <Minus className="h-3 w-3 text-muted-foreground" />
+                    <Minus className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                     Priority
                   </>
                 )}
@@ -1601,13 +1614,14 @@ export function NewIssueDialog() {
               {priorities.map((p) => (
                 <button
                   key={p.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     p.value === priority && "bg-accent"
                   )}
                   onClick={() => { setPriority(p.value); setPriorityOpen(false); }}
                 >
-                  <p.icon className={cn("h-3 w-3", p.color)} />
+                  <p.icon className={cn("h-3 w-3", p.color)} aria-hidden="true" />
                   {p.label}
                 </button>
               ))}
@@ -1629,28 +1643,34 @@ export function NewIssueDialog() {
             multiple
           />
           <button
+            type="button"
             className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground"
             onClick={() => stageFileInputRef.current?.click()}
             disabled={createIssue.isPending}
           >
-            <Paperclip className="h-3 w-3" />
+            <Paperclip className="h-3 w-3" aria-hidden="true" />
             Upload
           </button>
 
           {/* More (dates) */}
           <Popover open={moreOpen} onOpenChange={setMoreOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center justify-center rounded-md border border-border p-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground">
-                <MoreHorizontal className="h-3 w-3" />
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-border p-1 text-xs hover:bg-accent/50 transition-colors text-muted-foreground"
+                aria-label="More options"
+                title="More options"
+              >
+                <MoreHorizontal className="h-3 w-3" aria-hidden="true" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-44 p-1" align="start">
-              <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+              <button type="button" className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
+                <Calendar className="h-3 w-3" aria-hidden="true" />
                 Start date
               </button>
-              <button className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+              <button type="button" className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground">
+                <Calendar className="h-3 w-3" aria-hidden="true" />
                 Due date
               </button>
             </PopoverContent>
@@ -1672,7 +1692,7 @@ export function NewIssueDialog() {
             <div className="min-h-5 text-right">
               {createIssue.isPending ? (
                 <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   Creating issue...
                 </span>
               ) : createIssue.isError ? (
@@ -1687,7 +1707,7 @@ export function NewIssueDialog() {
               aria-busy={createIssue.isPending}
             >
               <span className="inline-flex items-center justify-center gap-1.5">
-                {createIssue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                {createIssue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
                 <span>{createIssue.isPending ? "Creating..." : isSubIssueMode ? "Create Sub-Issue" : "Create Issue"}</span>
               </span>
             </Button>

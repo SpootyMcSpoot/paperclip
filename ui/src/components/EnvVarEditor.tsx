@@ -172,6 +172,7 @@ export function EnvVarEditor({
               placeholder="KEY"
               value={row.key}
               onChange={(event) => updateRow(index, { key: event.target.value })}
+              aria-label="Environment variable name"
             />
             <select
               className={cn(inputClass, "flex-[1] bg-background")}
@@ -182,6 +183,7 @@ export function EnvVarEditor({
                   ...(event.target.value === "plain" ? { secretId: "" } : {}),
                 })
               }
+              aria-label="Variable source type"
             >
               <option value="plain">Plain</option>
               <option value="secret">Secret</option>
@@ -192,6 +194,7 @@ export function EnvVarEditor({
                   className={cn(inputClass, "flex-[3] bg-background")}
                   value={row.secretId}
                   onChange={(event) => updateRow(index, { secretId: event.target.value })}
+                  aria-label="Choose secret"
                 >
                   <option value="">Select secret...</option>
                   {secrets.map((secret) => (
@@ -217,6 +220,7 @@ export function EnvVarEditor({
                   placeholder="value"
                   value={row.plainValue}
                   onChange={(event) => updateRow(index, { plainValue: event.target.value })}
+                  aria-label="Environment variable value"
                 />
                 <button
                   type="button"
@@ -234,8 +238,10 @@ export function EnvVarEditor({
                 type="button"
                 className="shrink-0 p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
                 onClick={() => removeRow(index)}
+                aria-label="Remove environment variable"
+                title="Remove"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             ) : (
               <div className="w-[26px] shrink-0" />

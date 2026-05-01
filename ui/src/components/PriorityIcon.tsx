@@ -26,6 +26,7 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
   const config = priorityConfig[priority] ?? priorityConfig.medium!;
   const Icon = config.icon;
 
+  const ariaLabel = `Priority: ${config.label}`;
   const icon = (
     <span
       className={cn(
@@ -34,15 +35,23 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
         onChange && !showLabel && "cursor-pointer",
         className
       )}
+      aria-label={ariaLabel}
+      title={ariaLabel}
+      role="img"
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3.5 w-3.5" aria-hidden />
     </span>
   );
 
   if (!onChange) return showLabel ? <span className="inline-flex items-center gap-1.5">{icon}<span className="text-sm">{config.label}</span></span> : icon;
 
   const trigger = showLabel ? (
-    <button className="inline-flex items-center gap-1.5 cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 py-0.5 transition-colors">
+    <button
+      type="button"
+      aria-label={`Change priority (current: ${config.label})`}
+      aria-expanded={open}
+      className="inline-flex items-center gap-1.5 cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 py-0.5 transition-colors"
+    >
       {icon}
       <span className="text-sm">{config.label}</span>
     </button>
@@ -66,7 +75,7 @@ export function PriorityIcon({ priority, onChange, className, showLabel }: Prior
                 setOpen(false);
               }}
             >
-              <PIcon className={cn("h-3.5 w-3.5", c.color)} />
+              <PIcon className={cn("h-3.5 w-3.5", c.color)} aria-hidden="true" />
               {c.label}
             </Button>
           );

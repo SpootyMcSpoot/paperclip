@@ -20,6 +20,8 @@ export function HermesIcon({ className }: HermesIconProps) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={cn(className)}
+      aria-hidden="true"
+      focusable="false"
     >
       {/* Central staff */}
       <line x1="12" y1="6" x2="12" y2="23" />

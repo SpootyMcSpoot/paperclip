@@ -79,7 +79,7 @@ export function ScrollToBottom() {
       )}
       aria-label="Scroll to bottom"
     >
-      <ArrowDown className="h-4 w-4" />
+      <ArrowDown className="h-4 w-4" aria-hidden="true" />
     </button>
   );
 }

@@ -85,17 +85,19 @@ export function ImageGalleryModal({
                 download={current.originalFilename ?? "image"}
                 className="text-white/50 hover:text-white transition-colors"
                 title="Download"
+                aria-label="Download"
                 onClick={(e) => e.stopPropagation()}
               >
-                <Download className="h-4.5 w-4.5" />
+                <Download className="h-4.5 w-4.5" aria-hidden="true" />
               </a>
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
                 className="text-white/50 hover:text-white transition-colors"
+                aria-label="Close image gallery"
                 title="Close"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -109,9 +111,10 @@ export function ImageGalleryModal({
                   type="button"
                   onClick={goPrev}
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
-                  title="Previous"
+                  title="Previous image"
+                  aria-label={`Previous image (${currentIndex + 1} of ${images.length})`}
                 >
-                  <ChevronLeft className="h-7 w-7" />
+                  <ChevronLeft className="h-7 w-7" aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -134,9 +137,10 @@ export function ImageGalleryModal({
                   type="button"
                   onClick={goNext}
                   className="rounded-full bg-white/10 p-3 text-white/60 hover:text-white hover:bg-white/20 transition-colors"
-                  title="Next"
+                  title="Next image"
+                  aria-label={`Next image (${currentIndex + 1} of ${images.length})`}
                 >
-                  <ChevronRight className="h-7 w-7" />
+                  <ChevronRight className="h-7 w-7" aria-hidden="true" />
                 </button>
               )}
             </div>

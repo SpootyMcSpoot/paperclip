@@ -632,10 +632,12 @@ export function OnboardingWizard() {
         <div className="fixed inset-0 z-50 flex" onKeyDown={handleKeyDown}>
           {/* Close button */}
           <button
+            type="button"
             onClick={handleClose}
+            aria-label="Close onboarding"
             className="absolute top-4 left-4 z-10 rounded-sm p-1.5 text-muted-foreground/60 hover:text-foreground transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
             <span className="sr-only">Close</span>
           </button>
 
@@ -661,6 +663,7 @@ export function OnboardingWizard() {
                     key={s}
                     type="button"
                     onClick={() => setStep(s)}
+                    aria-current={s === step ? "step" : undefined}
                     className={cn(
                       "flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors cursor-pointer",
                       s === step
@@ -668,7 +671,7 @@ export function OnboardingWizard() {
                         : "border-transparent text-muted-foreground hover:text-foreground/70 hover:border-border"
                     )}
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                     {label}
                   </button>
                 ))}
@@ -679,7 +682,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                      <Building2 className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Name your company</h3>
@@ -732,7 +735,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Bot className="h-5 w-5 text-muted-foreground" />
+                      <Bot className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Create your first agent</h3>
@@ -795,14 +798,17 @@ export function OnboardingWizard() {
                     </div>
 
                     <button
+                      type="button"
                       className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
                       onClick={() => setShowMoreAdapters((v) => !v)}
+                      aria-expanded={showMoreAdapters}
                     >
                       <ChevronDown
                         className={cn(
                           "h-3 w-3 transition-transform",
                           showMoreAdapters ? "rotate-0" : "-rotate-90"
                         )}
+                        aria-hidden="true"
                       />
                       More Agent Adapter Types
                     </button>
@@ -883,7 +889,7 @@ export function OnboardingWizard() {
                                       ? "Select model (required)"
                                       : "Default")}
                               </span>
-                              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                              <ChevronDown className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                             </button>
                           </PopoverTrigger>
                           <PopoverContent
@@ -893,6 +899,7 @@ export function OnboardingWizard() {
                             <input
                               className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
                               placeholder="Search models..."
+                              aria-label="Search models"
                               value={modelSearch}
                               onChange={(e) => setModelSearch(e.target.value)}
                               autoFocus
@@ -990,7 +997,7 @@ export function OnboardingWizard() {
                       {adapterEnvResult &&
                       adapterEnvResult.status === "pass" ? (
                         <div className="flex items-center gap-2 rounded-md border border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10 px-3 py-2 text-xs text-green-700 dark:text-green-300 animate-in fade-in slide-in-from-bottom-1 duration-300">
-                          <Check className="h-3.5 w-3.5 shrink-0" />
+                          <Check className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                           <span className="font-medium">Passed</span>
                         </div>
                       ) : adapterEnvResult ? (
@@ -1103,7 +1110,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <ListTodo className="h-5 w-5 text-muted-foreground" />
+                      <ListTodo className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Give it something to do</h3>
@@ -1144,7 +1151,7 @@ export function OnboardingWizard() {
                 <div className="space-y-5">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="bg-muted/50 p-2">
-                      <Rocket className="h-5 w-5 text-muted-foreground" />
+                      <Rocket className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-medium">Ready to launch</h3>
@@ -1156,17 +1163,17 @@ export function OnboardingWizard() {
                   </div>
                   <div className="border border-border divide-y divide-border">
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <Building2 className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {companyName}
                         </p>
                         <p className="text-xs text-muted-foreground">Company</p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <Bot className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <Bot className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {agentName}
@@ -1175,17 +1182,17 @@ export function OnboardingWizard() {
                           {getUIAdapter(adapterType).label}
                         </p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                     <div className="flex items-center gap-3 px-3 py-2.5">
-                      <ListTodo className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <ListTodo className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {taskTitle}
                         </p>
                         <p className="text-xs text-muted-foreground">Task</p>
                       </div>
-                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 shrink-0" aria-hidden="true" />
                     </div>
                   </div>
                 </div>
@@ -1208,7 +1215,7 @@ export function OnboardingWizard() {
                       onClick={() => setStep((step - 1) as Step)}
                       disabled={loading}
                     >
-                      <ArrowLeft className="h-3.5 w-3.5 mr-1" />
+                      <ArrowLeft className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       Back
                     </Button>
                   )}
@@ -1221,9 +1228,9 @@ export function OnboardingWizard() {
                       onClick={handleStep1Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1237,9 +1244,9 @@ export function OnboardingWizard() {
                       onClick={handleStep2Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1251,9 +1258,9 @@ export function OnboardingWizard() {
                       onClick={handleStep3Next}
                     >
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Next"}
                     </Button>
@@ -1261,9 +1268,9 @@ export function OnboardingWizard() {
                   {step === 4 && (
                     <Button size="sm" disabled={loading} onClick={handleLaunch}>
                       {loading ? (
-                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                        <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" aria-hidden="true" />
                       ) : (
-                        <ArrowRight className="h-3.5 w-3.5 mr-1" />
+                        <ArrowRight className="h-3.5 w-3.5 mr-1" aria-hidden="true" />
                       )}
                       {loading ? "Creating..." : "Create & Open Issue"}
                     </Button>

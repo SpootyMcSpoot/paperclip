@@ -71,8 +71,8 @@ export function HintIcon({ text }: { text: string }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button type="button" className="inline-flex text-muted-foreground/50 hover:text-muted-foreground transition-colors">
-          <HelpCircle className="h-3 w-3" />
+        <button type="button" className="inline-flex text-muted-foreground/50 hover:text-muted-foreground transition-colors" aria-label="Show hint">
+          <HelpCircle className="h-3 w-3" aria-hidden="true" />
         </button>
       </TooltipTrigger>
       <TooltipContent side="top" className="max-w-xs">
@@ -117,6 +117,9 @@ export function ToggleField({
         data-slot="toggle"
         data-testid={toggleTestId}
         type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
         className={cn(
           "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
           checked ? "bg-green-600" : "bg-muted"
@@ -177,6 +180,7 @@ export function ToggleWithNumber({
             className="w-16 rounded-md border border-border px-2 py-0.5 bg-transparent outline-none text-xs font-mono text-center"
             value={number}
             onChange={(e) => onNumberChange(Number(e.target.value))}
+            aria-label={[numberPrefix, numberLabel].filter(Boolean).join(" ").trim()}
           />
           <span>{numberLabel}</span>
           {numberHint && <HintIcon text={numberHint} />}
@@ -204,10 +208,12 @@ export function CollapsibleSection({
   return (
     <div className={cn(bordered && "border-t border-border")}>
       <button
+        type="button"
+        aria-expanded={open}
         className="flex items-center gap-2 w-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-accent/30 transition-colors"
         onClick={onToggle}
       >
-        {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        {open ? <ChevronDown className="h-3 w-3" aria-hidden="true" /> : <ChevronRight className="h-3 w-3" aria-hidden="true" />}
         {icon}
         {title}
       </button>

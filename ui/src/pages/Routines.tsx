@@ -229,7 +229,7 @@ function RoutineListRow({
             <span>{routine.projectId ? (project?.name ?? "Unknown project") : "No project"}</span>
           </span>
           <span className="flex items-center gap-2">
-            {agent?.icon ? <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0" /> : null}
+            {agent?.icon ? <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> : null}
             <span>{routine.assigneeAgentId ? (agent?.name ?? "Unknown agent") : "No default agent"}</span>
           </span>
           <span>
@@ -256,7 +256,7 @@ function RoutineListRow({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon-sm" aria-label={`More actions for ${routine.title}`}>
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -571,7 +571,7 @@ export function Routines() {
           </p>
         </div>
         <Button onClick={() => setComposerOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
           Create routine
         </Button>
       </div>
@@ -594,7 +594,7 @@ export function Routines() {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-xs">
-                  <Layers className="h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1" />
+                  <Layers className="h-3.5 w-3.5 sm:h-3 sm:w-3 sm:mr-1" aria-hidden="true" />
                   <span className="hidden sm:inline">Group</span>
                 </Button>
               </PopoverTrigger>
@@ -615,7 +615,7 @@ export function Routines() {
                       onClick={() => updateRoutineView({ groupBy: value, collapsedGroups: [] })}
                     >
                       <span>{label}</span>
-                      {routineViewState.groupBy === value ? <Check className="h-3.5 w-3.5" /> : null}
+                      {routineViewState.groupBy === value ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : null}
                     </button>
                   ))}
                 </div>
@@ -823,7 +823,7 @@ export function Routines() {
                     <p className="text-sm font-medium">Advanced delivery settings</p>
                     <p className="text-sm text-muted-foreground">Keep policy controls secondary to the work definition.</p>
                   </div>
-                  {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                  {advancedOpen ? <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-3">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -879,7 +879,7 @@ export function Routines() {
                   !draft.title.trim()
                 }
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                 {createRoutine.isPending ? "Creating..." : "Create routine"}
               </Button>
               {createRoutine.isError ? (
@@ -926,7 +926,7 @@ export function Routines() {
                   {group.label ? (
                     <div className="flex items-center gap-2 border-b border-border px-3 py-2">
                       <CollapsibleTrigger className="flex items-center gap-1.5">
-                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-90" />
+                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform [[data-state=open]>&]:rotate-90" aria-hidden="true" />
                         <span className="text-sm font-semibold uppercase tracking-wide">
                           {group.label}
                         </span>

@@ -136,16 +136,18 @@ export function NewGoalDialog() {
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => { reset(); closeNewGoal(); }}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
@@ -188,7 +190,7 @@ export function NewGoalDialog() {
           {/* Status */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <StatusBadge status={status} />
               </button>
             </PopoverTrigger>
@@ -196,6 +198,8 @@ export function NewGoalDialog() {
               {GOAL_STATUSES.map((s) => (
                 <button
                   key={s}
+                  type="button"
+                  aria-pressed={s === status}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 capitalize",
                     s === status && "bg-accent"
@@ -211,8 +215,8 @@ export function NewGoalDialog() {
           {/* Level */}
           <Popover open={levelOpen} onOpenChange={setLevelOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <Layers className="h-3 w-3 text-muted-foreground" />
+              <button type="button" aria-label="Set goal level" aria-expanded={levelOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+                <Layers className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {levelLabels[level] ?? level}
               </button>
             </PopoverTrigger>
@@ -220,6 +224,8 @@ export function NewGoalDialog() {
               {GOAL_LEVELS.map((l) => (
                 <button
                   key={l}
+                  type="button"
+                  aria-pressed={l === level}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     l === level && "bg-accent"
@@ -235,13 +241,15 @@ export function NewGoalDialog() {
           {/* Parent goal */}
           <Popover open={parentOpen} onOpenChange={setParentOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
-                <Target className="h-3 w-3 text-muted-foreground" />
+              <button type="button" aria-label="Set parent goal" aria-expanded={parentOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+                <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
                 {currentParent ? currentParent.title : "Parent goal"}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-48 p-1" align="start">
               <button
+                type="button"
+                aria-pressed={!appliedParentId}
                 className={cn(
                   "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                   !appliedParentId && "bg-accent"
@@ -253,6 +261,8 @@ export function NewGoalDialog() {
               {(goals ?? []).map((g) => (
                 <button
                   key={g.id}
+                  type="button"
+                  aria-pressed={g.id === appliedParentId}
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 truncate",
                     g.id === appliedParentId && "bg-accent"

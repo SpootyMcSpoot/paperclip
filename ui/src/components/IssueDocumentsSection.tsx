@@ -694,7 +694,7 @@ export function IssueDocumentsSection({
         <div className="flex flex-wrap items-center justify-end gap-2 min-w-0">
           {extraActions}
           <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
             <span className="hidden sm:inline">New document</span>
             <span className="sm:hidden">New</span>
           </Button>
@@ -705,7 +705,7 @@ export function IssueDocumentsSection({
           <div className="flex flex-wrap items-center gap-2 min-w-0 sm:ml-auto">
             {extraActions}
             <Button variant="outline" size="sm" onClick={beginNewDocument} className="shrink-0">
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              <Plus className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">New document</span>
               <span className="sm:hidden">New</span>
             </Button>
@@ -756,7 +756,7 @@ export function IssueDocumentsSection({
           />
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" size="sm" onClick={cancelDraft}>
-              <X className="mr-1.5 h-3.5 w-3.5" />
+              <X className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               Cancel
             </Button>
             <Button
@@ -779,7 +779,7 @@ export function IssueDocumentsSection({
           )}
         >
           <div className="mb-2 flex items-center gap-2">
-            <FileText className="h-4 w-4 text-amber-600" />
+            <FileText className="h-4 w-4 text-amber-600" aria-hidden="true" />
             <span className="rounded-full border border-amber-500/30 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">
               PLAN
             </span>
@@ -832,7 +832,7 @@ export function IssueDocumentsSection({
                       aria-label={isFolded ? `Expand ${doc.key} document` : `Collapse ${doc.key} document`}
                       aria-expanded={!isFolded}
                     >
-                      {isFolded ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      {isFolded ? <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />}
                     </button>
                     <span className="shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
                       {doc.key}
@@ -851,7 +851,7 @@ export function IssueDocumentsSection({
                           )}
                         >
                           rev {displayedRevisionNumber}
-                          <ChevronDown className="h-3 w-3" />
+                          <ChevronDown className="h-3 w-3" aria-hidden="true" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start" className="w-72">
@@ -909,12 +909,13 @@ export function IssueDocumentsSection({
                       copiedDocumentKey === doc.key && "text-foreground",
                     )}
                     title={copiedDocumentKey === doc.key ? "Copied" : "Copy document"}
+                    aria-label={copiedDocumentKey === doc.key ? "Copied" : "Copy document"}
                     onClick={() => void copyDocumentBody(doc.key, displayedBody)}
                   >
                     {copiedDocumentKey === doc.key ? (
-                      <Check className="h-3.5 w-3.5" />
+                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     ) : (
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     )}
                   </Button>
                   <DropdownMenu>
@@ -924,14 +925,15 @@ export function IssueDocumentsSection({
                         size="icon-xs"
                         className="text-muted-foreground"
                         title="Document actions"
+                        aria-label="Document actions"
                       >
-                        <MoreHorizontal className="h-3.5 w-3.5" />
+                        <MoreHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                       </Button>
                     </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                       {!isHistoricalPreview ? (
                         <DropdownMenuItem onClick={() => beginEdit(doc.key)}>
-                          <FilePenLine className="h-3.5 w-3.5" />
+                          <FilePenLine className="h-3.5 w-3.5" aria-hidden="true" />
                           Edit document
                         </DropdownMenuItem>
                       ) : null}
@@ -939,12 +941,12 @@ export function IssueDocumentsSection({
                       <DropdownMenuItem
                         onClick={() => downloadDocumentFile(doc.key, displayedBody)}
                       >
-                        <Download className="h-3.5 w-3.5" />
+                        <Download className="h-3.5 w-3.5" aria-hidden="true" />
                         Download document
                       </DropdownMenuItem>
                       {doc.latestRevisionNumber > 1 ? (
                         <DropdownMenuItem onClick={() => setDiffViewKey(doc.key)}>
-                          <Diff className="h-3.5 w-3.5" />
+                          <Diff className="h-3.5 w-3.5" aria-hidden="true" />
                           View diff
                         </DropdownMenuItem>
                       ) : null}
@@ -954,7 +956,7 @@ export function IssueDocumentsSection({
                           variant="destructive"
                           onClick={() => setConfirmDeleteKey(doc.key)}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                           Delete document
                         </DropdownMenuItem>
                       ) : null}

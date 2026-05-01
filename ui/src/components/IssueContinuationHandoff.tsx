@@ -69,9 +69,9 @@ export function IssueContinuationHandoff({
           aria-label={expanded ? "Collapse continuation handoff" : "Expand continuation handoff"}
           aria-expanded={expanded}
         >
-          {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+          {expanded ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
         </button>
-        <History className="h-4 w-4 text-muted-foreground" />
+        <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-foreground">{title}</span>
@@ -85,7 +85,7 @@ export function IssueContinuationHandoff({
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={copyBody} className="shrink-0">
-          {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
+          {copied ? <Check className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />}
           {copied ? "Copied" : "Copy"}
         </Button>
       </div>

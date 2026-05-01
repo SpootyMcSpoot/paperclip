@@ -369,7 +369,7 @@ export function ProjectWorkspaceDetail() {
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" size="sm" asChild>
           <Link to={`/projects/${canonicalProjectRef}/workspaces`}>
-            <ArrowLeft className="mr-1 h-4 w-4" />
+            <ArrowLeft className="mr-1 h-4 w-4" aria-hidden="true" />
             Back to workspaces
           </Link>
         </Button>
@@ -401,13 +401,13 @@ export function ProjectWorkspaceDetail() {
                   onClick={() => setPrimaryWorkspace.mutate()}
                 >
                   {setPrimaryWorkspace.isPending
-                    ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    : <Check className="mr-2 h-4 w-4" />}
+                    ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                    : <Check className="mr-2 h-4 w-4" aria-hidden="true" />}
                   Make primary
                 </Button>
               ) : (
                 <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300 sm:max-w-sm">
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
                   This is the project’s primary codebase workspace.
                 </div>
               )}
@@ -565,7 +565,7 @@ export function ProjectWorkspaceDetail() {
 
             <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Button className="w-full sm:w-auto" disabled={!isDirty || updateWorkspace.isPending} onClick={saveChanges}>
-                {updateWorkspace.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {updateWorkspace.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
                 Save changes
               </Button>
               <Button
@@ -606,7 +606,7 @@ export function ProjectWorkspaceDetail() {
               {workspace.repoUrl && isSafeExternalUrl(workspace.repoUrl) ? (
                 <a href={workspace.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:underline">
                   {workspace.repoUrl}
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </a>
               ) : workspace.repoUrl ? (
                 <span className="break-all font-mono text-xs">{workspace.repoUrl}</span>

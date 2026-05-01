@@ -83,6 +83,7 @@ export function PathInstructionsModal({
             <button
               key={p.id}
               type="button"
+              aria-pressed={platform === p.id}
               className={cn(
                 "flex flex-1 items-center justify-center gap-1.5 rounded px-2 py-1 text-xs transition-colors",
                 platform === p.id
@@ -91,7 +92,7 @@ export function PathInstructionsModal({
               )}
               onClick={() => setPlatform(p.id)}
             >
-              <p.icon className="h-3.5 w-3.5" />
+              <p.icon className="h-3.5 w-3.5" aria-hidden="true" />
               {p.label}
             </button>
           ))}

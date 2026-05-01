@@ -52,7 +52,7 @@ export function CompanySwitcher({ open: controlledOpen, onOpenChange }: CompanyS
               {selectedCompany?.name ?? "Select company"}
             </span>
           </div>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[220px]">
@@ -74,13 +74,13 @@ export function CompanySwitcher({ open: controlledOpen, onOpenChange }: CompanyS
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/company/settings" className="no-underline text-inherit">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="h-4 w-4 mr-2" aria-hidden="true" />
             Company Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/companies" className="no-underline text-inherit">
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
             Manage Companies
           </Link>
         </DropdownMenuItem>

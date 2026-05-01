@@ -46,7 +46,7 @@ import {
   Github,
   Link2,
   ExternalLink,
-  Staple,
+  Paperclip,
   Pencil,
   Plus,
   RefreshCw,
@@ -160,7 +160,7 @@ function sourceMeta(sourceBadge: CompanySkillSourceBadge, sourceLabel: string | 
     case "local":
       return { icon: Folder, label: sourceLabel ?? "Folder", managedLabel: "Folder managed" };
     case "staple":
-      return { icon: Staple, label: sourceLabel ?? "Staple", managedLabel: "Staple managed" };
+      return { icon: Paperclip, label: sourceLabel ?? "Staple", managedLabel: "Staple managed" };
     default:
       return { icon: Boxes, label: sourceLabel ?? "Catalog", managedLabel: "Catalog managed" };
   }
@@ -329,7 +329,7 @@ function SkillTree({
                   onClick={() => node.path && onToggleDir(node.path)}
                 >
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-                    {expanded ? <FolderOpen className="h-3.5 w-3.5" /> : <Folder className="h-3.5 w-3.5" />}
+                    {expanded ? <FolderOpen className="h-3.5 w-3.5" aria-hidden="true" /> : <Folder className="h-3.5 w-3.5" aria-hidden="true" />}
                   </span>
                   <span className="truncate">{node.name}</span>
                 </button>
@@ -337,8 +337,10 @@ function SkillTree({
                   type="button"
                   className="flex h-9 w-9 items-center justify-center self-center rounded-sm text-muted-foreground opacity-70 transition-[background-color,color,opacity] hover:bg-accent hover:text-foreground group-hover:opacity-100"
                   onClick={() => node.path && onToggleDir(node.path)}
+                  aria-label={expanded ? `Collapse ${node.name}` : `Expand ${node.name}`}
+                  aria-expanded={expanded}
                 >
-                  {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                  {expanded ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
                 </button>
               </div>
               {expanded && (
@@ -370,7 +372,7 @@ function SkillTree({
             onClick={() => node.path && onSelectPath(node.path)}
           >
             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
-              <FileIcon className="h-3.5 w-3.5" />
+              <FileIcon className="h-3.5 w-3.5" aria-hidden="true" />
             </span>
             <span className="truncate">{node.name}</span>
           </Link>
@@ -441,7 +443,7 @@ function SkillList({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="flex h-4 w-4 shrink-0 items-center justify-center text-muted-foreground opacity-75 transition-opacity group-hover:opacity-100">
-                        <SourceIcon className="h-3.5 w-3.5" />
+                        <SourceIcon className="h-3.5 w-3.5" aria-hidden="true" />
                         <span className="sr-only">{source.managedLabel}</span>
                       </span>
                     </TooltipTrigger>
@@ -458,7 +460,7 @@ function SkillList({
                 onClick={() => onToggleSkill(skill.id)}
                 aria-label={expanded ? `Collapse ${skill.name}` : `Expand ${skill.name}`}
               >
-                {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                {expanded ? <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
               </button>
             </div>
             <div
@@ -561,7 +563,7 @@ function SkillPane({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="flex items-center gap-2 truncate text-2xl font-semibold">
-              <SourceIcon className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <SourceIcon className="h-5 w-5 shrink-0 text-muted-foreground" aria-hidden="true" />
               {detail.name}
             </h1>
             {detail.description && (
@@ -576,7 +578,7 @@ function SkillPane({
               disabled={deletePending}
               title={removeDisabledReason ?? undefined}
             >
-              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
               {deletePending ? "Removing..." : "Remove"}
             </Button>
             {detail.editable ? (
@@ -584,7 +586,7 @@ function SkillPane({
                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                 onClick={() => setEditMode(!editMode)}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                 {editMode ? "Stop editing" : "Edit"}
               </button>
             ) : (
@@ -598,7 +600,7 @@ function SkillPane({
             <div className="flex items-center gap-2">
               <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Source</span>
               <span className="flex items-center gap-2">
-                <SourceIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                <SourceIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                 {detail.sourcePath ? (
                   <button
                     className="truncate hover:text-foreground text-muted-foreground transition-colors cursor-pointer"
@@ -627,7 +629,7 @@ function SkillPane({
                   onClick={onCheckUpdates}
                   disabled={checkUpdatesPending || updateStatusLoading}
                 >
-                  <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", (checkUpdatesPending || updateStatusLoading) && "animate-spin")} />
+                  <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", (checkUpdatesPending || updateStatusLoading) && "animate-spin")} aria-hidden="true" />
                   Check for updates
                 </Button>
                 {updateStatus?.supported && updateStatus.hasUpdate && (
@@ -636,7 +638,7 @@ function SkillPane({
                     onClick={onInstallUpdate}
                     disabled={installUpdatePending}
                   >
-                    <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", installUpdatePending && "animate-spin")} />
+                    <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", installUpdatePending && "animate-spin")} aria-hidden="true" />
                     Install update{latestPin ? ` ${latestPin}` : ""}
                   </Button>
                 )}
@@ -691,7 +693,7 @@ function SkillPane({
                   onClick={() => setViewMode("preview")}
                 >
                   <span className="flex items-center gap-1.5">
-                    <Eye className="h-3.5 w-3.5" />
+                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                     View
                   </span>
                 </button>
@@ -700,7 +702,7 @@ function SkillPane({
                   onClick={() => setViewMode("code")}
                 >
                   <span className="flex items-center gap-1.5">
-                    <Code2 className="h-3.5 w-3.5" />
+                    <Code2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Code
                   </span>
                 </button>
@@ -712,7 +714,7 @@ function SkillPane({
                   Cancel
                 </Button>
                 <Button size="sm" onClick={onSave} disabled={savePending}>
-                  <Save className="mr-1.5 h-3.5 w-3.5" />
+                  <Save className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
                   {savePending ? "Saving..." : "Save"}
                 </Button>
               </>
@@ -1147,7 +1149,7 @@ export function CompanySkills() {
                   Find install commands and paste one here.
                 </span>
               </span>
-              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </a>
             <a
               href="https://github.com/search?q=SKILL.md&type=code"
@@ -1161,7 +1163,7 @@ export function CompanySkills() {
                   Look for repositories with `SKILL.md`, then paste the repo URL here.
                 </span>
               </span>
-              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </a>
           </div>
           <DialogFooter showCloseButton />
@@ -1185,17 +1187,23 @@ export function CompanySkills() {
                   onClick={() => scanProjects.mutate()}
                   disabled={scanProjects.isPending}
                   title="Scan project workspaces for skills"
+                  aria-label="Scan project workspaces for skills"
                 >
-                  <RefreshCw className={cn("h-4 w-4", scanProjects.isPending && "animate-spin")} />
+                  <RefreshCw className={cn("h-4 w-4", scanProjects.isPending && "animate-spin")} aria-hidden="true" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => setCreateOpen((value) => !value)}>
-                  <Plus className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => setCreateOpen((value) => !value)}
+                  aria-label="Create skill"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>
             </div>
 
             <div className="mt-3 flex items-center gap-2 border-b border-border pb-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
+              <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <input
                 value={skillFilter}
                 onChange={(event) => setSkillFilter(event.target.value)}
@@ -1217,7 +1225,7 @@ export function CompanySkills() {
                 onClick={handleAddSkillSource}
                 disabled={importSkill.isPending}
               >
-                {importSkill.isPending ? <RefreshCw className="h-4 w-4 animate-spin" /> : "Add"}
+                {importSkill.isPending ? <RefreshCw className="h-4 w-4 animate-spin" role="img" aria-label="Adding" /> : "Add"}
               </Button>
             </div>
             {scanStatusMessage && (

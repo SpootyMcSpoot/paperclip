@@ -224,8 +224,8 @@ function MonoValue({ value, copy }: { value: string; copy?: boolean }) {
     <div className="inline-flex max-w-full items-start gap-2">
       <span className="break-all font-mono text-xs">{value}</span>
       {copy ? (
-        <CopyText text={value} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied">
-          <Copy className="h-3.5 w-3.5" />
+        <CopyText text={value} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied" ariaLabel="Copy value" title="Copy value">
+          <Copy className="h-3.5 w-3.5" aria-hidden="true" />
         </CopyText>
       ) : null}
     </div>
@@ -508,7 +508,7 @@ export function ExecutionWorkspaceDetail() {
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="ghost" size="sm" asChild>
             <Link to={project ? `/projects/${projectRef}/workspaces` : "/projects"}>
-              <ArrowLeft className="mr-1 h-4 w-4" />
+              <ArrowLeft className="mr-1 h-4 w-4" aria-hidden="true" />
               Back to all workspaces
             </Link>
           </Button>
@@ -777,7 +777,7 @@ export function ExecutionWorkspaceDetail() {
 
               <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Button className="w-full sm:w-auto" disabled={!isDirty || updateWorkspace.isPending} onClick={saveChanges}>
-                  {updateWorkspace.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {updateWorkspace.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
                   Save changes
                 </Button>
                 <Button
@@ -862,10 +862,10 @@ export function ExecutionWorkspaceDetail() {
                   <div className="inline-flex max-w-full items-start gap-2">
                     <a href={workspace.repoUrl} target="_blank" rel="noreferrer" className="inline-flex min-w-0 items-center gap-1 break-all hover:underline">
                       {workspace.repoUrl}
-                      <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </a>
-                    <CopyText text={workspace.repoUrl} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied">
-                      <Copy className="h-3.5 w-3.5" />
+                    <CopyText text={workspace.repoUrl} className="shrink-0 text-muted-foreground hover:text-foreground" copiedLabel="Copied" ariaLabel="Copy repo URL" title="Copy repo URL">
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                     </CopyText>
                   </div>
                 ) : workspace.repoUrl ? (

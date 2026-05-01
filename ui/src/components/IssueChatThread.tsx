@@ -378,7 +378,7 @@ function IssueBlockedNotice({
   return (
     <div className="mb-3 rounded-md border border-amber-300/70 bg-amber-50/90 px-3 py-2.5 text-sm text-amber-950 shadow-sm dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
       <div className="flex items-start gap-2">
-        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-300" />
+        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-300" aria-hidden="true" />
         <div className="min-w-0 space-y-1.5">
           <p className="leading-5">
             {blockers.length > 0
@@ -417,7 +417,7 @@ function IssueAssigneePausedNotice({ agent }: { agent: Agent | null }) {
   return (
     <div className="mb-3 rounded-md border border-orange-300/70 bg-orange-50/90 px-3 py-2.5 text-sm text-orange-950 shadow-sm dark:border-orange-500/40 dark:bg-orange-500/10 dark:text-orange-100">
       <div className="flex items-start gap-2">
-        <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" />
+        <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" aria-hidden="true" />
         <p className="min-w-0 leading-5">
           <span className="font-medium">{agent.name}</span> is paused. New runs will not start until the agent is resumed. {pauseDetail}
         </p>
@@ -470,7 +470,7 @@ function IssueChatFallbackThread({
     <div className={cn(variant === "embedded" ? "space-y-3" : "space-y-4")}>
       <div className="rounded-xl border border-amber-300/60 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/20 dark:text-amber-200">
         <div className="flex items-start gap-2">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <div className="space-y-1">
             <p className="font-medium">Chat renderer hit an internal state error.</p>
             <p className="text-xs opacity-80">
@@ -802,14 +802,15 @@ function IssueChatChainOfThought({
     <div>
       <button
         type="button"
+        aria-expanded={hasContent ? expanded : undefined}
         className="group flex w-full items-center gap-2.5 rounded-lg px-1 py-2 text-left transition-colors hover:bg-accent/5"
         onClick={() => hasContent && setExpanded((v) => !v)}
       >
         <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80">
           {agentIcon ? (
-            <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
+            <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" aria-hidden="true" />
           ) : isActive ? (
-            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
           ) : (
             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500/70" />
@@ -828,7 +829,7 @@ function IssueChatChainOfThought({
           <span className="text-xs text-muted-foreground/40">· {toolSummary}</span>
         ) : null}
         {hasContent ? (
-          <ChevronDown className={cn("ml-auto h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform", expanded && "rotate-180")} />
+          <ChevronDown className={cn("ml-auto h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform", expanded && "rotate-180")} aria-hidden="true" />
         ) : null}
       </button>
       {expanded && hasContent ? (
@@ -880,7 +881,7 @@ function IssueChatReasoningPart({ text }: { text: string }) {
   return (
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-0.5">
-        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <Brain className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
       </div>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
         {ticker.exiting !== null && (
@@ -934,9 +935,9 @@ function IssueChatRollingToolPart({ toolParts }: { toolParts: ToolCallMessagePar
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-0.5">
         {isRunning ? (
-          <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground/50" />
+          <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-muted-foreground/50" aria-hidden="true" />
         ) : (
-          <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+          <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
         )}
       </div>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
@@ -983,7 +984,7 @@ function CopyablePreBlock({ children, className }: { children: string; className
           });
         }}
       >
-        {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+        {copied ? <Check className="h-3 w-3" aria-hidden="true" /> : <Copy className="h-3 w-3" aria-hidden="true" />}
       </button>
     </div>
   );
@@ -1036,7 +1037,7 @@ function IssueChatToolPart({
   return (
     <div className="flex gap-2 px-1">
       <div className="flex flex-col items-center pt-1">
-        <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <ToolIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" aria-hidden="true" />
         {open ? <div className="mt-1 w-px flex-1 bg-border/40" /> : null}
       </div>
 
@@ -1051,9 +1052,9 @@ function IssueChatToolPart({
             {!intentDetail && summary ? <span className="ml-1.5 text-muted-foreground/50">{summary}</span> : null}
           </span>
           {result === undefined ? (
-            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground/50" />
+            <Loader2 className="h-3 w-3 shrink-0 animate-spin text-muted-foreground/50" aria-hidden="true" />
           ) : null}
-          <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground/40 transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground/40 transition-transform", open && "rotate-180")} aria-hidden="true" />
         </button>
 
         {open ? (
@@ -1323,7 +1324,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
               });
             }}
           >
-            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
           </button>
         </div>
       )}
@@ -1422,7 +1423,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
       <div className="flex items-start gap-2.5 py-1.5">
         <Avatar size="sm" className="shrink-0">
           {agentIcon ? (
-            <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+            <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
           ) : (
             <AvatarFallback>{initialsForName(authorName)}</AvatarFallback>
           )}
@@ -1443,7 +1444,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                     {commentDateLabel(message.createdAt)}
                   </span>
                 ) : null}
-                <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/40 transition-transform", !folded && "rotate-180")} />
+                <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground/40 transition-transform", !folded && "rotate-180")} aria-hidden="true" />
               </span>
             </button>
           ) : (
@@ -1456,7 +1457,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
               ) : null}
               {isRunning ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-cyan-700 dark:text-cyan-200">
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
                   Running
                 </span>
               ) : null}
@@ -1471,9 +1472,9 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                   <div className="flex items-center gap-2.5 rounded-lg px-1 py-2">
                     <span className="inline-flex items-center gap-2 text-sm font-medium text-foreground/80">
                       {agentIcon ? (
-                        <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" />
+                        <AgentIcon icon={agentIcon} className="h-4 w-4 shrink-0" aria-hidden="true" />
                       ) : (
-                        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+                        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />
                       )}
                       <span className="shimmer-text">{waitingText}</span>
                     </span>
@@ -1506,7 +1507,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                     });
                   }}
                 >
-                  {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
                 </button>
                 {commentId && onVote ? (
                   <IssueChatFeedbackButtons
@@ -1538,7 +1539,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       title="More actions"
                       aria-label="More actions"
                     >
-                      <MoreHorizontal className="h-3.5 w-3.5" />
+                      <MoreHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -1547,7 +1548,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                         void navigator.clipboard.writeText(copyText);
                       }}
                     >
-                      <Copy className="mr-2 h-3.5 w-3.5" />
+                      <Copy className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                       Copy message
                     </DropdownMenuItem>
                     {canStopRun && onStopRun && runId ? (
@@ -1558,14 +1559,14 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                           void onStopRun(runId);
                         }}
                       >
-                        <Square className="mr-2 h-3.5 w-3.5 fill-current" />
+                        <Square className="mr-2 h-3.5 w-3.5 fill-current" aria-hidden="true" />
                         {stoppingRunId === runId ? "Stopping…" : "Stop run"}
                       </DropdownMenuItem>
                     ) : null}
                     {runHref ? (
                       <DropdownMenuItem asChild>
                         <Link to={runHref} target="_blank" rel="noreferrer noopener">
-                          <Search className="mr-2 h-3.5 w-3.5" />
+                          <Search className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
                           View run
                         </Link>
                       </DropdownMenuItem>
@@ -1675,7 +1676,7 @@ function IssueChatFeedbackButtons({
         aria-label="Helpful"
         onClick={handleThumbsUp}
       >
-        <ThumbsUp className="h-3.5 w-3.5" />
+        <ThumbsUp className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
       <Popover open={reasonOpen} onOpenChange={setReasonOpen}>
         <PopoverTrigger asChild>
@@ -1692,7 +1693,7 @@ function IssueChatFeedbackButtons({
             aria-label="Needs work"
             onClick={handleThumbsDown}
           >
-            <ThumbsDown className="h-3.5 w-3.5" />
+            <ThumbsDown className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-80 p-3">
@@ -1855,7 +1856,7 @@ function ExpiredRequestConfirmationActivity({
           aria-controls={detailsId}
           onClick={() => setExpanded((current) => !current)}
         >
-          <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} />
+          <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} aria-hidden="true" />
           {expanded ? "Hide confirmation" : "Expired confirmation"}
         </button>
       </div>
@@ -1877,7 +1878,7 @@ function ExpiredRequestConfirmationActivity({
         <div className="flex items-start gap-2.5 py-1">
           <Avatar size="sm" className="mt-0.5">
             {actorIcon ? (
-              <AvatarFallback><AgentIcon icon={actorIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={actorIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(actorName)}</AvatarFallback>
             )}
@@ -1986,7 +1987,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
               Status
             </span>
             <span className="text-muted-foreground">{humanizeValue(statusChange.from)}</span>
-            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">{humanizeValue(statusChange.to)}</span>
           </div>
         ) : null}
@@ -1999,7 +2000,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
             <span className="text-muted-foreground">
               {formatTimelineAssigneeLabel(assigneeChange.from, agentMap, currentUserId, userLabelMap)}
             </span>
-            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <ArrowRight className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <span className="font-medium text-foreground">
               {formatTimelineAssigneeLabel(assigneeChange.to, agentMap, currentUserId, userLabelMap)}
             </span>
@@ -2023,7 +2024,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className="flex items-start gap-2.5 py-1">
           <Avatar size="sm" className="mt-0.5">
             {agentIcon ? (
-              <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={agentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(actorName)}</AvatarFallback>
             )}
@@ -2044,7 +2045,7 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className="flex items-center gap-2.5 py-1">
           <Avatar size="sm">
             {runAgentIcon ? (
-              <AvatarFallback><AgentIcon icon={runAgentIcon} className="h-3.5 w-3.5" /></AvatarFallback>
+              <AvatarFallback><AgentIcon icon={runAgentIcon} className="h-3.5 w-3.5" aria-hidden="true" /></AvatarFallback>
             ) : (
               <AvatarFallback>{initialsForName(displayedRunAgentName)}</AvatarFallback>
             )}
@@ -2356,7 +2357,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
         >
           <div className="flex max-w-md items-center gap-3 rounded-md bg-background/80 px-3 py-2 text-left shadow-sm ring-1 ring-border/60">
             <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Paperclip className="h-4 w-4" />
+              <Paperclip className="h-4 w-4" aria-hidden="true" />
             </span>
             <div className="min-w-0">
               <div className="text-sm font-medium text-foreground">Drop to upload</div>
@@ -2413,11 +2414,11 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
                 )}
               >
                 {attachment.status === "uploading" ? (
-                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" aria-hidden="true" />
                 ) : attachment.status === "attached" ? (
-                  <Check className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" />
+                  <Check className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
                 ) : (
-                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+                  <AlertTriangle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 )}
                 <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                   {attachment.name}
@@ -2447,8 +2448,9 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               onClick={() => attachInputRef.current?.click()}
               disabled={attaching}
               title="Attach file"
+              aria-label="Attach file"
             >
-              <Paperclip className="h-4 w-4" />
+              <Paperclip className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         ) : null}
@@ -2470,7 +2472,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               return (
                 <>
                   {agent ? (
-                    <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                   ) : null}
                   <span className="truncate">{option.label}</span>
                 </>
@@ -2483,7 +2485,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               return (
                 <>
                   {agent ? (
-                    <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    <AgentIcon icon={agent.icon} className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                   ) : null}
                   <span className="truncate">{option.label}</span>
                 </>

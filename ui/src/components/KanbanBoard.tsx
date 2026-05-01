@@ -3,6 +3,7 @@ import { Link } from "@/lib/router";
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -14,6 +15,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import {
   SortableContext,
+  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -160,9 +162,19 @@ function KanbanCard({
             {issue.identifier ?? issue.id.slice(0, 8)}
           </span>
           {isLive && (
-            <span className="relative flex h-2 w-2 shrink-0 mt-0.5">
-              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
+            <span
+              className="relative flex h-2 w-2 shrink-0 mt-0.5"
+              role="status"
+              aria-label="Live updating"
+            >
+              <span
+                className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
+                aria-hidden="true"
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"
+                aria-hidden="true"
+              />
             </span>
           )}
         </div>
@@ -196,7 +208,8 @@ export function KanbanBoard({
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
   const columnIssues = useMemo(() => {

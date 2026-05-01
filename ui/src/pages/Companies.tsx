@@ -91,7 +91,7 @@ export function Companies() {
     <div className="space-y-6">
       <div className="flex items-center justify-end">
         <Button size="sm" onClick={() => openOnboarding()}>
-          <Plus className="h-3.5 w-3.5 mr-1.5" />
+          <Plus className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
           New Company
         </Button>
       </div>
@@ -157,11 +157,12 @@ export function Companies() {
                         size="icon-xs"
                         onClick={saveEdit}
                         disabled={editMutation.isPending}
+                        aria-label="Save name"
                       >
-                        <Check className="h-3.5 w-3.5 text-green-500" />
+                        <Check className="h-3.5 w-3.5 text-green-500" aria-hidden="true" />
                       </Button>
-                      <Button variant="ghost" size="icon-xs" onClick={cancelEdit}>
-                        <X className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Button variant="ghost" size="icon-xs" onClick={cancelEdit} aria-label="Cancel edit">
+                        <X className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                       </Button>
                     </div>
                   ) : (
@@ -186,8 +187,9 @@ export function Companies() {
                           e.stopPropagation();
                           startEdit(company.id, company.name);
                         }}
+                        aria-label={`Rename ${company.name}`}
                       >
-                        <Pencil className="h-3 w-3" />
+                        <Pencil className="h-3 w-3" aria-hidden="true" />
                       </Button>
                     </div>
                   )}
@@ -206,15 +208,16 @@ export function Companies() {
                         variant="ghost"
                         size="icon-xs"
                         className="text-muted-foreground opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100"
+                        aria-label={`Company actions for ${company.name}`}
                       >
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={() => startEdit(company.id, company.name)}
                       >
-                        <Pencil className="h-3.5 w-3.5" />
+                        <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
                         Rename
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -222,7 +225,7 @@ export function Companies() {
                         variant="destructive"
                         onClick={() => setConfirmDeleteId(company.id)}
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                         Delete Company
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -233,19 +236,19 @@ export function Companies() {
               {/* Stats row */}
               <div className="flex items-center gap-3 sm:gap-5 mt-4 text-sm text-muted-foreground flex-wrap">
                 <div className="flex items-center gap-1.5">
-                  <Users className="h-3.5 w-3.5" />
+                  <Users className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {agentCount} {agentCount === 1 ? "agent" : "agents"}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CircleDot className="h-3.5 w-3.5" />
+                  <CircleDot className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {issueCount} {issueCount === 1 ? "issue" : "issues"}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 tabular-nums">
-                  <DollarSign className="h-3.5 w-3.5" />
+                  <DollarSign className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>
                     {formatCents(company.spentMonthlyCents)}
                     {company.budgetMonthlyCents > 0
@@ -254,7 +257,7 @@ export function Companies() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 ml-auto">
-                  <Calendar className="h-3.5 w-3.5" />
+                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>Created {relativeTime(company.createdAt)}</span>
                 </div>
               </div>

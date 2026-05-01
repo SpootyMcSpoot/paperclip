@@ -232,16 +232,18 @@ export function NewProjectDialog() {
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => setExpanded(!expanded)}
+              aria-label={expanded ? "Collapse dialog" : "Expand dialog"}
             >
-              {expanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              {expanded ? <Minimize2 className="h-3.5 w-3.5" aria-hidden="true" /> : <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />}
             </Button>
             <Button
               variant="ghost"
               size="icon-xs"
               className="text-muted-foreground"
               onClick={() => { reset(); closeNewProject(); }}
+              aria-label="Close dialog"
             >
-              <span className="text-lg leading-none">&times;</span>
+              <span className="text-lg leading-none" aria-hidden="true">&times;</span>
             </Button>
           </div>
         </div>
@@ -251,6 +253,7 @@ export function NewProjectDialog() {
           <input
             className="w-full text-lg font-semibold bg-transparent outline-none placeholder:text-muted-foreground/50"
             placeholder="Project name"
+            aria-label="Project name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
@@ -287,7 +290,7 @@ export function NewProjectDialog() {
               <span className="text-xs text-muted-foreground/50">optional</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
                   Link a GitHub repository so agents can clone, read, and push code for this project.
@@ -299,6 +302,7 @@ export function NewProjectDialog() {
               value={workspaceRepoUrl}
               onChange={(e) => { setWorkspaceRepoUrl(e.target.value); setWorkspaceError(null); }}
               placeholder="https://github.com/org/repo"
+              aria-label="Repo URL"
             />
           </div>
 
@@ -308,7 +312,7 @@ export function NewProjectDialog() {
               <span className="text-xs text-muted-foreground/50">optional</span>
               <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                  <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" aria-hidden="true" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
                   Set an absolute path on this machine where local agents will read and write files for this project.
@@ -321,6 +325,7 @@ export function NewProjectDialog() {
                 value={workspaceLocalPath}
                 onChange={(e) => { setWorkspaceLocalPath(e.target.value); setWorkspaceError(null); }}
                 placeholder="/absolute/path/to/workspace"
+                aria-label="Local folder path"
               />
               <ChoosePathButton />
             </div>
@@ -336,7 +341,7 @@ export function NewProjectDialog() {
           {/* Status */}
           <Popover open={statusOpen} onOpenChange={setStatusOpen}>
             <PopoverTrigger asChild>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
+              <button type="button" aria-label="Set project status" aria-expanded={statusOpen} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <StatusBadge status={status} />
               </button>
             </PopoverTrigger>
@@ -344,6 +349,7 @@ export function NewProjectDialog() {
               {projectStatuses.map((s) => (
                 <button
                   key={s.value}
+                  type="button"
                   className={cn(
                     "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
                     s.value === status && "bg-accent"
@@ -361,7 +367,7 @@ export function NewProjectDialog() {
               key={goal.id}
               className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs"
             >
-              <Target className="h-3 w-3 text-muted-foreground" />
+              <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
               <span className="max-w-[160px] truncate">{goal.title}</span>
               <button
                 className="text-muted-foreground hover:text-foreground"
@@ -369,7 +375,7 @@ export function NewProjectDialog() {
                 aria-label={`Remove goal ${goal.title}`}
                 type="button"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </span>
           ))}
@@ -377,16 +383,20 @@ export function NewProjectDialog() {
           <Popover open={goalOpen} onOpenChange={setGoalOpen}>
             <PopoverTrigger asChild>
               <button
+                type="button"
+                aria-label={selectedGoals.length > 0 ? "Add another goal" : "Set project goal"}
+                aria-expanded={goalOpen}
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors disabled:opacity-60"
                 disabled={selectedGoals.length > 0 && availableGoals.length === 0}
               >
-                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" /> : <Target className="h-3 w-3 text-muted-foreground" />}
+                {selectedGoals.length > 0 ? <Plus className="h-3 w-3 text-muted-foreground" aria-hidden="true" /> : <Target className="h-3 w-3 text-muted-foreground" aria-hidden="true" />}
                 {selectedGoals.length > 0 ? "+ Goal" : "Goal"}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-1" align="start">
               {selectedGoals.length === 0 && (
                 <button
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground"
                   onClick={() => setGoalOpen(false)}
                 >
@@ -396,6 +406,7 @@ export function NewProjectDialog() {
               {availableGoals.map((g) => (
                 <button
                   key={g.id}
+                  type="button"
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 truncate"
                   onClick={() => {
                     setGoalIds((prev) => [...prev, g.id]);
@@ -415,13 +426,14 @@ export function NewProjectDialog() {
 
           {/* Target date */}
           <div className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs">
-            <Calendar className="h-3 w-3 text-muted-foreground" />
+            <Calendar className="h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <input
               type="date"
               className="bg-transparent outline-none text-xs w-24"
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
               placeholder="Target date"
+              aria-label="Target date"
             />
           </div>
         </div>

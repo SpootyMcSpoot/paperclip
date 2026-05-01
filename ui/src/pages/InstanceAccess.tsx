@@ -101,7 +101,7 @@ export function InstanceAccess() {
     <div className="max-w-6xl space-y-6">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-muted-foreground" />
+          <Shield className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           <h1 className="text-lg font-semibold">Instance Access</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
@@ -138,7 +138,7 @@ export function InstanceAccess() {
                     <div className="truncate text-sm text-muted-foreground">{user.email || user.id}</div>
                   </div>
                   {user.isInstanceAdmin ? (
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                    <ShieldCheck className="h-4 w-4 text-emerald-600" role="img" aria-label="Instance admin" />
                   ) : null}
                 </div>
                 <div className="mt-2 text-xs text-muted-foreground">

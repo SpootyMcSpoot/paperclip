@@ -41,6 +41,9 @@ export function ReportsToPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
+          aria-label={current ? `Reports to ${current.name}. Change manager.` : "Choose manager"}
+          aria-expanded={open}
+          aria-haspopup="listbox"
           className={cn(
             "inline-flex max-w-full min-w-0 items-center gap-1.5 overflow-hidden rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors",
             terminatedManager && "border-amber-600/45 bg-amber-500/5",
@@ -50,12 +53,12 @@ export function ReportsToPicker({
         >
           {unknownManager ? (
             <>
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="min-w-0 truncate text-muted-foreground">Unknown manager (stale ID)</span>
             </>
           ) : current ? (
             <>
-              <AgentIcon icon={current.icon} className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <AgentIcon icon={current.icon} className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span
                 className={cn(
                   "min-w-0 truncate",
@@ -67,7 +70,7 @@ export function ReportsToPicker({
             </>
           ) : (
             <>
-              <User className="h-3 w-3 shrink-0 text-muted-foreground" />
+              <User className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
               <span className="min-w-0 truncate">
                 {disabled ? disabledEmptyLabel : chooseLabel}
               </span>
@@ -78,6 +81,7 @@ export function ReportsToPicker({
       <PopoverContent className="w-48 p-1" align="start">
         <button
           type="button"
+          aria-pressed={value === null}
           className={cn(
             "flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50",
             value === null && "bg-accent",
@@ -91,7 +95,7 @@ export function ReportsToPicker({
         </button>
         {terminatedManager && (
           <div className="flex min-w-0 items-center gap-2 overflow-hidden px-2 py-1.5 text-xs text-muted-foreground border-b border-border mb-0.5">
-            <AgentIcon icon={current.icon} className="shrink-0 h-3 w-3" />
+            <AgentIcon icon={current.icon} className="shrink-0 h-3 w-3" aria-hidden="true" />
             <span className="min-w-0 truncate">
               Current: {current.name} (terminated)
             </span>
@@ -106,6 +110,7 @@ export function ReportsToPicker({
           <button
             type="button"
             key={a.id}
+            aria-pressed={a.id === value}
             className={cn(
               "flex items-center gap-2 w-full min-w-0 px-2 py-1.5 text-xs rounded hover:bg-accent/50 overflow-hidden",
               a.id === value && "bg-accent",
@@ -115,7 +120,7 @@ export function ReportsToPicker({
               setOpen(false);
             }}
           >
-            <AgentIcon icon={a.icon} className="shrink-0 h-3 w-3 text-muted-foreground" />
+            <AgentIcon icon={a.icon} className="shrink-0 h-3 w-3 text-muted-foreground" aria-hidden="true" />
             <span className="min-w-0 truncate">{a.name}</span>
             <span className="text-muted-foreground ml-auto shrink-0">{roleLabels[a.role] ?? a.role}</span>
           </button>

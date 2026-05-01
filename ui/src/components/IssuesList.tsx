@@ -258,7 +258,7 @@ function IssueSearchInput({
 
   return (
     <div className="relative w-48 sm:w-64 md:w-80">
-      <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+      <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
       <Input
         value={draftValue}
         onChange={(e) => {
@@ -833,7 +833,7 @@ export function IssuesList({
       <div className="flex items-center justify-between gap-2 sm:gap-3">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Button size="sm" variant="outline" onClick={() => openCreateIssueDialog()}>
-            <Plus className="h-4 w-4 sm:mr-1" />
+            <Plus className="h-4 w-4 sm:mr-1" aria-hidden="true" />
             <span className="hidden sm:inline">{createButtonLabel}</span>
           </Button>
           <IssueSearchInput
@@ -849,18 +849,24 @@ export function IssuesList({
           {/* View mode toggle */}
           <div className="flex items-center border border-border rounded-md overflow-hidden mr-1">
             <button
+              type="button"
               className={`p-1.5 transition-colors ${viewState.viewMode === "list" ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               onClick={() => updateView({ viewMode: "list" })}
               title="List view"
+              aria-label="List view"
+              aria-pressed={viewState.viewMode === "list"}
             >
-              <List className="h-3.5 w-3.5" />
+              <List className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
             <button
+              type="button"
               className={`p-1.5 transition-colors ${viewState.viewMode === "board" ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}
               onClick={() => updateView({ viewMode: "board" })}
               title="Board view"
+              aria-label="Board view"
+              aria-pressed={viewState.viewMode === "board"}
             >
-              <Columns3 className="h-3.5 w-3.5" />
+              <Columns3 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </div>
 
@@ -872,8 +878,10 @@ export function IssuesList({
               className={cn("hidden h-8 w-8 shrink-0 sm:inline-flex", viewState.nestingEnabled && "bg-accent")}
               onClick={() => updateView({ nestingEnabled: !viewState.nestingEnabled })}
               title={viewState.nestingEnabled ? "Disable parent-child nesting" : "Enable parent-child nesting"}
+              aria-label={viewState.nestingEnabled ? "Disable parent-child nesting" : "Enable parent-child nesting"}
+              aria-pressed={viewState.nestingEnabled}
             >
-              <ListTree className="h-3.5 w-3.5" />
+              <ListTree className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
           )}
 
@@ -904,8 +912,8 @@ export function IssuesList({
           {viewState.viewMode === "list" && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Sort">
-                  <ArrowUpDown className="h-3.5 w-3.5" />
+                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Sort" aria-label="Sort issues">
+                  <ArrowUpDown className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-48 p-0">
@@ -919,6 +927,8 @@ export function IssuesList({
                   ] as const).map(([field, label]) => (
                     <button
                       key={field}
+                      type="button"
+                      aria-pressed={viewState.sortField === field}
                       className={`flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm ${
                         viewState.sortField === field ? "bg-accent/50 text-foreground" : "hover:bg-accent/50 text-muted-foreground"
                       }`}
@@ -932,7 +942,7 @@ export function IssuesList({
                     >
                       <span>{label}</span>
                       {viewState.sortField === field && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground" aria-hidden="true">
                           {viewState.sortDir === "asc" ? "\u2191" : "\u2193"}
                         </span>
                       )}
@@ -947,8 +957,8 @@ export function IssuesList({
           {viewState.viewMode === "list" && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Group">
-                  <Layers className="h-3.5 w-3.5" />
+                <Button variant="outline" size="icon" className="h-8 w-8 shrink-0" title="Group" aria-label="Group issues">
+                  <Layers className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-44 p-0">
@@ -963,13 +973,15 @@ export function IssuesList({
                   ] as const).map(([value, label]) => (
                     <button
                       key={value}
+                      type="button"
+                      aria-pressed={viewState.groupBy === value}
                       className={`flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-sm ${
                         viewState.groupBy === value ? "bg-accent/50 text-foreground" : "hover:bg-accent/50 text-muted-foreground"
                       }`}
                       onClick={() => updateView({ groupBy: value })}
                     >
                       <span>{label}</span>
-                      {viewState.groupBy === value && <Check className="h-3.5 w-3.5" />}
+                      {viewState.groupBy === value && <Check className="h-3.5 w-3.5" aria-hidden="true" />}
                     </button>
                   ))}
                 </div>
@@ -1041,8 +1053,10 @@ export function IssuesList({
                     size="icon-xs"
                     className="text-muted-foreground"
                     onClick={() => openCreateIssueDialog(group.key)}
+                    aria-label={`Add issue to ${group.label}`}
+                    title="Add issue"
                   >
-                    <Plus className="h-3 w-3" />
+                    <Plus className="h-3 w-3" aria-hidden="true" />
                   </Button>
                 )}
               />
@@ -1114,7 +1128,7 @@ export function IssuesList({
                                   aria-label="Paused"
                                   title="Paused"
                                 >
-                                  <CircleSlash2 className="h-3 w-3" />
+                                  <CircleSlash2 className="h-3 w-3" aria-hidden="true" />
                                   Paused
                                 </span>
                               ) : (
@@ -1128,8 +1142,13 @@ export function IssuesList({
                         className={isMutedIssue ? "opacity-70" : undefined}
                         mobileLeading={
                           hasChildren ? (
-                            <button type="button" onClick={toggleCollapse}>
-                              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                            <button
+                              type="button"
+                              onClick={toggleCollapse}
+                              aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                              aria-expanded={isExpanded}
+                            >
+                              <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                             </button>
                           ) : (
                             <span onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
@@ -1144,8 +1163,10 @@ export function IssuesList({
                                 type="button"
                                 className="hidden shrink-0 items-center sm:inline-flex"
                                 onClick={toggleCollapse}
+                                aria-label={isExpanded ? "Collapse sub-tasks" : "Expand sub-tasks"}
+                                aria-expanded={isExpanded}
                               >
-                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} />
+                                <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-90")} aria-hidden="true" />
                               </button>
                             ) : (
                               <span className="hidden w-3.5 shrink-0 sm:block" />
@@ -1209,7 +1230,7 @@ export function IssuesList({
                                       ) : (
                                         <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                                           <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-muted-foreground/35 bg-muted/30">
-                                            <User className="h-3.5 w-3.5" />
+                                            <User className="h-3.5 w-3.5" aria-hidden="true" />
                                           </span>
                                           Assignee
                                         </span>
@@ -1255,7 +1276,7 @@ export function IssuesList({
                                             assignIssue(issue.id, null, currentUserId);
                                           }}
                                         >
-                                          <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                          <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                                           <span>Me</span>
                                         </button>
                                       )}

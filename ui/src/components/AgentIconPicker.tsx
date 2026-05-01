@@ -14,14 +14,13 @@ import { AGENT_ICONS, getAgentIcon } from "../lib/agent-icons";
 
 const DEFAULT_ICON: AgentIconName = "bot";
 
-interface AgentIconProps {
+interface AgentIconProps extends React.SVGAttributes<SVGSVGElement> {
   icon: string | null | undefined;
-  className?: string;
 }
 
-export function AgentIcon({ icon, className }: AgentIconProps) {
+export function AgentIcon({ icon, ...rest }: AgentIconProps) {
   const Icon = getAgentIcon(icon);
-  return <Icon className={className} />;
+  return <Icon {...rest} />;
 }
 
 interface AgentIconPickerProps {
@@ -51,25 +50,32 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
           onChange={(e) => setSearch(e.target.value)}
           className="mb-2 h-8 text-sm"
           autoFocus
+          aria-label="Search icons"
         />
         <div className="grid grid-cols-7 gap-1 max-h-48 overflow-y-auto">
-          {filtered.map(([name, Icon]) => (
-            <button
-              key={name}
-              onClick={() => {
-                onChange(name);
-                setOpen(false);
-                setSearch("");
-              }}
-              className={cn(
-                "flex items-center justify-center h-8 w-8 rounded hover:bg-accent transition-colors",
-                (value ?? DEFAULT_ICON) === name && "bg-accent ring-1 ring-primary"
-              )}
-              title={name}
-            >
-              <Icon className="h-4 w-4" />
-            </button>
-          ))}
+          {filtered.map(([name, Icon]) => {
+            const selected = (value ?? DEFAULT_ICON) === name;
+            return (
+              <button
+                key={name}
+                type="button"
+                onClick={() => {
+                  onChange(name);
+                  setOpen(false);
+                  setSearch("");
+                }}
+                className={cn(
+                  "flex items-center justify-center h-8 w-8 rounded hover:bg-accent transition-colors",
+                  selected && "bg-accent ring-1 ring-primary"
+                )}
+                title={name}
+                aria-label={`Select icon ${name}`}
+                aria-pressed={selected}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+              </button>
+            );
+          })}
           {filtered.length === 0 && (
             <p className="col-span-7 text-xs text-muted-foreground text-center py-2">No icons match</p>
           )}

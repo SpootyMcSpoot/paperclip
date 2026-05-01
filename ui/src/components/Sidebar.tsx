@@ -12,6 +12,7 @@ import {
   Repeat,
   GitBranch,
   Settings,
+  ShieldCheck,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { SidebarSection } from "./SidebarSection";
@@ -22,6 +23,7 @@ import { useDialog } from "../context/DialogContext";
 import { useCompany } from "../context/CompanyContext";
 import { heartbeatsApi } from "../api/heartbeats";
 import { instanceSettingsApi } from "../api/instanceSettings";
+import { dashboardApi } from "../api/dashboard";
 import { queryKeys } from "../lib/queryKeys";
 import { useInboxBadge } from "../hooks/useInboxBadge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +46,14 @@ export function Sidebar() {
   });
   const liveRunCount = liveRuns?.length ?? 0;
   const showWorkspacesLink = experimentalSettings?.enableIsolatedWorkspaces === true;
+  const { data: dashboard } = useQuery({
+    queryKey: queryKeys.dashboard(selectedCompanyId!),
+    queryFn: () => dashboardApi.summary(selectedCompanyId!),
+    enabled: !!selectedCompanyId,
+  });
+  const pendingApprovals = dashboard
+    ? dashboard.pendingApprovals + dashboard.budgets.pendingApprovals
+    : 0;
 
   function openSearch() {
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
@@ -64,8 +74,10 @@ export function Sidebar() {
           size="icon-sm"
           className="text-muted-foreground shrink-0"
           onClick={openSearch}
+          aria-label="Open command palette"
+          title="Search (⌘K)"
         >
-          <Search className="h-4 w-4" />
+          <Search className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
 
@@ -73,10 +85,11 @@ export function Sidebar() {
         <div className="flex flex-col gap-0.5">
           {/* New Issue button aligned with nav items */}
           <button
+            type="button"
             onClick={() => openNewIssue()}
             className="flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
           >
-            <SquarePen className="h-4 w-4 shrink-0" />
+            <SquarePen className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span className="truncate">New Issue</span>
           </button>
           <SidebarNavItem to="/dashboard" label="Dashboard" icon={LayoutDashboard} liveCount={liveRunCount} />
@@ -112,6 +125,12 @@ export function Sidebar() {
 
         <SidebarSection label="Company">
           <SidebarNavItem to="/org" label="Org" icon={Network} />
+          <SidebarNavItem
+            to="/approvals"
+            label="Approvals"
+            icon={ShieldCheck}
+            badge={pendingApprovals > 0 ? pendingApprovals : undefined}
+          />
           <SidebarNavItem to="/skills" label="Skills" icon={Boxes} />
           <SidebarNavItem to="/costs" label="Costs" icon={DollarSign} />
           <SidebarNavItem to="/activity" label="Activity" icon={History} />
