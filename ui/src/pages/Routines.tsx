@@ -833,7 +833,7 @@ export function Routines() {
                         value={draft.concurrencyPolicy}
                         onValueChange={(concurrencyPolicy) => setDraft((current) => ({ ...current, concurrencyPolicy }))}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Concurrency policy">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -850,7 +850,7 @@ export function Routines() {
                         value={draft.catchUpPolicy}
                         onValueChange={(catchUpPolicy) => setDraft((current) => ({ ...current, catchUpPolicy }))}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Catch-up policy">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
