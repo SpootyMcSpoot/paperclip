@@ -147,6 +147,7 @@ export function Companies() {
                         onChange={(e) => setEditName(e.target.value)}
                         className="h-7 text-sm"
                         autoFocus
+                        aria-label="Company name"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") saveEdit();
                           if (e.key === "Escape") cancelEdit();
