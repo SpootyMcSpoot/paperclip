@@ -1291,6 +1291,7 @@ function ModelDropdown({
               value={modelSearch}
               onChange={(e) => setModelSearch(e.target.value)}
               autoFocus
+              aria-label="Search models"
             />
             {modelSearch && (
               <button
