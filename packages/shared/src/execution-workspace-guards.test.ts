@@ -42,7 +42,7 @@ describe("isClosedIsolatedExecutionWorkspace", () => {
       isClosedIsolatedExecutionWorkspace({
         mode: "shared_workspace" as never,
         status: "archived",
-        closedAt: "2026-04-01T00:00:00Z",
+        closedAt: new Date("2026-04-01T00:00:00Z"),
       }),
     ).toBe(false);
   });
@@ -52,7 +52,7 @@ describe("isClosedIsolatedExecutionWorkspace", () => {
       isClosedIsolatedExecutionWorkspace({
         mode: "isolated_workspace",
         status: "active" as never,
-        closedAt: "2026-04-01T00:00:00Z",
+        closedAt: new Date("2026-04-01T00:00:00Z"),
       }),
     ).toBe(true);
   });
@@ -92,7 +92,7 @@ describe("isClosedIsolatedExecutionWorkspace", () => {
   });
 
   it("returns false when isolated + active + closedAt undefined", () => {
-    // closedAt typed as string|null at the model layer, but live
+    // closedAt typed as Date|null at the model layer, but live
     // payloads can omit the key entirely. Pin both the null and
     // missing-key cases as non-closed.
     expect(
