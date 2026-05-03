@@ -121,6 +121,8 @@ export function Companies() {
               key={company.id}
               role="button"
               tabIndex={0}
+              aria-label={`Select company ${company.name}`}
+              aria-pressed={selected}
               onClick={() => setSelectedCompanyId(company.id)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
