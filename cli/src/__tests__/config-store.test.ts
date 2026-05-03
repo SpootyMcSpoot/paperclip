@@ -163,10 +163,17 @@ describe("config/store", () => {
       // here would break every existing install at first read.
       const cfgPath = path.join(tmpRoot, "legacy", "config.json");
       fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
+      // Build raw on-disk shape: defaultValidConfig() applies zod
+      // defaults including embeddedPostgresDataDir, which would make
+      // the migration treat the field as "already set" and skip the
+      // pgliteDataDir copy. Strip it to match what a real legacy file
+      // looked like.
+      const seed = defaultValidConfig();
+      const { embeddedPostgresDataDir: _ignored, ...databaseRest } = seed.database;
       const legacy = {
-        ...defaultValidConfig(),
+        ...seed,
         database: {
-          ...defaultValidConfig().database,
+          ...databaseRest,
           mode: "pglite",
           pgliteDataDir: "/tmp/pglite-data",
           pglitePort: 55555,
