@@ -62,12 +62,14 @@ export function resolveWorktreeSeedPlan(mode: WorktreeSeedMode): WorktreeSeedPla
       nullifyColumns: {},
     };
   }
+  const nullifyColumns: Record<string, string[]> = {};
+  for (const [table, cols] of Object.entries(MINIMAL_WORKTREE_NULLIFIED_COLUMNS)) {
+    nullifyColumns[table] = [...cols];
+  }
   return {
     mode,
     excludedTables: [...MINIMAL_WORKTREE_EXCLUDED_TABLES],
-    nullifyColumns: {
-      ...MINIMAL_WORKTREE_NULLIFIED_COLUMNS,
-    },
+    nullifyColumns,
   };
 }
 
@@ -76,7 +78,7 @@ function nonEmpty(value: string | null | undefined): string | null {
 }
 
 function isLoopbackHost(hostname: string): boolean {
-  const value = hostname.trim().toLowerCase();
+  const value = hostname.trim().toLowerCase().replace(/^\[|\]$/g, "");
   return value === "127.0.0.1" || value === "localhost" || value === "::1";
 }
 

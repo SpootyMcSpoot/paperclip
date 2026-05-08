@@ -38,7 +38,16 @@ import {
 } from "../config/store.js";
 
 function defaultValidConfig(): StapleConfig {
-  return stapleConfigSchema.parse({});
+  return stapleConfigSchema.parse({
+    $meta: {
+      version: 1,
+      updatedAt: "2026-01-01T00:00:00.000Z",
+      source: "configure",
+    },
+    database: {},
+    logging: { mode: "file" },
+    server: {},
+  });
 }
 
 describe("config/store", () => {
@@ -154,10 +163,17 @@ describe("config/store", () => {
       // here would break every existing install at first read.
       const cfgPath = path.join(tmpRoot, "legacy", "config.json");
       fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
+      // Build raw on-disk shape: defaultValidConfig() applies zod
+      // defaults including embeddedPostgresDataDir, which would make
+      // the migration treat the field as "already set" and skip the
+      // pgliteDataDir copy. Strip it to match what a real legacy file
+      // looked like.
+      const seed = defaultValidConfig();
+      const { embeddedPostgresDataDir: _ignored, ...databaseRest } = seed.database;
       const legacy = {
-        ...defaultValidConfig(),
+        ...seed,
         database: {
-          ...defaultValidConfig().database,
+          ...databaseRest,
           mode: "pglite",
           pgliteDataDir: "/tmp/pglite-data",
           pglitePort: 55555,
