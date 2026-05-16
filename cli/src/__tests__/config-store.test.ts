@@ -164,12 +164,18 @@ describe("config/store", () => {
       const cfgPath = path.join(tmpRoot, "legacy", "config.json");
       fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
       // Build raw on-disk shape: defaultValidConfig() applies zod
-      // defaults including embeddedPostgresDataDir, which would make
-      // the migration treat the field as "already set" and skip the
-      // pgliteDataDir copy. Strip it to match what a real legacy file
-      // looked like.
+      // defaults including embeddedPostgresDataDir AND
+      // embeddedPostgresPort, which would make the migration treat the
+      // fields as "already set" and skip the pgliteDataDir/pglitePort
+      // copy. Strip both to match what a real legacy file looked like
+      // (predates the rename, so neither embedded-postgres field
+      // existed on disk).
       const seed = defaultValidConfig();
-      const { embeddedPostgresDataDir: _ignored, ...databaseRest } = seed.database;
+      const {
+        embeddedPostgresDataDir: _ignoredDir,
+        embeddedPostgresPort: _ignoredPort,
+        ...databaseRest
+      } = seed.database;
       const legacy = {
         ...seed,
         database: {
