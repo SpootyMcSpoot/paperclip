@@ -1,5 +1,11 @@
 name: Docker
 
+# Native-arch matrix build + dual-registry push (GHCR + Harbor).
+# Replaces single-step QEMU multi-arch build (median 18m, arm64 emulated).
+# Per-arch tags survive Harbor GC; merge job assembles manifest index at both
+# registries via docker buildx imagetools create.
+# Pattern source: stax/.github/workflows/build-and-push-harbor-native.yaml.
+
 on:
   push:
     branches:
@@ -11,18 +17,89 @@ permissions:
   contents: read
   packages: write
 
+env:
+  HARBOR_PROJECT: library
+  IMAGE_NAME: staple
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runs-on: stax-builder
+          - arch: arm64
+            runs-on: stax-arm64
+    runs-on: ${{ matrix.runs-on }}
     timeout-minutes: 30
-    concurrency:
-      group: docker-${{ github.ref }}
-      cancel-in-progress: true
+    steps:
+      - name: Cleanup stale runner pods
+        run: |
+          kubectl delete pods -n devops --field-selector=status.phase=Failed --force --grace-period=0 2>/dev/null || true
+          kubectl get pods -n devops -o json 2>/dev/null | jq -r '.items[] | select(
+            (.metadata.deletionTimestamp != null) or
+            (.status.containerStatuses[]?.state.waiting.reason | IN("CrashLoopBackOff","ImagePullBackOff"))
+          ) | .metadata.name' 2>/dev/null | xargs -r kubectl delete pod -n devops --force --grace-period=0 2>/dev/null || true
+
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Log in to Harbor
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Log in to GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+        with:
+          driver-opts: network=host
+
+      # Per-arch CI tags pushed to BOTH registries. Tagged refs survive Harbor GC
+      # whereas push-by-digest can be reaped between build + merge jobs.
+      - name: Build and push (${{ matrix.arch }})
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          platforms: linux/${{ matrix.arch }}
+          push: true
+          tags: |
+            ${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:ci-${{ github.run_id }}-${{ matrix.arch }}
+            ghcr.io/${{ github.repository }}:ci-${{ github.run_id }}-${{ matrix.arch }}
+          cache-from: type=registry,ref=${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache-${{ matrix.arch }}
+          cache-to: type=registry,ref=${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache-${{ matrix.arch }},mode=max
+
+  merge:
+    needs: build
+    # stax-builder has DinD sidecar -- stax-general does not, buildx default
+    # docker-container driver fails without /var/run/docker.sock.
+    runs-on: stax-builder
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - name: Login to GitHub Container Registry
+      - name: Log in to Harbor
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Log in to GHCR
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
@@ -32,8 +109,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
-      - name: Docker meta
-        id: meta
+      - name: Docker meta (Harbor)
+        id: meta_harbor
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: ${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-
+
+      - name: Docker meta (GHCR)
+        id: meta_ghcr
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ghcr.io/${{ github.repository }}
@@ -41,15 +129,51 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha
+            type=sha,prefix=sha-
 
-      - name: Build and push
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Create manifest index (Harbor)
+        run: |
+          HARBOR="${{ secrets.HARBOR_REGISTRY }}"
+          IMG="${HARBOR}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}"
+          RUN="${{ github.run_id }}"
+          SRC_AMD64="${IMG}:ci-${RUN}-amd64"
+          SRC_ARM64="${IMG}:ci-${RUN}-arm64"
+
+          TAG_FLAGS=""
+          while IFS= read -r tag; do
+            [ -n "$tag" ] && TAG_FLAGS="$TAG_FLAGS -t $tag"
+          done <<< "${{ steps.meta_harbor.outputs.tags }}"
+
+          if [ -z "$TAG_FLAGS" ]; then
+            echo "::error::no Harbor tags emitted -- nothing to merge"
+            exit 1
+          fi
+
+          # shellcheck disable=SC2086
+          docker buildx imagetools create $TAG_FLAGS "$SRC_AMD64" "$SRC_ARM64"
+
+          FIRST_TAG="$(echo '${{ steps.meta_harbor.outputs.tags }}' | head -1)"
+          docker buildx imagetools inspect "$FIRST_TAG"
+
+      - name: Create manifest index (GHCR)
+        run: |
+          IMG="ghcr.io/${{ github.repository }}"
+          RUN="${{ github.run_id }}"
+          SRC_AMD64="${IMG}:ci-${RUN}-amd64"
+          SRC_ARM64="${IMG}:ci-${RUN}-arm64"
+
+          TAG_FLAGS=""
+          while IFS= read -r tag; do
+            [ -n "$tag" ] && TAG_FLAGS="$TAG_FLAGS -t $tag"
+          done <<< "${{ steps.meta_ghcr.outputs.tags }}"
+
+          if [ -z "$TAG_FLAGS" ]; then
+            echo "::error::no GHCR tags emitted -- nothing to merge"
+            exit 1
+          fi
+
+          # shellcheck disable=SC2086
+          docker buildx imagetools create $TAG_FLAGS "$SRC_AMD64" "$SRC_ARM64"
+
+          FIRST_TAG="$(echo '${{ steps.meta_ghcr.outputs.tags }}' | head -1)"
+          docker buildx imagetools inspect "$FIRST_TAG"
