@@ -20,6 +20,9 @@ permissions:
 env:
   HARBOR_PROJECT: library
   IMAGE_NAME: staple
+  # OCI repo names must be lowercase. github.repository preserves org casing
+  # ("Anomalous-Ventures/staple-ai") and breaks ghcr push. Pin lowercased.
+  GHCR_IMAGE: ghcr.io/anomalous-ventures/staple-ai
 
 concurrency:
   group: docker-${{ github.ref }}
@@ -78,7 +81,7 @@ jobs:
           push: true
           tags: |
             ${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:ci-${{ github.run_id }}-${{ matrix.arch }}
-            ghcr.io/${{ github.repository }}:ci-${{ github.run_id }}-${{ matrix.arch }}
+            ${{ env.GHCR_IMAGE }}:ci-${{ github.run_id }}-${{ matrix.arch }}
           cache-from: type=registry,ref=${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache-${{ matrix.arch }}
           cache-to: type=registry,ref=${{ secrets.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:buildcache-${{ matrix.arch }},mode=max
 
@@ -124,7 +127,7 @@ jobs:
         id: meta_ghcr
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.GHCR_IMAGE }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
@@ -157,7 +160,7 @@ jobs:
 
       - name: Create manifest index (GHCR)
         run: |
-          IMG="ghcr.io/${{ github.repository }}"
+          IMG="${{ env.GHCR_IMAGE }}"
           RUN="${{ github.run_id }}"
           SRC_AMD64="${IMG}:ci-${RUN}-amd64"
           SRC_ARM64="${IMG}:ci-${RUN}-arm64"
