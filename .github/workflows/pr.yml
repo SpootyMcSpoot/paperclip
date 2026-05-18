@@ -4,6 +4,11 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - '**.txt'
+      - '.gitignore'
+      - '.editorconfig'
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
@@ -93,6 +98,13 @@ jobs:
     needs: [policy]
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: |
+      contains(github.event.pull_request.files.*.filename, 'tests/e2e') ||
+      contains(github.event.pull_request.files.*.filename, 'src') ||
+      contains(github.event.pull_request.files.*.filename, 'packages') ||
+      contains(github.event.pull_request.files.*.filename, 'playwright.config') ||
+      contains(github.event.pull_request.files.*.filename, 'package.json') ||
+      contains(github.event.pull_request.files.*.filename, 'pnpm-lock.yaml')
 
     steps:
       - name: Checkout repository
